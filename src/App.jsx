@@ -502,11 +502,11 @@ const SPRITE_SIZE = {
 //
 const ENEMY_IMG_SIZE = {
   seagull:       { mode:"fixed", size: 160 },
-  koza:          { mode:"fixed", size: 345 },
+  koza:          { mode:"fixed", size: 420 },
   shamerlot:     { mode:"fixed", size: 200 },
   shamerlot_lv3: { mode:"fixed", size: 260 },
   shamerlot_lv5: { mode:"fixed", size: 280 },
-  simuluu:       { mode:"auto",  pct:  80  },
+  simuluu:       { mode:"fixed", size: 480 },
 };
 
 const BATTLE_BG_MAP = {
