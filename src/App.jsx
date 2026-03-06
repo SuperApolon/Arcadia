@@ -501,12 +501,12 @@ const SPRITE_SIZE = {
 //   - 小さめに見せたい雑魚・人型エネミー    → mode:"fixed" or 数値
 //
 const ENEMY_IMG_SIZE = {
-  seagull:       { mode:"fixed", size: 160 },
-  koza:          { mode:"fixed", size: 420 },
-  shamerlot:     { mode:"fixed", size: 200 },
+  seagull:       { mode:"fixed", size: 180 },
+  koza:          { mode:"fixed", size: 450 },
+  shamerlot:     { mode:"fixed", size: 220 },
   shamerlot_lv3: { mode:"fixed", size: 260 },
-  shamerlot_lv5: { mode:"fixed", size: 280 },
-  simuluu:       { mode:"fixed", size: 480 },
+  shamerlot_lv5: { mode:"fixed", size: 300 },
+  simuluu:       { mode:"fixed", size: 500 },
 };
 
 const BATTLE_BG_MAP = {
@@ -1099,9 +1099,8 @@ export default function Arcadia() {
 
     // ─── プレイヤー行動フェーズ ─────────────────────────────────────────
     if (skillId === "heal") {
-      const healAmt = 80;
-      newHp = Math.min(newHp + healAmt, mhp);
-      logs.push(`🧪 回復！ HP +${healAmt}`);
+      // 回復は敵攻撃の後に適用。ここでは宣言ログのみ
+      logs.push(`🧪 回復ポーションを使った...`);
     } else if (skillId === "dodge") {
       // 回避ターンはダメージを与えない（回避成否は敵行動フェーズで判定）
       logs.push("💨 回避態勢をとった！");
@@ -1198,6 +1197,13 @@ export default function Arcadia() {
           logs.push(`⚔ ${ed.name}の強攻！ ${eDmg} ダメージ！`);
         }
       }
+    }
+
+    // ─── 回復ポーション適用（敵攻撃後）──────────────────────────────────
+    if (skillId === "heal") {
+      const healAmt = 80;
+      newHp = Math.min(newHp + healAmt, mhp);
+      logs.push(`✨ HP +${healAmt} 回復！`);
     }
 
     // ─── Combo判定（無被弾ストリーク）────────────────────────────────────
