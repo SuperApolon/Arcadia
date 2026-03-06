@@ -142,7 +142,7 @@ const SCENES = [
     { sp:"ナレーション", t:"四人の冒険が、今始まる。", next:17 }
   ]},
   { bg:["#1a0e06","#2a1808","#1a1208"], loc:"エルム村 武器屋", sprites:["🧑","🧑‍🦱","👩","👦","🧓"], dl:[
-    { sp:"ナレーション", t:"翌日──\n\n四人はエルム村の武器屋・防具屋へ。\n岩蟹を狩り続けて貯めたELKで\n装備を整える時が来た。" },
+    { sp:"ナレーション", t:"翌日──\n\n四人はエルム村の武器屋へ。\n岩蟹を狩り続けて貯めたELKで\n装備を整える時が来た。" },
     { sp:"スウィフト", t:"「俺、槍にする。\nコーザとの戦いで間合いの\n大切さが分かったから」" },
     { sp:"店主", t:"「銅の剣なら87 ELK、\n銅の槍は95 ELK、\n銅の弓は110 ELK、\n銅の短剣は72 ELKだよ」" },
     { sp:"エルツ", t:"「......買えるか確認しよう」", choices:[
@@ -152,8 +152,6 @@ const SCENES = [
   ]},
   { bg:["#1a0e06","#2a1808","#1a1208"], loc:"エルム村 防具屋", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
     { sp:"SYSTEM", t:"── 装備購入 ──\n\n⚔ 銅の剣 を入手した！\n物理攻撃力 +6" },
-    { sp:"エルツ", t:"「帽子......買うか。\n\n残りのELKとの兼ね合いで\n今買えるのはこれが限界だな」" },
-    { sp:"SYSTEM", t:"── 装備購入 ──\n\n🎩 旅人の帽子 を入手した！\n物理防御力 +3", sellElk:-123 },
     { sp:"チョッパー", t:"「チョッパーも短剣買えた！」" },
     { sp:"ナレーション", t:"四人それぞれが自分に合った\n武器を手にした。\n\n与えられた環境の中で、\n最大限に力を引き出す──\n\nそれがエルツの信条だった。", next:19 }
   ]},
@@ -431,9 +429,10 @@ const BATTLE_BGM = {
 
 function resolveBgmId(phase, sceneLoc, enemyType) {
   if (phase === "title" || phase === "tos") return PHASE_BGM.title;
-  if (phase === "end")    return PHASE_BGM.ending;
-  if (phase === "battle") return BATTLE_BGM[enemyType] ?? null;
-  if (phase === "game")   return LOC_BGM[sceneLoc] ?? null;
+  if (phase === "end")     return PHASE_BGM.ending;
+  if (phase === "victory") return null;  // ファンファーレはplayFanfareで別管理
+  if (phase === "battle")  return BATTLE_BGM[enemyType] ?? null;
+  if (phase === "game")    return LOC_BGM[sceneLoc] ?? null;
   return null;
 }
 
@@ -560,6 +559,30 @@ const LOC_TO_SCENE_IMG = {
   "試練の洞窟 ─ 最深部":    "scenes/s27_cave_deep",
 };
 
+// 勝利画面ボタン -- 1回目押下でファンファーレ開始、2回目押下でシーン遷移
+function VictoryButton({ onFanfareStart, onProceed }) {
+  const [started, setStarted] = useState(false);
+  const handleClick = () => {
+    if (!started) {
+      setStarted(true);
+      onFanfareStart();
+    } else {
+      onProceed();
+    }
+  };
+  const label  = started ? "次へ ▶" : "結果を確認  ▶";
+  const border = started ? C.accent2 : C.gold;
+  const color  = started ? C.accent2 : C.gold;
+  return (
+    <button
+      onClick={handleClick}
+      style={{padding:"12px 52px",background:"transparent",border:`1px solid ${border}`,color,fontSize:15,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",transition:"all 0.3s"}}
+      onMouseEnter={e => { e.currentTarget.style.background = `${border}22`; }}
+      onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+    >{label}</button>
+  );
+}
+
 // @@SECTION:MAIN_COMPONENT
 export default function Arcadia() {
   // @@SECTION:STATE_ADVENTURE
@@ -591,6 +614,7 @@ export default function Arcadia() {
   const [lv, setLv] = useState(1);
   const [exp, setExp] = useState(0);
   const [weapon, setWeapon] = useState("銅の短剣");
+  const [weaponPatk, setWeaponPatk] = useState(3);   // 武器による物理ATK補正（銅の短剣+3）
   const [statPoints, setStatPoints] = useState(0);
   const [statAlloc, setStatAlloc] = useState({patk:10,pdef:10,matk:10,spd:10});
   const [hasPb, setHasPb] = useState(false);
@@ -609,6 +633,10 @@ export default function Arcadia() {
   const [battleNext, setBattleNext] = useState(null);
   const [btlAnimEnemy, setBtlAnimEnemy] = useState(false);
   const [btlAnimPlayer, setBtlAnimPlayer] = useState(false);
+  const [victoryNextSc, setVictoryNextSc] = useState(null); // 勝利画面から遷移する先シーン
+  // 戦闘リザルトデータ。将来: dropItems追加予定
+  // { gainExp, gainElk, currentElk, currentExp, currentLv, expToNext }
+  const [battleResult, setBattleResult] = useState(null);
   // 敵の行動ローテーション用インデックス
   const [enemyTurnIdx, setEnemyTurnIdx] = useState(0);
   // 今ターンの敵予告行動（UI表示用）
@@ -617,22 +645,125 @@ export default function Arcadia() {
   const typeTimerRef = useRef(null);
   const notifTimerRef = useRef(null);
 
-  // ── BGM制御（<audio>タグDOM常駐方式）────────────────────────────────────
-  // iOS/iPadOS 画面録画時に HTMLAudioElement を JS から new Audio() で生成すると
-  // AVAudioSession の切り替えによって playbackRate が 2倍になる問題がある。
-  // React DOM に <audio> タグを常駐させ src だけを setState で切り替えることで
-  // iOSがその要素を「ページ音声」として正しく管理し倍速問題が発生しない。
-  // フェード・タイマー処理は完全廃止（録画時の乱れを根絶するため）。
-  const [bgmSrc, setBgmSrc] = useState(null);   // 現在再生すべきBGMのURL
-  const bgmAudioRef = useRef(null);              // <audio>要素のref
-  const currentBgmRef = useRef(null);            // 現在のbgmId（重複再生防止）
+  // ── BGM制御 ref ────────────────────────────────────────────────────────────
+  const audioRef        = useRef(null);   // 現在再生中のAudioインスタンス
+  const currentBgmRef   = useRef(null);   // 現在再生中のbgmId
+  const audioUnlocked   = useRef(false);  // AutoPlay Policy: ユーザー操作後にtrue
+  const pendingBgmRef   = useRef(null);   // アンロック前に要求されたbgmId
+  const fanfareRef      = useRef(null);   // ファンファーレ専用Audioインスタンス
+  const isFanfareRef    = useRef(false);  // ファンファーレ再生中フラグ
+
+  const FADE_OUT_MS = 1000;
+  const FADE_IN_MS  = 800;
+
+  // fadeOutはタイマーをローカル管理（競合しない）
+  const fadeOut = useCallback((audio, ms, onDone) => {
+    if (!audio) { onDone(); return; }
+    const steps    = 20;
+    const interval = ms / steps;
+    const delta    = audio.volume / steps;
+    let count      = 0;
+    let timer      = null;
+    timer = setInterval(() => {
+      count++;
+      audio.volume = Math.max(0, audio.volume - delta);
+      if (count >= steps) { clearInterval(timer); onDone(); }
+    }, interval);
+  }, []);
+
+  const fadeIn = useCallback((audio, ms, targetVolume = 0.7) => {
+    const steps    = 20;
+    const interval = ms / steps;
+    const delta    = targetVolume / steps;
+    let count      = 0;
+    const timer = setInterval(() => {
+      count++;
+      audio.volume = Math.min(targetVolume, audio.volume + delta);
+      if (count >= steps) clearInterval(timer);
+    }, interval);
+  }, []);
+
+  // BGMを即再生する内部関数（アンロック済み前提）
+  const _startBgm = useCallback((nextId) => {
+    // ファンファーレ再生中はBGM切り替えをスキップ
+    if (isFanfareRef.current) { currentBgmRef.current = nextId; return; }
+    const nextUrl = nextId ? bgmUrl(nextId) : null;
+    fadeOut(audioRef.current, FADE_OUT_MS, () => {
+      if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; }
+      currentBgmRef.current = nextId;
+      if (!nextUrl) return;
+      const audio = new Audio(nextUrl);
+      audio.loop   = true;
+      audio.volume = 0;
+      audio.play().catch(() => {});
+      audioRef.current = audio;
+      fadeIn(audio, FADE_IN_MS);
+    });
+  }, [fadeOut, fadeIn]);
 
   const switchBgm = useCallback((nextId) => {
     if (currentBgmRef.current === nextId) return;
-    currentBgmRef.current = nextId;
-    const nextUrl = nextId ? bgmUrl(nextId) : null;
-    setBgmSrc(nextUrl);
-  }, []);
+    // ユーザー操作前はpendingに積むだけ（AutoPlay Policy対策）
+    if (!audioUnlocked.current) {
+      pendingBgmRef.current = nextId;
+      return;
+    }
+    _startBgm(nextId);
+  }, [_startBgm]);
+
+  // ユーザーの最初の操作でAudioContextをアンロックし、pendingBGMを再生する
+  const unlockAudio = useCallback((bgmId) => {
+    audioUnlocked.current = true;
+    const target = bgmId ?? pendingBgmRef.current;
+    pendingBgmRef.current = null;
+    if (target && currentBgmRef.current !== target) {
+      _startBgm(target);
+    }
+  }, [_startBgm]);
+
+  // ファンファーレ再生。メインBGMとは独立したAudioで再生し競合しない。
+  const playFanfare = useCallback((onDone) => {
+    const url = bgmUrl("bgm/fanfare");
+    // urlなし or AutoPlayブロック時でも必ずonDoneを呼ぶためフラグで管理
+    let called = false;
+    const done = () => {
+      if (!called) {
+        called = true;
+        isFanfareRef.current = false;
+        fanfareRef.current = null;
+        onDone?.();
+      }
+    };
+
+    if (!url) { done(); return; }
+
+    // メインBGMをフェードダウン（停止はしない）
+    if (audioRef.current) {
+      fadeOut(audioRef.current, 600, () => {
+        if (audioRef.current) audioRef.current.volume = 0;
+      });
+    }
+
+    isFanfareRef.current = true;
+    if (fanfareRef.current) { fanfareRef.current.pause(); fanfareRef.current = null; }
+
+    const audio = new Audio(url);
+    audio.loop   = false;
+    audio.volume = 0.8;
+    fanfareRef.current = audio;
+    audio.onerror = done;
+
+    // play()が失敗（AutoPlayブロック含む）した場合も即done
+    audio.play().then(() => {
+      // 再生成功: onendedで遷移、念のため最大10秒のフォールバック
+      const fallback = setTimeout(done, 10000);
+      audio.onended = () => { clearTimeout(fallback); done(); };
+      audio.onerror = () => { clearTimeout(fallback); done(); };
+    }).catch(() => {
+      // 再生失敗 → 即座にシーン遷移
+      done();
+    });
+  }, [fadeOut]);
 
   // @@SECTION:LOGIC_TYPEWRITER
   const startType = useCallback((text, onDone) => {
@@ -762,47 +893,13 @@ export default function Arcadia() {
     switchBgm(nextId);
   }, [phase, sceneIdx, currentEnemyType, switchBgm]);
 
-  // コンポーネントマウント時に <audio> を body に1つ生成し、アンマウント時に削除
-  // Reactのフェーズ切り替えによる再描画で audio が破棄されないよう body に常駐させる
-  // これにより iOS が「ページ音声」として正しく管理し、画面録画時の倍速問題を防ぐ
+  // アンマウント時にBGMを停止
   useEffect(() => {
-    let el = document.getElementById("arcadia-bgm");
-    if (!el) {
-      el = document.createElement("audio");
-      el.id       = "arcadia-bgm";
-      el.loop     = true;
-      el.volume   = 0.7;
-      // playsInline / x-webkit-airplay はiOSのAVAudioSession制御に必要
-      el.setAttribute("playsinline", "");
-      el.setAttribute("webkit-playsinline", "");
-      el.setAttribute("x-webkit-airplay", "deny");
-      el.style.cssText = "position:absolute;width:0;height:0;opacity:0;pointer-events:none;";
-      document.body.appendChild(el);
-    }
-    bgmAudioRef.current = el;
     return () => {
-      // アンマウント時に停止・削除
-      el.pause();
-      el.src = "";
-      if (el.parentNode) el.parentNode.removeChild(el);
-      bgmAudioRef.current = null;
+      if (audioRef.current) audioRef.current.pause();
+      if (fanfareRef.current) fanfareRef.current.pause();
     };
   }, []);
-
-  // bgmSrc が変わったら body常駐の <audio> の src を切り替えて再生
-  useEffect(() => {
-    const el = bgmAudioRef.current;
-    if (!el) return;
-    if (!bgmSrc) {
-      el.pause();
-      el.src = "";
-      return;
-    }
-    el.src  = bgmSrc;
-    el.loop = true;
-    el.load();
-    el.play().catch(() => {});
-  }, [bgmSrc]);
 
   // @@SECTION:LOGIC_DIALOG_TAP
   const onTapDlg = useCallback(() => {
@@ -842,7 +939,8 @@ export default function Arcadia() {
       if (elk >= 87) {
         setElk(e => e - 87);
         setWeapon("銅の剣");
-        showNotif("⚔ 銅の剣を購入した！");
+        setWeaponPatk(6);
+        showNotif("⚔ 銅の剣を購入した！ 物理ATK +6");
         const nextSc = sceneIdx + 1;
         setFade(true);
         setTimeout(() => { setSceneIdx(nextSc); setDlIdx(0); setFade(false); }, 300);
@@ -936,7 +1034,7 @@ export default function Arcadia() {
     let newEnemyHp = enemyHp;
     let newHp = hp;
     let newMp = mp - (sk.cost > 0 ? sk.cost : 0);
-    const atkBonus = Math.floor((statAlloc.patk - 10) * 1.5);
+    const atkBonus = weaponPatk + Math.floor((statAlloc.patk - 10) * 1.5);
     const defBonus = Math.floor((statAlloc.pdef - 10) * 1.2);
 
     setBtlAnimEnemy(true); setTimeout(() => setBtlAnimEnemy(false), 400);
@@ -1053,7 +1151,7 @@ export default function Arcadia() {
       setDefeat(true);
       setBtlLogs(prev => [...prev, "💀 戦闘不能..."]);
     }
-  }, [victory, defeat, mp, enemyHp, hp, mhp, mmp, lv, battleEnemy, statAlloc, enemyTurnIdx, showNotif, handleExpGain]);
+  }, [victory, defeat, mp, enemyHp, hp, mhp, mmp, lv, battleEnemy, statAlloc, weaponPatk, enemyTurnIdx, showNotif, handleExpGain]);
 
   const exitBattle = useCallback(() => {
     if (defeat) {
@@ -1070,16 +1168,19 @@ export default function Arcadia() {
       }, 400);
       return;
     }
-    // 勝利時: 即座に次シーンへ遷移
+    // 勝利時: victoryフェーズへ遷移し、そこでユーザー操作を受けてファンファーレ再生
     const nextSc = battleNext !== null ? battleNext : sceneIdx;
+    setVictoryNextSc(nextSc);
+    // リザルトデータをセット（EXP/ELKはdoBattleAction内で付与済み）
+    const ed = battleEnemy;
+    setBattleResult({
+      gainExp:    ed ? ed.exp  : 0,
+      gainElk:    ed ? ed.elk  : 0,
+      // dropItems: [], // 将来: ドロップアイテム配列
+    });
     setFade(true);
-    setTimeout(() => {
-      setPhase("game");
-      setSceneIdx(nextSc);
-      setDlIdx(0);
-      setFade(false);
-    }, 400);
-  }, [defeat, mhp, mmp, battleNext, sceneIdx, showNotif]);
+    setTimeout(() => { setPhase("victory"); setFade(false); }, 300);
+  }, [defeat, mhp, mmp, battleNext, sceneIdx, showNotif, battleEnemy]);
 
   // ──────────── RENDER ────────────
   const sc = SCENES[sceneIdx] || SCENES[0];
@@ -1103,7 +1204,118 @@ export default function Arcadia() {
     @keyframes bossFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-10px) scale(1.03)} }
     @keyframes scanLine { 0%{top:0%} 100%{top:100%} }
     @keyframes notifIn { from{opacity:0;transform:translate(-50%,-20px)} to{opacity:1;transform:translate(-50%,0)} }
+    @keyframes victoryRise { 0%{opacity:0;transform:translateY(40px) scale(0.85)} 60%{opacity:1;transform:translateY(-6px) scale(1.04)} 100%{opacity:1;transform:translateY(0) scale(1)} }
+    @keyframes victoryGlow { 0%,100%{text-shadow:0 0 30px #f0c04088,0 0 60px #f0c04044} 50%{text-shadow:0 0 60px #f0c040cc,0 0 120px #f0c04066,0 0 200px #f0c04022} }
+    @keyframes starBurst { 0%{opacity:0;transform:scale(0) rotate(0deg)} 50%{opacity:1;transform:scale(1.2) rotate(180deg)} 100%{opacity:0;transform:scale(0.8) rotate(360deg)} }
   `;
+
+  // @@SECTION:RENDER_VICTORY
+  if (phase === "victory") {
+    const handleFanfareStart = () => {
+      unlockAudio(null);
+      playFanfare(null);
+    };
+    const handleProceed = () => {
+      if (fanfareRef.current) { fanfareRef.current.pause(); fanfareRef.current = null; }
+      isFanfareRef.current = false;
+      setFade(true);
+      setTimeout(() => {
+        setPhase("game");
+        setSceneIdx(victoryNextSc ?? 0);
+        setDlIdx(0);
+        setFade(false);
+      }, 400);
+    };
+
+    // リザルト表示用の値を解決
+    const res        = battleResult ?? {};
+    const gainExp    = res.gainExp ?? 0;
+    const gainElk    = res.gainElk ?? 0;
+    const dropItems  = res.dropItems ?? [];   // 将来: ドロップアイテム配列
+    const expToNext  = EXP_TABLE[lv] ? Math.max(0, EXP_TABLE[lv] - exp) : null;
+
+    return (
+      <div style={{width:"100%",height:"100%",minHeight:"600px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"linear-gradient(180deg,#020608 0%,#050d14 40%,#0a1420 100%)",fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden",userSelect:"none"}}>
+        <style>{keyframes}</style>
+
+        {fade && <div style={{position:"absolute",inset:0,background:"#050d14",zIndex:50}}/>}
+
+        {/* 背景パーティクル */}
+        {[...Array(24)].map((_,i) => (
+          <div key={i} style={{
+            position:"absolute",
+            width: i%4===0 ? 6 : i%3===0 ? 4 : 2,
+            height: i%4===0 ? 6 : i%3===0 ? 4 : 2,
+            borderRadius:"50%",
+            background: i%3===0 ? C.gold : i%3===1 ? C.accent2 : C.accent,
+            top:`${10+Math.random()*80}%`,
+            left:`${5+Math.random()*90}%`,
+            opacity: 0.3+Math.random()*0.5,
+            animation:`starBurst ${2+Math.random()*3}s ${Math.random()*2}s infinite`,
+          }}/>
+        ))}
+
+        <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(240,192,64,0.02) 3px,rgba(240,192,64,0.02) 4px)",pointerEvents:"none",zIndex:1}}/>
+
+        <div style={{position:"relative",zIndex:2,textAlign:"center",padding:"0 24px",width:"100%",maxWidth:460}}>
+
+          {/* ロゴ */}
+          <div style={{fontSize:11,letterSpacing:10,color:C.muted,marginBottom:10,fontFamily:"'Share Tech Mono',monospace",animation:"fadeIn 0.8s ease"}}>VRMMORPG</div>
+          <div style={{fontSize:44,fontWeight:700,letterSpacing:12,color:C.white,textShadow:`0 0 30px ${C.accent}88`,lineHeight:1,marginBottom:4,animation:"fadeIn 0.8s ease"}}>ARCADIA</div>
+
+          <div style={{width:"100%",height:1,background:`linear-gradient(90deg,transparent,${C.gold}88,transparent)`,margin:"16px auto"}}/>
+
+          {/* BATTLE RESULT ヘッダー */}
+          <div style={{fontSize:10,letterSpacing:8,color:C.gold,fontFamily:"'Share Tech Mono',monospace",marginBottom:12,animation:"fadeIn 1s 0.3s ease both"}}>── BATTLE RESULT ──</div>
+          <div style={{fontSize:52,fontWeight:700,letterSpacing:6,color:C.gold,animation:"victoryRise 0.8s 0.4s cubic-bezier(0.22,1,0.36,1) both, victoryGlow 2.5s 1.2s ease-in-out infinite",lineHeight:1.1,marginBottom:4}}>戦闘勝利</div>
+          <div style={{fontSize:13,letterSpacing:4,color:C.accent2,fontFamily:"'Share Tech Mono',monospace",animation:"fadeIn 1s 1s ease both",marginBottom:20}}>VICTORY</div>
+
+          {/* ─── リザルトパネル ─── */}
+          <div style={{background:"rgba(10,26,38,0.85)",border:`1px solid ${C.border}`,borderRadius:4,padding:"16px 24px",marginBottom:20,animation:"slideUp 0.6s 0.8s ease both",textAlign:"left"}}>
+
+            {/* 取得EXP */}
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`1px solid ${C.border}33`}}>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>取得 EXP</span>
+              <span style={{fontSize:14,color:C.accent2,fontFamily:"'Share Tech Mono',monospace",fontWeight:700}}>+{gainExp}</span>
+            </div>
+
+            {/* 取得ELK */}
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`1px solid ${C.border}33`}}>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>取得 ELK</span>
+              <span style={{fontSize:14,color:C.gold,fontFamily:"'Share Tech Mono',monospace",fontWeight:700}}>+{gainElk}</span>
+            </div>
+
+            {/* 所持ELK */}
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`1px solid ${C.border}33`}}>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>所持 ELK</span>
+              <span style={{fontSize:14,color:C.text,fontFamily:"'Share Tech Mono',monospace"}}>{elk}</span>
+            </div>
+
+            {/* 現在EXP / 次のLvまで */}
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`1px solid ${C.border}33`}}>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>現在 EXP</span>
+              <span style={{fontSize:14,color:C.text,fontFamily:"'Share Tech Mono',monospace"}}>{exp}</span>
+            </div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`1px solid ${C.border}33`}}>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>次のLvまで</span>
+              <span style={{fontSize:14,color:C.accent,fontFamily:"'Share Tech Mono',monospace"}}>{expToNext !== null ? expToNext : "MAX"}</span>
+            </div>
+
+            {/* ドロップアイテム（将来実装 -- 今は「なし」表示） */}
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0"}}>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>ドロップ</span>
+              <span style={{fontSize:12,color:dropItems.length > 0 ? C.accent2 : C.muted,fontFamily:"'Share Tech Mono',monospace"}}>
+                {dropItems.length > 0 ? dropItems.join(" / ") : "なし"}
+              </span>
+            </div>
+          </div>
+
+          {/* ボタン */}
+          <VictoryButton onFanfareStart={handleFanfareStart} onProceed={handleProceed} />
+        </div>
+      </div>
+    );
+  }
 
   // @@SECTION:RENDER_TITLE
   if (phase === "title") return (
@@ -1124,7 +1336,7 @@ export default function Arcadia() {
         <div style={{width:280,height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:"0 auto 40px"}}/>
 
         <button
-          onClick={() => { setTosScrolled(false); setPhase("tos"); }}
+          onClick={() => { unlockAudio("bgm/title"); setTosScrolled(false); setPhase("tos"); }}
           style={{padding:"14px 48px",background:"transparent",border:`1px solid ${C.accent}`,color:C.accent,fontSize:16,letterSpacing:6,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",animation:"glow 2s infinite",transition:"all 0.3s"}}
           onMouseEnter={e => e.target.style.background = `${C.accent}22`}
           onMouseLeave={e => e.target.style.background = "transparent"}
@@ -1147,7 +1359,7 @@ export default function Arcadia() {
     return (
       <div style={{width:"100%",height:"100%",minHeight:"600px",maxHeight:"100vh",display:"flex",flexDirection:"column",background:`linear-gradient(180deg,#020810 0%,${C.bg} 100%)`,fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden"}}>
         <style>{keyframes}</style>
-      <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,200,255,0.012) 2px,rgba(0,200,255,0.012) 4px)",pointerEvents:"none",zIndex:0}}/>
+        <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,200,255,0.012) 2px,rgba(0,200,255,0.012) 4px)",pointerEvents:"none",zIndex:0}}/>
 
         {/* ヘッダー */}
         <div style={{padding:"16px 24px 14px",borderBottom:`1px solid ${C.border}`,background:"rgba(5,13,20,0.92)",flexShrink:0,position:"relative",zIndex:1}}>
@@ -1214,7 +1426,7 @@ export default function Arcadia() {
               color: tosScrolled ? C.bg : C.muted,
               cursor: tosScrolled ? "pointer" : "not-allowed",
             }}
-            onClick={() => { setSceneIdx(0); setDlIdx(0); setPhase("movie"); }}>
+            onClick={() => { unlockAudio("bgm/title"); setSceneIdx(0); setDlIdx(0); setPhase("movie"); }}>
             {tosScrolled ? "同意する  ▶  ゲーム開始" : "同意する（要スクロール）"}
           </button>
         </div>
@@ -1242,11 +1454,8 @@ export default function Arcadia() {
           src={url}
           autoPlay
           playsInline
-          webkit-playsinline="true"
-          x-webkit-airplay="deny"
           style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}
           onEnded={onMovieEnd}
-          onCanPlay={e => { e.currentTarget.play().catch(()=>{}); }}
         />
         <button
           onClick={onMovieEnd}
@@ -1519,7 +1728,7 @@ export default function Arcadia() {
           <div>Lv: {lv} &nbsp;│&nbsp; EXP: {exp}</div>
           <div>ELK: {elk}</div>
         </div>
-        <button onClick={() => { setPhase("title"); setSceneIdx(0); setDlIdx(0); setElk(50); setHp(100); setMhp(100); setMp(80); setMmp(80); setLv(1); setExp(0); setWeapon("銅の短剣"); setStatPoints(0); setStatAlloc({patk:10,pdef:10,matk:10,spd:10}); setHasPb(false); setHasMapScan(false); setInCom(false); }} style={{marginTop:40,padding:"12px 40px",background:"transparent",border:`1px solid ${C.accent2}`,color:C.accent2,fontSize:14,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer"}}>TITLE へ戻る</button>
+        <button onClick={() => { setPhase("title"); setSceneIdx(0); setDlIdx(0); setElk(50); setHp(100); setMhp(100); setMp(80); setMmp(80); setLv(1); setExp(0); setWeapon("銅の短剣"); setWeaponPatk(3); setStatPoints(0); setStatAlloc({patk:10,pdef:10,matk:10,spd:10}); setHasPb(false); setHasMapScan(false); setInCom(false); }} style={{marginTop:40,padding:"12px 40px",background:"transparent",border:`1px solid ${C.accent2}`,color:C.accent2,fontSize:14,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer"}}>TITLE へ戻る</button>
       </div>
     </div>
   );
@@ -1709,7 +1918,7 @@ export default function Arcadia() {
       </div>
 
       {/* Dialog box -- 固定高さで選択肢もこの中に収める */}
-      <div style={{position:"relative",zIndex:10,height:190,margin:"0 8px 4px",flexShrink:0}} onClick={onTapDlg}>
+      <div style={{position:"relative",zIndex:10,height:200,margin:"0 8px 4px",flexShrink:0}} onClick={onTapDlg}>
         {/* ベースダイアログ */}
         <div style={{position:"absolute",inset:0,background:"rgba(5,13,20,0.92)",border:`1px solid ${C.border}`,borderTop:`1px solid ${C.accent}44`,padding:"14px 18px 16px",cursor:"pointer",backdropFilter:"blur(4px)",overflow:"hidden"}}>
           {/* Speaker */}
@@ -1717,7 +1926,7 @@ export default function Arcadia() {
             {dl.sp}
           </div>
           {/* Text */}
-          <div style={{fontSize:14,color:C.white,lineHeight:1.9,whiteSpace:"pre-wrap",overflow:"hidden"}}>
+          <div style={{fontSize:13,color:C.white,lineHeight:1.85,whiteSpace:"pre-wrap",overflow:"hidden",paddingBottom:24}}>
             {displayText}
             {typing && <span style={{animation:"blnk 0.5s infinite",color:C.accent}}>█</span>}
           </div>
@@ -1784,10 +1993,8 @@ export default function Arcadia() {
                   ["MP", `${mp} / ${mmp}`],
                   ["ELK", elk],
                   ["武器", weapon],
-                  ["物理ATK", statAlloc.patk],
+                  ["物理ATK", weaponPatk + statAlloc.patk],
                   ["物理DEF", statAlloc.pdef],
-                  ["魔法ATK", statAlloc.matk],
-                  ["敏捷", statAlloc.spd],
                   ...(statPoints>0?[["未振り", `${statPoints} pt`]]:[]),
                   ...(inCom?[["コミュニティ","White Garden"]]:[]),
                 ].map(([k,v]) => (
@@ -1892,6 +2099,7 @@ export default function Arcadia() {
               <div style={{color:C.accent2}}>MAX HP +10</div>
               <div style={{color:"#60a5fa"}}>MAX MP +5</div>
               <div style={{color:C.gold}}>ステータスポイント +3</div>
+              <div style={{color:C.muted,fontSize:10,marginTop:4}}>物理ATK / 物理DEF に振り分け可</div>
             </div>
             <button onClick={() => { setOverlay(null); setLvUpInfo(null); }}
               style={{padding:"10px 32px",background:"transparent",border:`1px solid ${C.gold}`,color:C.gold,fontSize:12,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:2}}>OK</button>
@@ -1911,8 +2119,6 @@ export default function Arcadia() {
             {[
               {key:"patk",label:"物理攻撃力",color:C.accent2},
               {key:"pdef",label:"物理防御力",color:"#a78bfa"},
-              {key:"matk",label:"魔法攻撃力",color:"#60a5fa"},
-              {key:"spd", label:"敏捷力",    color:C.gold},
             ].map(({key,label,color}) => (
               <div key={key} style={{display:"flex",alignItems:"center",marginBottom:12,gap:8}}>
                 <div style={{flex:1,fontSize:12,color:C.text,fontFamily:"'Share Tech Mono',monospace"}}>{label}</div>
@@ -1933,4 +2139,3 @@ export default function Arcadia() {
     </div>
   );
 }
-
