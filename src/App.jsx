@@ -501,12 +501,12 @@ const SPRITE_SIZE = {
 //   - 小さめに見せたい雑魚・人型エネミー    → mode:"fixed" or 数値
 //
 const ENEMY_IMG_SIZE = {
-  seagull:       { mode:"fixed", size: 180 },
-  koza:          { mode:"fixed", size: 500 },
-  shamerlot:     { mode:"fixed", size: 240 },
+  seagull:       { mode:"fixed", size: 160 },
+  koza:          { mode:"fixed", size: 345 },
+  shamerlot:     { mode:"fixed", size: 200 },
   shamerlot_lv3: { mode:"fixed", size: 260 },
   shamerlot_lv5: { mode:"fixed", size: 280 },
-  simuluu:       { mode:"fixed", size: 600 },
+  simuluu:       { mode:"auto",  pct:  80  },
 };
 
 const BATTLE_BG_MAP = {
@@ -659,6 +659,8 @@ export default function Arcadia() {
   const [enemyTurnIdx, setEnemyTurnIdx] = useState(0);
   // 今ターンの敵予告行動（UI表示用）
   const [enemyNextAction, setEnemyNextAction] = useState(null);
+  // 連続無被弾ターン数（Comboカウンター）
+  const [noDmgStreak, setNoDmgStreak] = useState(0);
 
   const typeTimerRef = useRef(null);
   const notifTimerRef = useRef(null);
@@ -846,6 +848,7 @@ export default function Arcadia() {
       setVictory(false);
       setDefeat(false);
       setTurn(0);
+      setNoDmgStreak(0);
       setEnemyTurnIdx(0);
       setEnemyNextAction((ed.pattern || ["atk"])[0]);
       setBattleNext(dl.battleNext !== undefined ? dl.battleNext : sIdx + 1);
@@ -1022,7 +1025,7 @@ export default function Arcadia() {
       setCurrentEnemyType(eKey);
       setEnemyHp(ed.maxHp);
       setBtlLogs([`⚔ ${ed.name} との戦闘が始まった！`]);
-      setGuarding(false); setVictory(false); setDefeat(false); setTurn(0);
+      setGuarding(false); setVictory(false); setDefeat(false); setTurn(0); setNoDmgStreak(0);
       setEnemyTurnIdx(0);
       setEnemyNextAction((ed.pattern || ["atk"])[0]);
       setBattleNext(ch.battleNext !== undefined ? ch.battleNext : sceneIdx + 1);
@@ -1096,8 +1099,8 @@ export default function Arcadia() {
 
     // ─── プレイヤー行動フェーズ ─────────────────────────────────────────
     if (skillId === "heal") {
-      const healAmt = Math.min(40 + Math.floor(lv * 5), mhp - newHp);
-      newHp = newHp + healAmt;
+      const healAmt = 80;
+      newHp = Math.min(newHp + healAmt, mhp);
       logs.push(`🧪 回復！ HP +${healAmt}`);
     } else if (skillId === "dodge") {
       // 回避ターンはダメージを与えない（回避成否は敵行動フェーズで判定）
@@ -1110,6 +1113,10 @@ export default function Arcadia() {
       if (skillId === "atk" && rps === "lose") {
         // 強攻 → 敵カウンター: プレイヤー攻撃は無効化
         logs.push(`⚔ 強攻！ → 🔄 ${ed.name}にカウンターされた！ 攻撃無効！`);
+      } else if (skillId === "atk" && eAction === "dodge") {
+        // 強攻 → 敵回避: 看破してダメージ（1行で表現）
+        newEnemyHp = Math.max(0, enemyHp - rawDmg);
+        logs.push(`⚔ ${ed.name}の回避を看破！ 強攻 ${rawDmg} ダメージ！`);
       } else if (skillId === "counter" && rps === "lose") {
         // カウンター → 敵回避: カウンター空振り
         logs.push(`🔄 カウンター！ → 💨 ${ed.name}に回避された！ カウンター空振り！`);
@@ -1149,14 +1156,12 @@ export default function Arcadia() {
         }
       } else if (eAction === "dodge") {
         if (skillId === "atk") {
-          // 敵が回避: プレイヤー強攻は避けられない（敵の回避はプレイヤー攻撃を避けない）
-          // 敵も行動しない（回避ターン）
-          logs.push(`💨 ${ed.name}は回避した！（行動なし）`);
+          // 強攻 vs 敵回避: ダメージ・ログはプレイヤー行動フェーズで処理済み（行動不能）
         } else if (skillId === "counter") {
           // 敵回避 vs プレイヤーカウンター: すでに上で「カウンター空振り」処理済み
-          logs.push(`💨 ${ed.name}は回避した！（行動なし）`);
+          logs.push(`💨 ${ed.name}は身をかわした！（行動なし）`);
         } else {
-          logs.push(`💨 ${ed.name}は回避した！（行動なし）`);
+          logs.push(`💨 ${ed.name}は身をかわした！（行動なし）`);
         }
       } else if (eAction === "counter") {
         if (skillId === "atk") {
@@ -1164,6 +1169,10 @@ export default function Arcadia() {
           const cDmg = Math.max(1, randInt(ed.atk[0], ed.atk[1]) + Math.floor(ed.atk[1] * 0.3) - defBonus);
           newHp = Math.max(0, newHp - cDmg);
           logs.push(`🔄 ${ed.name}のカウンター！ ${cDmg} ダメージ！（プレイヤーの攻撃は無効化）`);
+        } else if (skillId === "counter") {
+          // 敵カウンター vs プレイヤーカウンター成功: 敵攻撃を完全無効化
+          // newHpはそのまま（ダメージなし）
+          logs.push(`🔄 カウンターで ${ed.name}の攻撃を完全に無効化した！`);
         } else if (skillId === "dodge") {
           // 敵カウンター vs プレイヤー回避: 回避成功
           logs.push(`💨 回避成功！ ${ed.name}のカウンターをかわした！`);
@@ -1175,7 +1184,10 @@ export default function Arcadia() {
         }
       } else {
         // 敵の通常強攻
-        if (skillId === "dodge") {
+        if (skillId === "counter" && rps === "win") {
+          // カウンター成功: 敵の強攻を完全に封じる（ダメージなし）
+          // ※ログはプレイヤー行動フェーズ側で「カウンター成功！」として出力済み
+        } else if (skillId === "dodge") {
           // プレイヤー回避 vs 敵強攻: 回避できない
           const eDmg = Math.max(1, randInt(ed.atk[0], ed.atk[1]) - defBonus);
           newHp = Math.max(0, newHp - eDmg);
@@ -1188,11 +1200,32 @@ export default function Arcadia() {
       }
     }
 
+    // ─── Combo判定（無被弾ストリーク）────────────────────────────────────
+    // 「このターン受けたダメージ」を算出する
+    const dmgTakenThisTurn = hp - newHp; // 正値 = ダメージを受けた
+
+    // 特例: 回避不能攻撃でも差し引き後ダメージが0以下ならcombo継続とみなす
+    const isUnavoidableHit = eAction === "unavoidable" && newEnemyHp > 0;
+    const comboBreak = isUnavoidableHit
+      ? dmgTakenThisTurn > 0    // unavoidable: 実際にダメージが通った場合のみリセット
+      : dmgTakenThisTurn > 0;   // 通常: ダメージを受けたらリセット
+
+    const newStreak = comboBreak ? 0 : noDmgStreak + 1;
+
+    // 3ターン以上継続中はMP回復（combo数 = newStreakで計算）
+    let mpComboGain = 0;
+    if (newStreak >= 3) {
+      mpComboGain = 5 + newStreak;
+      newMp = Math.min(newMp + mpComboGain, mmp);
+      logs.push(`✨ Combo ${newStreak}! MP +${mpComboGain} 回復！`);
+    }
+
     // ─── ステート更新 ────────────────────────────────────────────────────
     setHp(Math.min(newHp, mhp));
     setMp(Math.max(0, newMp));
     setEnemyHp(newEnemyHp);
     setTurn(t => t + 1);
+    setNoDmgStreak(newStreak);
     setEnemyTurnIdx(nextEnemyIdx);
     setEnemyNextAction(pattern[nextEnemyIdx]);
     setBtlLogs(prev => [...prev, ...logs].slice(-10));
@@ -1206,7 +1239,7 @@ export default function Arcadia() {
       setDefeat(true);
       setBtlLogs(prev => [...prev, "💀 戦闘不能..."]);
     }
-  }, [victory, defeat, mp, enemyHp, hp, mhp, mmp, lv, battleEnemy, statAlloc, weaponPatk, enemyTurnIdx, showNotif, handleExpGain]);
+  }, [victory, defeat, mp, enemyHp, hp, mhp, mmp, lv, battleEnemy, statAlloc, weaponPatk, enemyTurnIdx, noDmgStreak, showNotif, handleExpGain]);
 
   const exitBattle = useCallback(() => {
     if (defeat) {
@@ -1262,6 +1295,8 @@ export default function Arcadia() {
     @keyframes victoryRise { 0%{opacity:0;transform:translateY(40px) scale(0.85)} 60%{opacity:1;transform:translateY(-6px) scale(1.04)} 100%{opacity:1;transform:translateY(0) scale(1)} }
     @keyframes victoryGlow { 0%,100%{text-shadow:0 0 30px #f0c04088,0 0 60px #f0c04044} 50%{text-shadow:0 0 60px #f0c040cc,0 0 120px #f0c04066,0 0 200px #f0c04022} }
     @keyframes starBurst { 0%{opacity:0;transform:scale(0) rotate(0deg)} 50%{opacity:1;transform:scale(1.2) rotate(180deg)} 100%{opacity:0;transform:scale(0.8) rotate(360deg)} }
+    @keyframes comboPop { 0%{opacity:0;transform:translate(-50%,-50%) scale(0.4)} 60%{opacity:1;transform:translate(-50%,-50%) scale(1.15)} 100%{opacity:1;transform:translate(-50%,-50%) scale(1)} }
+    @keyframes comboPulse { 0%,100%{text-shadow:0 0 20px #f0c040cc,0 0 40px #f0c04088} 50%{text-shadow:0 0 40px #ffffffcc,0 0 80px #f0c040bb,0 0 120px #f0c04044} }
   `;
 
   // @@SECTION:RENDER_VICTORY
@@ -1826,6 +1861,43 @@ export default function Arcadia() {
           <div style={{flex:"0 0 65%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"12px 8px",position:"relative",overflow:"hidden",gap:10}}>
             {isBoss && <div style={{position:"absolute",top:10,left:"50%",transform:"translateX(-50%)",fontSize:11,letterSpacing:6,color:C.red,fontFamily:"'Share Tech Mono',monospace",animation:"dngr 1s infinite",whiteSpace:"nowrap",zIndex:2}}>─── BOSS ───</div>}
 
+            {/* コンボ表示（3ターン以上継続時） */}
+            {noDmgStreak >= 3 && (
+              <div style={{
+                position:"absolute",
+                top:"50%", left:"50%",
+                transform:"translate(-50%, -50%)",
+                zIndex:10,
+                pointerEvents:"none",
+                textAlign:"center",
+                animation:"comboPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both",
+              }}>
+                <div style={{
+                  fontSize:"clamp(36px, 8vw, 64px)",
+                  fontWeight:900,
+                  fontFamily:"'Share Tech Mono',monospace",
+                  color:C.gold,
+                  letterSpacing:2,
+                  lineHeight:1,
+                  animation:"comboPulse 1s infinite",
+                  WebkitTextStroke:`1px #ffffff44`,
+                }}>
+                  {noDmgStreak}
+                  <span style={{fontSize:"0.45em", letterSpacing:4, display:"block", marginTop:2, color:"#ffe08a"}}>COMBO</span>
+                </div>
+                <div style={{
+                  fontSize:10,
+                  color:"#ffe08a",
+                  fontFamily:"'Share Tech Mono',monospace",
+                  letterSpacing:2,
+                  marginTop:4,
+                  opacity:0.85,
+                }}>
+                  MP +{5 + noDmgStreak} / turn
+                </div>
+              </div>
+            )}
+
             {/* エネミー画像 / 絵文字フォールバック */}
             {enemyImgUrl
               ? <img src={enemyImgUrl} alt={ed.name} style={{
@@ -2220,7 +2292,7 @@ export default function Arcadia() {
                             setCurrentEnemyType(key);
                             setEnemyHp(ed.maxHp);
                             setBtlLogs([`⚔ ${ed.name} との戦闘が始まった！`]);
-                            setGuarding(false); setVictory(false); setDefeat(false); setTurn(0);
+                            setGuarding(false); setVictory(false); setDefeat(false); setTurn(0); setNoDmgStreak(0);
                             setEnemyTurnIdx(0); setEnemyNextAction((ed.pattern||["atk"])[0]);
                             setBattleNext(sceneIdx);
                             setPhase("battle");
