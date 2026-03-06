@@ -474,7 +474,7 @@ const SPRITE_SIZE = {
   "👦":           { height: 180, heroHeight: 240, offsetY:  0, fallbackSize: 40 }, // 👦  chopper
   "🐰":           { height: 130, heroHeight: 220, offsetY:  0, fallbackSize: 40 }, // 🐰  cricket
   "🙍":           { height: 205, heroHeight: 280, offsetY:  0, fallbackSize: 48 }, // 🙍  koza
-  "👩‍🦰":           { height: 220, heroHeight: 280, offsetY:  0, fallbackSize: 50 }, // 👩‍🦰  rose
+  "👩‍🦰":           { height: 233, heroHeight: 280, offsetY:  0, fallbackSize: 50 }, // 👩‍🦰  rose
   "👨":           { height: 220, heroHeight: 280, offsetY:  0, fallbackSize: 50 }, // 👨  juda
   "👧":           { height: 200, heroHeight: 260, offsetY:  0, fallbackSize: 50 }, // 👧  ymir
   "🤓":           { height: 180, heroHeight: 280, offsetY:  0, fallbackSize: 48 }, // 🤓  rubens
