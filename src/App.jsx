@@ -661,6 +661,8 @@ export default function Arcadia() {
   const [enemyNextAction, setEnemyNextAction] = useState(null);
   // 連続無被弾ターン数（Comboカウンター）
   const [noDmgStreak, setNoDmgStreak] = useState(0);
+  // リザルト表示用ボーナス情報（コンボ・格上倍率）
+  const [battleResultBonus, setBattleResultBonus] = useState({ comboMult: 1.0, gradeMult: 1.0 });
 
   const typeTimerRef = useRef(null);
   const notifTimerRef = useRef(null);
@@ -849,6 +851,7 @@ export default function Arcadia() {
       setDefeat(false);
       setTurn(0);
       setNoDmgStreak(0);
+      setBattleResultBonus({ comboMult: 1.0, gradeMult: 1.0 });
       setEnemyTurnIdx(0);
       setEnemyNextAction((ed.pattern || ["atk"])[0]);
       setBattleNext(dl.battleNext !== undefined ? dl.battleNext : sIdx + 1);
@@ -893,40 +896,58 @@ export default function Arcadia() {
   }, [mhp, mmp, showNotif, startType]);
 
   // enemyLv を受け取り、プレイヤーLvとの差で倍率を計算して経験値付与
-  const handleExpGain = useCallback((amount, enemyLv) => {
+  const handleExpGain = useCallback((amount, enemyLv, comboMult) => {
     // 自分以下のLvの敵からは経験値なし（コーザ/シムルー除外フラグは呼び出し側で制御）
     if (enemyLv !== undefined && enemyLv <= lv - 1) {
       showNotif("経験値なし（格下の敵）");
       return;
     }
-    // レベル差ボーナス: 敵Lvが自分より高いほど多く入手
-    let multiplier = 1.0;
+    // 格上ボーナス: 敵Lvが自分より高いほど多く入手
+    let gradeBonus = 1.0;
     if (enemyLv !== undefined) {
       const diff = enemyLv - lv;
-      if (diff >= 3)      multiplier = 2.0;
-      else if (diff === 2) multiplier = 1.5;
-      else if (diff === 1) multiplier = 1.2;
+      if (diff >= 3)       gradeBonus = 2.0;
+      else if (diff === 2) gradeBonus = 1.5;
+      else if (diff === 1) gradeBonus = 1.2;
     }
-    const finalAmount = Math.round(amount * multiplier);
-    setExp(e => {
-      const ne = e + finalAmount;
-      const threshold = EXP_TABLE[lv] || 9999;
-      if (ne >= threshold && lv < 6) {
-        const newLv = lv + 1;
-        setLv(newLv);
-        setMhp(h => h + 10);
-        setHp(mhp + 10);
-        setMmp(m => m + 5);
-        setMp(mmp + 5);
-        setStatPoints(sp => sp + 3);
-        setLvUpInfo({ oldLv: lv, newLv });
-        return ne - threshold;
-      }
-      return ne;
-    });
-    const bonusStr = multiplier > 1.0 ? ` (×${multiplier})` : "";
+    // comboMult は doBattleAction 側で計算済みの値を受け取る（未渡しは 1.0）
+    const totalMult   = gradeBonus * (comboMult ?? 1.0);
+    const finalAmount = Math.round(amount * totalMult);
+
+    // ── 多段レベルアップ処理（while ループで何段でも対応）──────────────────
+    // React の setState は非同期なので、ここでは現在の lv を直接参照して
+    // 「何レベル上がるか」「残EXPはいくつか」を同期的に計算してからまとめてセットする。
+    let curLv  = lv;
+    let curExp = exp + finalAmount;   // exp は useCallback の deps に含まれているため最新値
+    let gained = 0;                   // 今回上がったレベル数
+
+    while (curLv < 6) {
+      const threshold = EXP_TABLE[curLv];
+      if (!threshold || curExp < threshold) break;
+      curExp -= threshold;
+      curLv  += 1;
+      gained += 1;
+    }
+
+    // ステートをまとめて更新（gained > 0 なら複数段もまとめて処理）
+    if (gained > 0) {
+      setLv(curLv);
+      setMhp(h  => h  + 10 * gained);
+      setHp(prev => prev + 10 * gained);
+      setMmp(m  => m  + 5  * gained);
+      setMp(prev => prev + 5 * gained);
+      setStatPoints(sp => sp + 3 * gained);
+      setLvUpInfo({ oldLv: lv, newLv: curLv });
+    }
+    setExp(curExp);
+
+    // 通知文字列
+    const bonusParts = [];
+    if (gradeBonus > 1.0)          bonusParts.push(`格上×${gradeBonus}`);
+    if ((comboMult ?? 1.0) > 1.0)  bonusParts.push(`Combo×${(comboMult ?? 1.0).toFixed(2)}`);
+    const bonusStr = bonusParts.length > 0 ? ` (${bonusParts.join(", ")})` : "";
     showNotif(`✨ EXP +${finalAmount}${bonusStr}！`);
-  }, [lv, mhp, mmp, showNotif]);
+  }, [lv, exp, showNotif]);
 
   useEffect(() => {
     if (phase === "game") {
@@ -1026,6 +1047,7 @@ export default function Arcadia() {
       setEnemyHp(ed.maxHp);
       setBtlLogs([`⚔ ${ed.name} との戦闘が始まった！`]);
       setGuarding(false); setVictory(false); setDefeat(false); setTurn(0); setNoDmgStreak(0);
+      setBattleResultBonus({ comboMult: 1.0, gradeMult: 1.0 });
       setEnemyTurnIdx(0);
       setEnemyNextAction((ed.pattern || ["atk"])[0]);
       setBattleNext(ch.battleNext !== undefined ? ch.battleNext : sceneIdx + 1);
@@ -1240,12 +1262,29 @@ export default function Arcadia() {
       setVictory(true);
       setBtlLogs(prev => [...prev, `🏆 ${ed.name}を倒した！`]);
       if (ed.elk > 0) { setElk(e => e + ed.elk); showNotif(`💰 ${ed.elk} ELK 獲得！`); }
-      if (ed.exp > 0) setTimeout(() => handleExpGain(ed.exp, ed.lv), 500);
+      if (ed.exp > 0) {
+        const comboTier = Math.floor(newStreak / 15);
+        const comboMult = comboTier > 0 ? Math.pow(1.5, comboTier) : 1;
+        if (comboTier > 0) {
+          setBtlLogs(prev => [...prev, `✨ Combo bonus ×${comboMult.toFixed(2)}！`]);
+        }
+        // gradeBonus は handleExpGain 内部で計算。ここはcomboMultだけ渡す
+        setTimeout(() => handleExpGain(ed.exp, ed.lv, comboMult), 500);
+        // リザルト表示用: 格上倍率をローカル計算して保存
+        const gradeMult = (() => {
+          const diff = ed.lv - lv;
+          if (diff >= 3) return 2.0;
+          if (diff === 2) return 1.5;
+          if (diff === 1) return 1.2;
+          return 1.0;
+        })();
+        setBattleResultBonus({ comboMult, gradeMult });
+      }
     } else if (newHp <= 0) {
       setDefeat(true);
       setBtlLogs(prev => [...prev, "💀 戦闘不能..."]);
     }
-  }, [victory, defeat, mp, enemyHp, hp, mhp, mmp, lv, battleEnemy, statAlloc, weaponPatk, enemyTurnIdx, noDmgStreak, showNotif, handleExpGain]);
+  }, [victory, defeat, mp, enemyHp, hp, mhp, mmp, lv, battleEnemy, statAlloc, weaponPatk, enemyTurnIdx, noDmgStreak, showNotif, handleExpGain, setBattleResultBonus]);
 
   const exitBattle = useCallback(() => {
     if (defeat) {
@@ -1267,14 +1306,18 @@ export default function Arcadia() {
     setVictoryNextSc(nextSc);
     // リザルトデータをセット（EXP/ELKはdoBattleAction内で付与済み）
     const ed = battleEnemy;
+    const totalMult = (battleResultBonus.comboMult ?? 1.0) * (battleResultBonus.gradeMult ?? 1.0);
+    const displayExp = ed ? Math.round(ed.exp * totalMult) : 0;
     setBattleResult({
-      gainExp:    ed ? ed.exp  : 0,
+      gainExp:    displayExp,
       gainElk:    ed ? ed.elk  : 0,
+      comboMult:  battleResultBonus.comboMult  ?? 1.0,
+      gradeMult:  battleResultBonus.gradeMult  ?? 1.0,
       // dropItems: [], // 将来: ドロップアイテム配列
     });
     setFade(true);
     setTimeout(() => { setPhase("victory"); setFade(false); }, 300);
-  }, [defeat, mhp, mmp, battleNext, sceneIdx, showNotif, battleEnemy]);
+  }, [defeat, mhp, mmp, battleNext, sceneIdx, showNotif, battleEnemy, battleResultBonus]);
 
   // ──────────── RENDER ────────────
   const sc = SCENES[sceneIdx] || SCENES[0];
@@ -1327,8 +1370,14 @@ export default function Arcadia() {
     const res        = battleResult ?? {};
     const gainExp    = res.gainExp ?? 0;
     const gainElk    = res.gainElk ?? 0;
+    const comboMult  = res.comboMult  ?? 1.0;
+    const gradeMult  = res.gradeMult  ?? 1.0;
+    const totalMult  = comboMult * gradeMult;
     const dropItems  = res.dropItems ?? [];   // 将来: ドロップアイテム配列
     const expToNext  = EXP_TABLE[lv] ? Math.max(0, EXP_TABLE[lv] - exp) : null;
+    // ボーナス行の表示要否
+    const hasGradeBonus = gradeMult > 1.0;
+    const hasComboBonus = comboMult > 1.0;
 
     return (
       <div style={{width:"100%",height:"100%",minHeight:"600px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"linear-gradient(180deg,#020608 0%,#050d14 40%,#0a1420 100%)",fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden",userSelect:"none"}}>
@@ -1374,6 +1423,30 @@ export default function Arcadia() {
               <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>取得 EXP</span>
               <span style={{fontSize:14,color:C.accent2,fontFamily:"'Share Tech Mono',monospace",fontWeight:700}}>+{gainExp}</span>
             </div>
+
+            {/* 格上ボーナス（1.0超のときのみ表示） */}
+            {hasGradeBonus && (
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"5px 0 5px 12px",borderBottom:`1px solid ${C.border}22`}}>
+                <span style={{fontSize:10,color:C.gold,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>┗ 格上ボーナス</span>
+                <span style={{fontSize:12,color:C.gold,fontFamily:"'Share Tech Mono',monospace",fontWeight:700}}>×{gradeMult.toFixed(1)}</span>
+              </div>
+            )}
+
+            {/* コンボボーナス（1.0超のときのみ表示） */}
+            {hasComboBonus && (
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"5px 0 5px 12px",borderBottom:`1px solid ${C.border}22`}}>
+                <span style={{fontSize:10,color:C.accent2,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>┗ Combo ボーナス</span>
+                <span style={{fontSize:12,color:C.accent2,fontFamily:"'Share Tech Mono',monospace",fontWeight:700}}>×{comboMult.toFixed(2)}</span>
+              </div>
+            )}
+
+            {/* 合計倍率（いずれかのボーナスがある場合のみ） */}
+            {(hasGradeBonus || hasComboBonus) && (
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"5px 0 5px 12px",borderBottom:`1px solid ${C.border}33`}}>
+                <span style={{fontSize:10,color:C.accent,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>┗ 合計倍率</span>
+                <span style={{fontSize:12,color:C.accent,fontFamily:"'Share Tech Mono',monospace",fontWeight:700}}>×{totalMult.toFixed(2)}</span>
+              </div>
+            )}
 
             {/* 取得ELK */}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`1px solid ${C.border}33`}}>
@@ -2299,6 +2372,7 @@ export default function Arcadia() {
                             setEnemyHp(ed.maxHp);
                             setBtlLogs([`⚔ ${ed.name} との戦闘が始まった！`]);
                             setGuarding(false); setVictory(false); setDefeat(false); setTurn(0); setNoDmgStreak(0);
+                            setBattleResultBonus({ comboMult: 1.0, gradeMult: 1.0 });
                             setEnemyTurnIdx(0); setEnemyNextAction((ed.pattern||["atk"])[0]);
                             setBattleNext(sceneIdx);
                             setPhase("battle");
