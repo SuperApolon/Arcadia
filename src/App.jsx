@@ -601,6 +601,9 @@ export default function Arcadia() {
   const [notif, setNotif] = useState(null);
   const [lvUpInfo, setLvUpInfo] = useState(null);
   const [showStatUI, setShowStatUI] = useState(false);
+  const [autoAdvance, setAutoAdvance] = useState(false);
+  const autoAdvanceRef = useRef(false);
+  const setAutoAdv = (v) => { autoAdvanceRef.current = v; setAutoAdvance(v); };
   // パターンエディター用ステート
   const [editorSelKey, setEditorSelKey] = useState("seagull");
   const [showExport, setShowExport] = useState(false);
@@ -644,6 +647,9 @@ export default function Arcadia() {
 
   const typeTimerRef = useRef(null);
   const notifTimerRef = useRef(null);
+  const textScrollRef = useRef(null);
+  const tapStartYRef  = useRef(0);   // スクロール判定用
+  const autoAdvTimerRef = useRef(null); // オート進行タイマー
 
   // ── BGM制御 ref ────────────────────────────────────────────────────────────
   const audioRef        = useRef(null);   // 現在再生中のAudioインスタンス
@@ -839,7 +845,32 @@ export default function Arcadia() {
     }
 
     startType(dl.t, () => {
-      if (dl.choices) setChoices(dl.choices);
+      if (dl.choices) { setChoices(dl.choices); return; }
+      // オートページめくり: 選択肢・バトル・ending以外のみ発火
+      if (autoAdvanceRef.current) {
+        if (autoAdvTimerRef.current) clearTimeout(autoAdvTimerRef.current);
+        autoAdvTimerRef.current = setTimeout(() => {
+          if (!autoAdvanceRef.current) return;
+          // dl.next 指定あり → シーン遷移
+          if (dl.next !== undefined) {
+            setFade(true);
+            setTimeout(() => { setSceneIdx(dl.next); setDlIdx(0); setFade(false); }, 300);
+            return;
+          }
+          // 次のダイアログへ
+          const sc2 = SCENES[sIdx];
+          const nextDl = dIdx + 1;
+          if (nextDl < sc2.dl.length) {
+            setDlIdx(nextDl);
+          } else {
+            const nextSc = sIdx + 1;
+            if (nextSc < SCENES.length) {
+              setFade(true);
+              setTimeout(() => { setSceneIdx(nextSc); setDlIdx(0); setFade(false); }, 300);
+            }
+          }
+        }, 1800);
+      }
     });
   }, [mhp, mmp, showNotif, startType]);
 
@@ -886,6 +917,12 @@ export default function Arcadia() {
     }
   }, [phase, sceneIdx, dlIdx]);
 
+  // ── タイプライター自動スクロール ─────────────────────────────────────────
+  useEffect(() => {
+    const el = textScrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [displayText]);
+
   // ── BGM切り替え（フェーズ・シーン・バトル敵が変わるたびに呼ぶ）──────────
   useEffect(() => {
     const sceneLoc = SCENES[sceneIdx]?.loc;
@@ -893,17 +930,20 @@ export default function Arcadia() {
     switchBgm(nextId);
   }, [phase, sceneIdx, currentEnemyType, switchBgm]);
 
-  // アンマウント時にBGMを停止
+  // アンマウント時にBGM・オートタイマーを停止
   useEffect(() => {
     return () => {
       if (audioRef.current) audioRef.current.pause();
       if (fanfareRef.current) fanfareRef.current.pause();
+      if (autoAdvTimerRef.current) clearTimeout(autoAdvTimerRef.current);
     };
   }, []);
 
   // @@SECTION:LOGIC_DIALOG_TAP
   const onTapDlg = useCallback(() => {
     if (choices) return;
+    // 手動タップ時はオートタイマーをリセット（次のページはオートが再スケジュールする）
+    if (autoAdvTimerRef.current) clearTimeout(autoAdvTimerRef.current);
     if (typing) {
       if (typeTimerRef.current) clearTimeout(typeTimerRef.current);
       const sc = SCENES[sceneIdx];
@@ -1917,16 +1957,73 @@ export default function Arcadia() {
         </div>
       </div>
 
-      {/* Dialog box -- 固定高さで選択肢もこの中に収める */}
-      <div style={{position:"relative",zIndex:10,height:200,margin:"0 8px 4px",flexShrink:0}} onClick={onTapDlg}>
+      {/* Dialog box -- 5行固定高さ＋スクロール対応 */}
+      <style>{`
+        .arcadia-text-scroll::-webkit-scrollbar { width: 4px; }
+        .arcadia-text-scroll::-webkit-scrollbar-track { background: transparent; }
+        .arcadia-text-scroll::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 2px; }
+        .arcadia-text-scroll::-webkit-scrollbar-thumb:hover { background: ${C.accent}88; }
+        .arcadia-text-scroll { scrollbar-width: thin; scrollbar-color: ${C.border} transparent; }
+      `}</style>
+      <div
+        style={{position:"relative",zIndex:10,height:171,margin:"0 8px 4px",flexShrink:0}}
+        onPointerDown={e => { tapStartYRef.current = e.clientY; }}
+        onPointerUp={e => {
+          const dy = Math.abs(e.clientY - tapStartYRef.current);
+          if (dy < 8) onTapDlg();   // 8px未満の移動はタップとみなす
+        }}
+      >
         {/* ベースダイアログ */}
-        <div style={{position:"absolute",inset:0,background:"rgba(5,13,20,0.92)",border:`1px solid ${C.border}`,borderTop:`1px solid ${C.accent}44`,padding:"14px 18px 16px",cursor:"pointer",backdropFilter:"blur(4px)",overflow:"hidden"}}>
-          {/* Speaker */}
-          <div style={{fontSize:11,color:spColor,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,marginBottom:8,borderLeft:`2px solid ${spColor}`,paddingLeft:8}}>
-            {dl.sp}
+        <div style={{position:"absolute",inset:0,background:"rgba(5,13,20,0.92)",border:`1px solid ${C.border}`,borderTop:`1px solid ${C.accent}44`,padding:"14px 18px 16px",cursor:"pointer",backdropFilter:"blur(4px)",display:"flex",flexDirection:"column",overflow:"hidden"}}>
+          {/* Speaker + Auto toggle */}
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8,flexShrink:0}}>
+            <div style={{fontSize:11,color:spColor,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,borderLeft:`2px solid ${spColor}`,paddingLeft:8}}>
+              {dl.sp}
+            </div>
+            <button
+              onPointerDown={e => e.stopPropagation()}
+              onPointerUp={e => e.stopPropagation()}
+              onClick={e => {
+                e.stopPropagation();
+                const next = !autoAdvanceRef.current;
+                setAutoAdv(next);
+                // ONに切り替えた瞬間、すでにテキスト表示完了・選択肢なしなら即タイマー起動
+                if (next && !typing && !choices) {
+                  if (autoAdvTimerRef.current) clearTimeout(autoAdvTimerRef.current);
+                  autoAdvTimerRef.current = setTimeout(() => {
+                    if (!autoAdvanceRef.current) return;
+                    const sc2 = SCENES[sceneIdx];
+                    const dl2 = sc2?.dl[dlIdx];
+                    if (!dl2 || dl2.choices || dl2.battle || dl2.ending) return;
+                    if (dl2.next !== undefined) {
+                      setFade(true);
+                      setTimeout(() => { setSceneIdx(dl2.next); setDlIdx(0); setFade(false); }, 300);
+                      return;
+                    }
+                    const nextDl = dlIdx + 1;
+                    if (nextDl < sc2.dl.length) {
+                      setDlIdx(nextDl);
+                    } else {
+                      const nextSc = sceneIdx + 1;
+                      if (nextSc < SCENES.length) {
+                        setFade(true);
+                        setTimeout(() => { setSceneIdx(nextSc); setDlIdx(0); setFade(false); }, 300);
+                      }
+                    }
+                  }, 1800);
+                }
+              }}
+              style={{padding:"2px 8px",fontSize:9,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1,border:`1px solid ${autoAdvance ? C.accent : C.border}`,background:autoAdvance ? `${C.accent}22` : "transparent",color:autoAdvance ? C.accent : C.muted,cursor:"pointer",borderRadius:2,transition:"all 0.2s",flexShrink:0}}
+            >
+              {autoAdvance ? "AUTO ●" : "AUTO ○"}
+            </button>
           </div>
-          {/* Text */}
-          <div style={{fontSize:13,color:C.white,lineHeight:1.85,whiteSpace:"pre-wrap",overflow:"hidden",paddingBottom:24}}>
+          {/* Text -- スクロールエリア */}
+          <div
+            ref={textScrollRef}
+            className="arcadia-text-scroll"
+            style={{flex:1,fontSize:13,color:C.white,lineHeight:1.85,whiteSpace:"pre-wrap",overflowY:"auto",overflowX:"hidden",paddingRight:6}}
+          >
             {displayText}
             {typing && <span style={{animation:"blnk 0.5s infinite",color:C.accent}}>█</span>}
           </div>
@@ -1940,7 +2037,10 @@ export default function Arcadia() {
         {choices && !typing && (
           <div style={{position:"absolute",inset:0,background:"rgba(5,13,20,0.97)",border:`1px solid ${C.border}`,borderTop:`1px solid ${C.accent}44`,display:"flex",flexDirection:"column",justifyContent:"center",gap:8,padding:"12px 10px",backdropFilter:"blur(4px)",animation:"slideUp 0.3s ease"}}>
             {choices.map((ch, i) => (
-              <button key={i} onClick={e => { e.stopPropagation(); onChoice(ch); }}
+              <button key={i}
+                onPointerDown={e => e.stopPropagation()}
+                onPointerUp={e => { e.stopPropagation(); onChoice(ch); }}
+                onClick={e => e.stopPropagation()}
                 style={{flex:1,padding:"0 16px",background:C.panel,border:`1px solid ${C.border}`,color:C.text,fontSize:13,textAlign:"left",cursor:"pointer",transition:"all 0.2s",fontFamily:"'Noto Serif JP',serif",letterSpacing:0.5,display:"flex",alignItems:"center"}}
                 onMouseEnter={e => { e.currentTarget.style.background = C.panel2; e.currentTarget.style.borderColor = C.accent; }}
                 onMouseLeave={e => { e.currentTarget.style.background = C.panel; e.currentTarget.style.borderColor = C.border; }}>
