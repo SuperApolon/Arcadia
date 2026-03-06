@@ -365,13 +365,13 @@ const ASSET_STATUS = {
   "sprites/chopper":         true,   // ✅ 確認済み 2026-03-02
   "sprites/cricket":         true,   // ✅ 確認済み 2026-03-02
   "sprites/koza":            true,   // ✅ 確認済み 2026-03-02 ※ファイル名は koza.webp（koza_sp ではない）
-  "sprites/rose":            false,
-  "sprites/juda":            false,
-  "sprites/ymir":            false,
+  "sprites/rose":            true,   // ✅ 確認済み 2026-03-07
+  "sprites/juda":            true,   // ✅ 確認済み 2026-03-07
+  "sprites/ymir":            true,   // ✅ 確認済み 2026-03-07
   "sprites/rubens":          true,   // ✅ 確認済み 2026-03-02
-  "sprites/traveler":        false,
-  "sprites/old_woman":       false,
-  "sprites/shopkeeper":      false,
+  "sprites/traveler":        true,   // ✅ 確認済み 2026-03-07
+  "sprites/old_woman":       true,   // ✅ 確認済み 2026-03-07
+  "sprites/shopkeeper":      true,   // ✅ 確認済み 2026-03-07
   "skills/atk":              false,
   "skills/skill":            false,
   "skills/guard":            false,
@@ -447,12 +447,12 @@ const ENEMY_IMG_MAP = {
 
 const SPRITE_MAP = {
   "🧑":     "sprites/eltz",
-  "🧑‍🦱": "sprites/swift",
+  "🧑‍🦱":     "sprites/swift",
   "👩":     "sprites/linz",
   "👦":     "sprites/chopper",
   "🐰":     "sprites/cricket",
   "🙍":     "sprites/koza",
-  "👩‍🦰": "sprites/rose",
+  "👩‍🦰":     "sprites/rose",
   "👨":     "sprites/juda",
   "👧":     "sprites/ymir",
   "🤓":     "sprites/rubens",
@@ -469,25 +469,25 @@ const SPRITE_MAP = {
 // fallbackSize: 画像なしの場合の絵文字フォントサイズ（px）
 const SPRITE_SIZE = {
   "🧑":           { height: 240, heroHeight: 240, offsetY:  0, fallbackSize: 52 }, // 🧑  eltz
-  "🧑‍🦱": { height: 200, heroHeight: 280, offsetY:  0, fallbackSize: 48 }, // 🧑‍🦱 swift
-  "👩":           { height: 200, heroHeight: 280, offsetY:  0, fallbackSize: 48 }, // 👩  linz
-  "👦":           { height: 165, heroHeight: 240, offsetY:  0, fallbackSize: 40 }, // 👦  chopper
+  "🧑‍🦱":           { height: 220, heroHeight: 240, offsetY:  0, fallbackSize: 48 }, // 🧑‍🦱  swift
+  "👩":           { height: 220, heroHeight: 240, offsetY:  0, fallbackSize: 48 }, // 👩  linz
+  "👦":           { height: 180, heroHeight: 240, offsetY:  0, fallbackSize: 40 }, // 👦  chopper
   "🐰":           { height: 130, heroHeight: 220, offsetY:  0, fallbackSize: 40 }, // 🐰  cricket
-  "🙍":           { height: 145, heroHeight: 280, offsetY:  0, fallbackSize: 48 }, // 🙍  koza
-  "👩‍🦰": { height: 200, heroHeight: 280, offsetY:  0, fallbackSize: 50 }, // 👩‍🦰 rose
-  "👨":           { height: 230, heroHeight: 280, offsetY:  0, fallbackSize: 50 }, // 👨  juda
-  "👧":           { height: 230, heroHeight: 260, offsetY:  0, fallbackSize: 50 }, // 👧  ymir
-  "🤓":           { height: 145, heroHeight: 280, offsetY:  0, fallbackSize: 48 }, // 🤓  rubens
-  "👤":           { height: 220, heroHeight: 260, offsetY:  0, fallbackSize: 50 }, // 👤  traveler
+  "🙍":           { height: 205, heroHeight: 280, offsetY:  0, fallbackSize: 48 }, // 🙍  koza
+  "👩‍🦰":           { height: 220, heroHeight: 280, offsetY:  0, fallbackSize: 50 }, // 👩‍🦰  rose
+  "👨":           { height: 220, heroHeight: 280, offsetY:  0, fallbackSize: 50 }, // 👨  juda
+  "👧":           { height: 200, heroHeight: 260, offsetY:  0, fallbackSize: 50 }, // 👧  ymir
+  "🤓":           { height: 180, heroHeight: 280, offsetY:  0, fallbackSize: 48 }, // 🤓  rubens
+  "👤":           { height: 200, heroHeight: 260, offsetY:  0, fallbackSize: 50 }, // 👤  traveler
   "👵":           { height: 190, heroHeight: 240, offsetY:  0, fallbackSize: 50 }, // 👵  old_woman
-  "🧓":           { height: 190, heroHeight: 260, offsetY:  0, fallbackSize: 50 }, // 🧓  shopkeeper
+  "🧓":           { height: 200, heroHeight: 260, offsetY:  0, fallbackSize: 50 }, // 🧓  shopkeeper
 };
 
 // @@SECTION:ENEMY_SIZE ─────────────────────────────────────────────────────
 // エネミーごとの表示サイズ（px）。変更したいときはここだけ編集する。
 const ENEMY_IMG_SIZE = {
   seagull:       160,
-  koza:          300,
+  koza:          345,
   shamerlot:     200,
   shamerlot_lv3: 260,
   shamerlot_lv5: 280,
