@@ -619,6 +619,8 @@ export default function Arcadia() {
   const [autoAdvance, setAutoAdvance] = useState(false);
   const autoAdvanceRef = useRef(false);
   const setAutoAdv = (v) => { autoAdvanceRef.current = v; setAutoAdvance(v); };
+  const [novelLog, setNovelLog] = useState([]);  // { sp, t, sIdx }[] -- 全ダイアログ履歴
+  const [novelSelScene, setNovelSelScene] = useState(null);  // 表示中のシーンindex
   // パターンエディター用ステート
   const [editorSelKey, setEditorSelKey] = useState("seagull");
   const [showExport, setShowExport] = useState(false);
@@ -818,6 +820,9 @@ export default function Arcadia() {
     if (!sc) return;
     const dl = sc.dl[dIdx];
     if (!dl) return;
+
+    // シナリオログに追記（sceneIdxも記録してシーン別表示に対応）
+    setNovelLog(prev => [...prev, { sp: dl.sp, t: dl.t, sIdx: sIdx }]);
 
     // Handle events
     if (dl.pbOpen) setHasPb(true);
@@ -2184,6 +2189,7 @@ export default function Arcadia() {
             <div style={{fontSize:11,color:spColor,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,borderLeft:`2px solid ${spColor}`,paddingLeft:8}}>
               {dl.sp}
             </div>
+            <div style={{display:"flex",gap:6,alignItems:"center"}}>
             <button
               onPointerDown={e => e.stopPropagation()}
               onPointerUp={e => e.stopPropagation()}
@@ -2221,6 +2227,17 @@ export default function Arcadia() {
             >
               {autoAdvance ? "AUTO ●" : "AUTO ○"}
             </button>
+            <button
+              onPointerDown={e => e.stopPropagation()}
+              onPointerUp={e => e.stopPropagation()}
+              onClick={e => { e.stopPropagation(); setOverlay("novel"); }}
+              style={{padding:"2px 8px",fontSize:9,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1,border:`1px solid ${C.border}`,background:"transparent",color:C.muted,cursor:"pointer",borderRadius:2,transition:"all 0.2s",flexShrink:0}}
+              onMouseEnter={e => { e.currentTarget.style.color=C.accent2; e.currentTarget.style.borderColor=C.accent2; }}
+              onMouseLeave={e => { e.currentTarget.style.color=C.muted;   e.currentTarget.style.borderColor=C.border; }}
+            >
+              📖 NOVELIZE
+            </button>
+            </div>
           </div>
           {/* Text -- スクロールエリア */}
           <div
@@ -2441,6 +2458,202 @@ export default function Arcadia() {
           </div>
         </div>
       )}
+
+      {/* Novelize Overlay -- チャプター/シーン選択＋小説ログ */}
+      {overlay === "novel" && (() => {
+        // ── チャプター定義 ────────────────────────────────────────────────
+        const NOVEL_CHAPTERS = [
+          { id:1, label:"序章", sub:"Chapter 1", scenes:[
+            { idx:0,  label:"S00 VRS接続中" },
+            { idx:1,  label:"S01 旅立ちの浜辺" },
+            { idx:2,  label:"S02 イルカ島 海岸線" },
+            { idx:3,  label:"S03 エルム村" },
+            { idx:4,  label:"S04 エルム村 ギルド（出会い）" },
+            { idx:5,  label:"S05 P.BOOK取得" },
+            { idx:6,  label:"S06 チュートリアル説明" },
+          ]},
+          { id:2, label:"初心者講習", sub:"Chapter 2", scenes:[
+            { idx:7,  label:"S07 ギルド裏・草地（コーザ戦）" },
+            { idx:8,  label:"S08 講習終了・卒業証" },
+            { idx:9,  label:"S09 宿屋の夜" },
+            { idx:10, label:"S10 レミングスの酒場" },
+          ]},
+          { id:3, label:"仲間との狩り", sub:"Chapter 3", scenes:[
+            { idx:11, label:"S11 シャメロット初戦" },
+            { idx:12, label:"S12 経験値の謎" },
+            { idx:13, label:"S13 交易所・ローズとジュダ" },
+            { idx:14, label:"S14 チョッパー登場" },
+            { idx:15, label:"S15 チョッパー救出（赤信号）" },
+            { idx:16, label:"S16 四人パーティ結成" },
+          ]},
+          { id:4, label:"準備と旅立ち", sub:"Chapter 4", scenes:[
+            { idx:17, label:"S17 武器屋" },
+            { idx:18, label:"S18 防具屋" },
+            { idx:19, label:"S19 船着場・洗礼の門" },
+            { idx:20, label:"S20 ホワイトガーデン加入" },
+            { idx:21, label:"S21 Simuluu情報入手" },
+          ]},
+          { id:5, label:"試練の洞窟", sub:"Chapter 5", scenes:[
+            { idx:22, label:"S22 狩り継続・レベルアップ" },
+            { idx:23, label:"S23 岩場（継続）" },
+            { idx:24, label:"S24 コーザの餞別" },
+            { idx:25, label:"S25 西海岸・洞窟入口" },
+            { idx:26, label:"S26 青の洞窟" },
+            { idx:27, label:"S27 最深部・Simuluu遭遇" },
+            { idx:28, label:"S28 ボス戦前" },
+            { idx:29, label:"S29 撃破・勝利" },
+            { idx:30, label:"S30 祝杯・エンディング" },
+          ]},
+        ];
+
+        // 訪問済みシーンのセット
+        const visitedSet = new Set(novelLog.map(e => e.sIdx));
+
+        // 選択シーンのエントリ（SYSTEMも含めて表示）
+        const selEntries = novelSelScene !== null
+          ? novelLog.filter(e => e.sIdx === novelSelScene)
+          : [];
+
+        const selScene = NOVEL_CHAPTERS.flatMap(c => c.scenes).find(s => s.idx === novelSelScene);
+
+        return (
+          <div style={{position:"absolute",inset:0,background:`linear-gradient(180deg,#020810 0%,${C.bg} 100%)`,zIndex:30,display:"flex",flexDirection:"column",animation:"fadeIn 0.2s",fontFamily:"'Noto Serif JP',serif"}}>
+            <style>{`
+              .nv-scroll::-webkit-scrollbar{width:4px}
+              .nv-scroll::-webkit-scrollbar-track{background:transparent}
+              .nv-scroll::-webkit-scrollbar-thumb{background:${C.border};border-radius:2px}
+              .nv-scroll{scrollbar-width:thin;scrollbar-color:${C.border} transparent}
+            `}</style>
+
+            {/* ヘッダー */}
+            <div style={{padding:"12px 18px 10px",borderBottom:`1px solid ${C.border}`,background:"rgba(5,13,20,0.97)",flexShrink:0,display:"flex",alignItems:"center",gap:10}}>
+              <div style={{flex:1}}>
+                <div style={{fontSize:9,letterSpacing:5,color:C.muted,fontFamily:"'Share Tech Mono',monospace",marginBottom:2}}>ARCADIA -- SCENARIO LOG</div>
+                <div style={{fontSize:13,color:C.white,fontWeight:"bold",letterSpacing:2}}>小説ログ / NOVELIZE</div>
+              </div>
+              <button onClick={() => setOverlay(null)}
+                style={{background:"transparent",border:`1px solid ${C.border}`,color:C.muted,padding:"5px 12px",fontSize:11,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:1,borderRadius:2,flexShrink:0}}
+                onMouseEnter={e=>{e.currentTarget.style.color=C.white;e.currentTarget.style.borderColor=C.accent;}}
+                onMouseLeave={e=>{e.currentTarget.style.color=C.muted;e.currentTarget.style.borderColor=C.border;}}
+              >✕ 閉じる</button>
+            </div>
+
+            {/* 本体 -- 左ペイン（目次） + 右ペイン（本文） */}
+            <div style={{flex:1,display:"flex",overflow:"hidden"}}>
+
+              {/* 左ペイン -- チャプター/シーン一覧 */}
+              <div className="nv-scroll" style={{width:188,flexShrink:0,borderRight:`1px solid ${C.border}`,overflowY:"auto",background:"rgba(5,13,20,0.6)",padding:"8px 0"}}>
+                {NOVEL_CHAPTERS.map(ch => {
+                  const anyVisited = ch.scenes.some(s => visitedSet.has(s.idx));
+                  return (
+                    <div key={ch.id}>
+                      {/* チャプターヘッダー */}
+                      <div style={{padding:"8px 12px 5px",borderTop: ch.id>1 ? `1px solid ${C.border}44` : "none"}}>
+                        <div style={{fontSize:8,letterSpacing:3,color: anyVisited ? C.accent : C.muted+"66",fontFamily:"'Share Tech Mono',monospace"}}>{ch.sub}</div>
+                        <div style={{fontSize:11,color: anyVisited ? C.accent2 : C.muted+"66",fontWeight:"bold",letterSpacing:1,marginTop:1}}>{ch.label}</div>
+                      </div>
+                      {/* シーンボタン */}
+                      {ch.scenes.map(s => {
+                        const visited  = visitedSet.has(s.idx);
+                        const selected = novelSelScene === s.idx;
+                        const btnBg    = selected ? `${C.accent}22` : "transparent";
+                        const btnColor = selected ? C.accent : visited ? C.text : C.muted+"44";
+                        const btnBorder = selected ? `1px solid ${C.accent}` : "1px solid transparent";
+                        return (
+                          <button key={s.idx}
+                            disabled={!visited}
+                            onClick={() => setNovelSelScene(s.idx)}
+                            style={{display:"block",width:"100%",textAlign:"left",padding:"5px 14px 5px 18px",background:btnBg,border:"none",borderLeft: selected ? `3px solid ${C.accent}` : `3px solid transparent`,color:btnColor,fontSize:10,cursor: visited ? "pointer" : "default",fontFamily:"'Noto Serif JP',serif",letterSpacing:0.3,lineHeight:1.5,transition:"all 0.15s"}}
+                            onMouseEnter={e=>{ if(visited && !selected){ e.currentTarget.style.background=`${C.accent}11`; e.currentTarget.style.color=C.white; }}}
+                            onMouseLeave={e=>{ if(visited && !selected){ e.currentTarget.style.background="transparent"; e.currentTarget.style.color=C.text; }}}
+                          >
+                            {s.label}
+                            {!visited && <span style={{fontSize:8,color:C.muted+"44",marginLeft:4}}>──</span>}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* 右ペイン -- 本文 */}
+              <div className="nv-scroll" style={{flex:1,overflowY:"auto",padding:"22px 24px 32px"}}>
+                {novelSelScene === null ? (
+                  <div style={{color:C.muted,fontSize:12,textAlign:"center",marginTop:60,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,lineHeight:2}}>
+                    <div style={{fontSize:20,marginBottom:12}}>📖</div>
+                    左のリストからシーンを選択してください<br/>
+                    <span style={{fontSize:10}}>訪問済みのシーンのみ閲覧できます</span>
+                  </div>
+                ) : selEntries.length === 0 ? (
+                  <div style={{color:C.muted,fontSize:12,textAlign:"center",marginTop:60,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2}}>
+                    ── ログがありません ──
+                  </div>
+                ) : (
+                  <>
+                    {/* シーンタイトル */}
+                    <div style={{marginBottom:24,paddingBottom:12,borderBottom:`1px solid ${C.border}`}}>
+                      <div style={{fontSize:9,letterSpacing:4,color:C.muted,fontFamily:"'Share Tech Mono',monospace",marginBottom:4}}>
+                        {NOVEL_CHAPTERS.find(c=>c.scenes.some(s=>s.idx===novelSelScene))?.sub ?? ""}
+                      </div>
+                      <div style={{fontSize:15,color:C.white,fontWeight:"bold",letterSpacing:1}}>
+                        {selScene?.label ?? ""}
+                      </div>
+                      <div style={{fontSize:10,color:C.muted,marginTop:4}}>
+                        {SCENES[novelSelScene]?.loc ?? ""}
+                      </div>
+                    </div>
+
+                    {/* 本文エントリ */}
+                    {selEntries.map((entry, i) => {
+                      const isNarration = entry.sp === "ナレーション";
+                      const isSystem    = entry.sp === "SYSTEM";
+                      return (
+                        <div key={i} style={{marginBottom: isNarration ? 22 : isSystem ? 16 : 18}}>
+                          {isSystem ? (
+                            // SYSTEMメッセージ -- モノスペース・シアン枠
+                            <div style={{background:`${C.accent}0d`,border:`1px solid ${C.accent}44`,borderLeft:`3px solid ${C.accent}`,padding:"10px 14px",borderRadius:2}}>
+                              <div style={{fontSize:8,letterSpacing:4,color:C.accent,fontFamily:"'Share Tech Mono',monospace",marginBottom:6}}>── SYSTEM ──</div>
+                              <p style={{color:C.accent,fontSize:12,lineHeight:1.9,margin:0,whiteSpace:"pre-wrap",fontFamily:"'Share Tech Mono',monospace",letterSpacing:0.3}}>
+                                {entry.t}
+                              </p>
+                            </div>
+                          ) : isNarration ? (
+                            <p style={{color:C.text,fontSize:13,lineHeight:2.15,margin:0,textIndent:"1em",whiteSpace:"pre-wrap",letterSpacing:0.4}}>
+                              {entry.t}
+                            </p>
+                          ) : (
+                            <div>
+                              <div style={{fontSize:9,color:C.accent2,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,marginBottom:4,borderLeft:`2px solid ${C.accent2}`,paddingLeft:7,display:"inline-block"}}>
+                                {entry.sp}
+                              </div>
+                              <p style={{color:C.white,fontSize:13,lineHeight:2.0,margin:"4px 0 0 0",paddingLeft:9,whiteSpace:"pre-wrap",letterSpacing:0.4,borderLeft:`1px solid ${C.border}`}}>
+                                {entry.t}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+              </div>
+            </div>
+
+            {/* フッター */}
+            <div style={{padding:"9px 18px 12px",borderTop:`1px solid ${C.border}`,background:"rgba(5,13,20,0.97)",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div style={{fontSize:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>
+                {visitedSet.size} / {NOVEL_CHAPTERS.flatMap(c=>c.scenes).length} シーン解放済み
+              </div>
+              <button onClick={() => setOverlay(null)}
+                style={{padding:"7px 22px",background:`${C.accent}1a`,border:`1px solid ${C.accent}`,color:C.accent,fontSize:11,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,borderRadius:2}}
+                onMouseEnter={e=>{e.currentTarget.style.background=`${C.accent}33`;}}
+                onMouseLeave={e=>{e.currentTarget.style.background=`${C.accent}1a`;}}
+              >ゲームに戻る ▶</button>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
