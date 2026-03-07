@@ -320,6 +320,67 @@ const INITIAL_BATTLE_DEFS = {
 const randInt = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
 const EXP_TABLE = [0,30,80,160,280,450,700];
 
+// @@SECTION:NOVEL_TEXTS ─────────────────────────────────────────────────────
+// シーンindexをキーとするノベル本文データ。
+// null のシーンはゲームログ（log）タブのみ表示される。
+const NOVEL_TEXTS = {
+  1: `　青く透き通った宝石のような輝きを放つ海原と朝日を受けて眩しく輝く白き砂浜。
+　その二つが織り成す海岸線はどこまでも美しく、旅立ちの場としてはこの上ない壮景として広がっていた。
+　ここは[旅立ちの砂浜]。冒険者達がこの世界に来た時、必ず通る出発点である。
+　今、ここに空から舞い降りた一つの輝きがあった。ゆるやかな軌跡を描き、地表に降り立ったその光球は次第に収縮し、やがて鈍色の金属が持つ光沢へと変質しつつあった。
+　煙を上げる金属球はやがて煙を上げながら、ゆるやかに口を開き始めた。
+　何かが揺らめく。煙幕の中からはふらふら影が揺らめき、同時に柔らかな砂地を踏みしめる、僅かな音が聞こえてくる。
+　金属球の中から現れたのは黒髪の青年だった。
+
+「煙い。なんだよ、始まりって結構雑なんだな」
+　切れ長の眼差しは海の彼方を見つめていた。
+　青年を迎え入れた景色は確かに、彼が知る、そして彼が住んでいる世界とはまるで別物だった。
+　大きく呼吸をする。颯爽として海辺に流れる空気は澄んでいた。
+「ここが、ゲームの世界か」
+　真白な砂浜に短くまとめられた黒髪が映える。背丈は中背といったところか、麻布をまとったその旅人らしいその姿はここでは珍しくもない光景であった。
+　青年の名はエルツ。彼もまたこのゲームの冒険者[プレーヤー]の一人だった。白い砂浜の上に降り立った彼は、また一歩その大地を確かめるように、砂地を踏みしめた。
+　さくっ・・・さくっ・・・さくっ・・・と。
+　砂浜に残された足跡はそのまま海へと向かって伸びてゆく。
+「噂には聞いてたけど、本当に綺麗だな・・・現実と比べて遜色のない圧倒的な存在感。これがVRSが持つプレゼンスってやつか」
+　僅かに茶色味を帯びた瞳の先に広がる雄大な海原。
+　冒険者にとって目に映る景色は貴重な財産である。エルツにとってもまた、この光景は何にも変えられない貴重な体験だった。実際に目で見て感じ、身体で世界を感じる。それが出来る事が、VRSの最大の特徴だ。そして、その体験こそがここへやってくる冒険者達が求めているリアリティなのである。
+　ひとしきり目の前の景色を愛でると、当然、冒険者である限り、旅立つ事になる。エルツもまたそんな冒険者達の例外では無かった。
+「さて、これからどうするか。まずは街とか村を探すのがセオリーかな。今持っている装備とかアイテムも確認しといた方がいいかな」
+　腰元には一本の銅製のナイフが備え付けられていた。他に装着しているものと言えば、身に纏った麻布以外、他に見当たらない。
+「いわゆる初期装備ね。この重量感、刃こぼれも無いし、戦闘には役立ちそうだ」
+　護身用のナイフを手に取り、何振りかして、その重量と質感を確かめてみる。ナイフは思ったよりも軽く扱いやすいようにエルツには思えた。
+「戦闘か。楽しみだな。今のとこモンスターらしき影は見当たらないけど、まあ、まずは早いとこ街を探して、この世界の情報を集めよう」
+　そうして旅人はその本来の姿を取り戻す。
+　一人の冒険者の新たな門出。
+　波に打たれるその白い砂浜にはしっかりとその足跡が残されていた。`,
+
+2: `　[旅立ちの浜辺]から島と島の間を縫うように延びた一本の海岸線。その海岸線の先に旅人達が目指す離島がある。ティムネイル諸島に属するこの名も無い島の通称はイルカ島。その名の通り、まるで水面で躍るイルカの背のように反った形状が由来である。緑に溢れたこの島は、温暖な気候が乗じて鳥獣達の楽園であり、獰猛なモンスターは存在せず、低レベルなモンスターしか存在しない事から狩りの基本を学ぶには最適であった。そして、旅人がこの島を目指すにはもう一つ大きな理由がある。
+
+　全長二百メートルにも満たないこの小さな島の南部には、緑に囲まれた小さな村がある。おそらくは冒険者達が始めに訪れる事になるであろう[エルム]の村である。冒険者達はここで、この世界のルールを知り、世界へ旅立って行く事になる。
+
+　実質、[旅立ちの浜辺]から向う陸路はこの離島へ到達するための一本の海岸線しか存在しない。その事実に気づいてから不安交じりの旅の行き先は確信へと変わった。日の傾き具合からして、時間にして一時間位だとエルツは踏んでいた。
+　真白な砂浜はいつの間にか砂利へとその姿を変えていた。海が近いせいか、頭上にはカモメの亜種のように見える真っ白な翼に黒の斑点を持った鳥々が飛び交い、囀りを上げていた。
+
+「見たことない鳥だ・・・なんていう鳥なんだろ。あれもモンスターの一種なんだろうか」`,
+
+3: `　鳥々を仰ぎながら島の海岸についたエルツを迎え入れたのは反り立つように迫る十メートル程の崖だった。絶壁とまでは言わずとも、その剥き出しのうねった地脈は圧倒的な自然の力によって生まれた一つの芸術である。そしてその崖にぽっかりと口を開けた洞窟。島の中心部に向かって伸びたその洞窟は明らかに人為的な手の加わった通路であった。
+
+「大自然に中に加わった明らかな人為的な力・・・か。もうすぐ人に会えそうだ」
+
+　砂利の敷かれたその通路を、側壁に取り付けられた淡いランプの光に導かれながら洞窟を歩く。
+　薄暗闇の中でエルツはこの先に広がる世界のことを想像していた。
+　夢に見たVRの世界での人との交流、そして彼は少し不安にも思うのだ。
+　初めて言葉を交わす生物は、人なんだろうか、と。
+　そして、洞窟を抜けた冒険者は決まってこう言うのだ。
+　開けた視界の眩さに手を翳す。
+
+「着いた……村だ」
+
+　今エルツの視界はのどかな村の景色に包まれていた。
+　花と木々に包まれた、まさに自然と一体化したその村には、藁でできた円錐型の大小無数のテントが点在していた。そんな中でも一際目を引いたのが、視界奥に映った一際大きな藁葺きの小屋だった。
+　エルツにとっては全てが新鮮だった。こんな美しい自然に囲まれる事は現実では無い。アスファルトとコンクリートに固められた世界では味わう事の出来ない至高の喜びが今ここにある。`,
+};
+
 // @@SECTION:ASSETS
 const BASE_URL = "https://superapolon.github.io/Arcadia_Assets/";
 
@@ -621,6 +682,7 @@ export default function Arcadia() {
   const setAutoAdv = (v) => { autoAdvanceRef.current = v; setAutoAdvance(v); };
   const [novelLog, setNovelLog] = useState([]);  // { sp, t, sIdx }[] -- 全ダイアログ履歴
   const [novelSelScene, setNovelSelScene] = useState(null);  // 表示中のシーンindex
+  const [novelTab, setNovelTab] = useState("novel");  // "novel" | "log"
   // パターンエディター用ステート
   const [editorSelKey, setEditorSelKey] = useState("seagull");
   const [showExport, setShowExport] = useState(false);
@@ -2562,7 +2624,7 @@ export default function Arcadia() {
                         return (
                           <button key={s.idx}
                             disabled={!visited}
-                            onClick={() => setNovelSelScene(s.idx)}
+                            onClick={() => { setNovelSelScene(s.idx); setNovelTab(NOVEL_TEXTS[s.idx] ? "novel" : "log"); }}
                             style={{display:"block",width:"100%",textAlign:"left",padding:"5px 14px 5px 18px",background:btnBg,border:"none",borderLeft: selected ? `3px solid ${C.accent}` : `3px solid transparent`,color:btnColor,fontSize:10,cursor: visited ? "pointer" : "default",fontFamily:"'Noto Serif JP',serif",letterSpacing:0.3,lineHeight:1.5,transition:"all 0.15s"}}
                             onMouseEnter={e=>{ if(visited && !selected){ e.currentTarget.style.background=`${C.accent}11`; e.currentTarget.style.color=C.white; }}}
                             onMouseLeave={e=>{ if(visited && !selected){ e.currentTarget.style.background="transparent"; e.currentTarget.style.color=C.text; }}}
@@ -2578,18 +2640,74 @@ export default function Arcadia() {
               </div>
 
               {/* 右ペイン -- 本文 */}
-              <div className="nv-scroll" style={{flex:1,overflowY:"auto",padding:"22px 24px 32px"}}>
+              <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+
+                {/* タブバー */}
+                {novelSelScene !== null && (
+                  <div style={{display:"flex",borderBottom:`1px solid ${C.border}`,flexShrink:0,background:"rgba(5,13,20,0.8)"}}>
+                    {[
+                      { id:"novel", label:"📖 NOVEL" },
+                      { id:"log",   label:"📋 GAME LOG" },
+                    ].map(tab => {
+                      const active = novelTab === tab.id;
+                      const tabStyle = active
+                        ? { color:C.accent, borderBottom:`2px solid ${C.accent}`, background:`${C.accent}11` }
+                        : { color:C.muted,  borderBottom:"2px solid transparent", background:"transparent" };
+                      return (
+                        <button key={tab.id}
+                          onClick={() => setNovelTab(tab.id)}
+                          style={{padding:"9px 20px",fontSize:10,cursor:"pointer",border:"none",letterSpacing:2,fontFamily:"'Share Tech Mono',monospace",transition:"all 0.15s",...tabStyle}}
+                          onMouseEnter={e=>{ if(!active){ e.currentTarget.style.color=C.white; }}}
+                          onMouseLeave={e=>{ if(!active){ e.currentTarget.style.color=C.muted; }}}
+                        >{tab.label}</button>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <div className="nv-scroll" style={{flex:1,overflowY:"auto",padding:"22px 24px 32px"}}>
                 {novelSelScene === null ? (
                   <div style={{color:C.muted,fontSize:12,textAlign:"center",marginTop:60,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,lineHeight:2}}>
                     <div style={{fontSize:20,marginBottom:12}}>📖</div>
                     左のリストからシーンを選択してください<br/>
                     <span style={{fontSize:10}}>訪問済みのシーンのみ閲覧できます</span>
                   </div>
+                ) : novelTab === "novel" ? (
+                  /* ── NOVEL タブ ── */
+                  (() => {
+                    const novelText = NOVEL_TEXTS[novelSelScene] ?? null;
+                    return novelText ? (
+                      <>
+                        <div style={{marginBottom:24,paddingBottom:12,borderBottom:`1px solid ${C.border}`}}>
+                          <div style={{fontSize:9,letterSpacing:4,color:C.muted,fontFamily:"'Share Tech Mono',monospace",marginBottom:4}}>
+                            {NOVEL_CHAPTERS.find(c=>c.scenes.some(s=>s.idx===novelSelScene))?.sub ?? ""}
+                          </div>
+                          <div style={{fontSize:15,color:C.white,fontWeight:"bold",letterSpacing:1}}>
+                            {selScene?.label ?? ""}
+                          </div>
+                          <div style={{fontSize:10,color:C.muted,marginTop:4}}>
+                            {SCENES[novelSelScene]?.loc ?? ""}
+                          </div>
+                        </div>
+                        <p style={{color:C.text,fontSize:13,lineHeight:2.2,margin:0,whiteSpace:"pre-wrap",letterSpacing:0.5,fontFamily:"'Noto Serif JP',serif"}}>
+                          {novelText}
+                        </p>
+                      </>
+                    ) : (
+                      <div style={{color:C.muted,fontSize:12,textAlign:"center",marginTop:60,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,lineHeight:2}}>
+                        <div style={{fontSize:20,marginBottom:12}}>✏️</div>
+                        このシーンのノベルはまだ執筆中です<br/>
+                        <span style={{fontSize:10}}>GAME LOG タブでゲームログを確認できます</span>
+                      </div>
+                    );
+                  })()
                 ) : selEntries.length === 0 ? (
+                  /* ── LOG タブ（エントリなし） ── */
                   <div style={{color:C.muted,fontSize:12,textAlign:"center",marginTop:60,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2}}>
                     ── ログがありません ──
                   </div>
                 ) : (
+                  /* ── LOG タブ（本文） ── */
                   <>
                     {/* シーンタイトル */}
                     <div style={{marginBottom:24,paddingBottom:12,borderBottom:`1px solid ${C.border}`}}>
@@ -2637,6 +2755,7 @@ export default function Arcadia() {
                     })}
                   </>
                 )}
+                </div>
               </div>
             </div>
 
