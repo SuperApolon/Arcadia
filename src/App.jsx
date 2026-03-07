@@ -348,9 +348,9 @@ const NOVEL_STATUS = {
   5:  true,   // ✅ s05.txt
   6:  true,   // ✅ s06.txt
   7:  true,   // ✅ s07.txt
-  8:  false,
-  9:  false,
-  10: false,
+  8:  true,   // ✅ s08.txt
+  9:  true,   // ✅ s09.txt
+  10: true,   // ✅ s10.txt
   11: false,
   12: false,
   13: false,
