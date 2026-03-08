@@ -70,7 +70,7 @@ const SCENES = [
     { sp:"コーザ", t:"「有り得ない......\nまさか初心者に膝付かされるなんて\n夢にも思わなかったですよ」" },
     { sp:"クリケット", t:"「あの動き見事だったデシ。\n久々にいいもの見たデシ」" },
     { sp:"コーザ", t:"「勝てない状況では逃げることを\n最優先に考えなさい。\nそれがこの世界で生き残るコツですよ」" },
-    { sp:"SYSTEM", t:"── 初心者講習 完了 ──\n\n🎖 初心者講習卒業の証 を入手した！\n物理攻撃力・物理防御力 +1" },
+    { sp:"SYSTEM", t:"── 初心者講習 完了 ──\n\n🎖 初心者講習卒業の証 を入手した！\n物理攻撃力・物理防御力 +1", certificate:true },
     { sp:"ナレーション", t:"講習を終えた頃、辺りは\n美しい赤焼けの夕暮れに染まっていた。\n\n旅立ち行く三人の冒険者。\nクリケットとコーザはその姿が\n見えなくなるまで見送った。", next:9 }
   ]},
   { bg:["#100a00","#1a1006","#0a0804"], loc:"エルム村 宿屋", sprites:["🧑","🧑‍🦱","👩","👵"], dl:[
@@ -714,6 +714,7 @@ export default function Arcadia() {
   const [defeat, setDefeat] = useState(false);
   const [turn, setTurn] = useState(0);
   const [battleNext, setBattleNext] = useState(null);
+  const [battlePrev, setBattlePrev] = useState(null); // 敗北時の戻り先（バトル開始直前シーン）
   const [btlAnimEnemy, setBtlAnimEnemy] = useState(false);
   const [btlAnimPlayer, setBtlAnimPlayer] = useState(false);
   const [victoryNextSc, setVictoryNextSc] = useState(null); // 勝利画面から遷移する先シーン
@@ -905,6 +906,10 @@ export default function Arcadia() {
       if (ed) handleExpGain(ed.exp, ed.lv);
     }
     if (dl.joinCom) setInCom(true);
+    if (dl.certificate) {
+      setStatAlloc(sa => ({ ...sa, patk: sa.patk + 1, pdef: sa.pdef + 1 }));
+      showNotif("🎖 物理攻撃力・物理防御力 +1！");
+    }
 
     // Battle
     if (dl.battle) {
@@ -923,6 +928,7 @@ export default function Arcadia() {
       setEnemyTurnIdx(0);
       setEnemyNextAction((ed.pattern || ["atk"])[0]);
       setBattleNext(dl.battleNext !== undefined ? dl.battleNext : sIdx + 1);
+      setBattlePrev(sIdx);
       setPhase("battle");
       return;
     }
@@ -1126,6 +1132,7 @@ export default function Arcadia() {
       setEnemyTurnIdx(0);
       setEnemyNextAction((ed.pattern || ["atk"])[0]);
       setBattleNext(ch.battleNext !== undefined ? ch.battleNext : sceneIdx + 1);
+      setBattlePrev(sceneIdx);
       setPhase("battle");
       return;
     }
@@ -1365,12 +1372,12 @@ export default function Arcadia() {
     if (defeat) {
       setHp(Math.floor(mhp * 0.3));
       setMp(Math.floor(mmp * 0.3));
-      showNotif("💀 敗北... ホームポイントへ戻る");
-      const nextSc = battleNext !== null ? battleNext : sceneIdx;
+      showNotif("💀 敗北... 直前のシーンへ戻る");
+      const prevSc = battlePrev !== null ? battlePrev : sceneIdx;
       setFade(true);
       setTimeout(() => {
         setPhase("game");
-        setSceneIdx(nextSc);
+        setSceneIdx(prevSc);
         setDlIdx(0);
         setFade(false);
       }, 400);
@@ -1392,7 +1399,7 @@ export default function Arcadia() {
     });
     setFade(true);
     setTimeout(() => { setPhase("victory"); setFade(false); }, 300);
-  }, [defeat, mhp, mmp, battleNext, sceneIdx, showNotif, battleEnemy, battleResultBonus]);
+  }, [defeat, mhp, mmp, battleNext, battlePrev, sceneIdx, showNotif, battleEnemy, battleResultBonus]);
 
   // ──────────── RENDER ────────────
   const sc = SCENES[sceneIdx] || SCENES[0];
@@ -2004,9 +2011,9 @@ export default function Arcadia() {
     };
 
     return (
-      <div style={{width:"100%",height:"100%",minHeight:"600px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:`linear-gradient(180deg,#030a06 0%,#0a1a0a 50%,#0d2010 100%)`,fontFamily:"'Noto Serif JP',serif",textAlign:"center",padding:40}}>
+      <div style={{width:"100%",height:"100%",overflowY:"auto",background:`linear-gradient(180deg,#030a06 0%,#0a1a0a 50%,#0d2010 100%)`,fontFamily:"'Noto Serif JP',serif",textAlign:"center"}}>
         <style>{keyframes}</style>
-        <div style={{animation:"fadeIn 2s ease",maxWidth:480,width:"100%"}}>
+        <div style={{animation:"fadeIn 2s ease",maxWidth:480,width:"100%",margin:"0 auto",padding:40}}>
           <div style={{fontSize:11,letterSpacing:12,color:C.muted,marginBottom:20,fontFamily:"'Share Tech Mono',monospace"}}>─ EPISODE 1 END ─</div>
           <div style={{fontSize:48,fontWeight:700,color:C.white,textShadow:`0 0 30px ${C.accent2}`,marginBottom:16}}>ARCADIA</div>
           <div style={{fontSize:18,color:C.accent2,letterSpacing:4,marginBottom:40}}>旅立ちの日は明日──</div>
@@ -2574,6 +2581,7 @@ export default function Arcadia() {
                             setBattleResultBonus({ comboMult: 1.0, gradeMult: 1.0 });
                             setEnemyTurnIdx(0); setEnemyNextAction((ed.pattern||["atk"])[0]);
                             setBattleNext(sceneIdx);
+                            setBattlePrev(sceneIdx);
                             setPhase("battle");
                           }} style={{padding:"4px 10px",background:`${C.accent}11`,border:`1px solid ${C.accent}44`,color:C.accent,fontSize:10,cursor:"pointer",letterSpacing:1,flexShrink:0}}>
                             戦う
