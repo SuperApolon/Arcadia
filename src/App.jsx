@@ -357,20 +357,20 @@ const NOVEL_STATUS = {
   14: true,   // ✅ s14.txt
   15: true,   // ✅ s15.txt
   16: false,
-  17: true,
-  18: true,
-  19: true,
-  20: true,
+  17: true,   // ✅ s17.txt
+  18: true,   // ✅ s18.txt
+  19: true,   // ✅ s19.txt
+  20: true,   // ✅ s20.txt
   21: false,
-  22: true,
+  22: true,   // ✅ s22.txt
   23: false,
-  24: true,
+  24: true,   // ✅ s24.txt
   25: false,
-  26: true,
-  27: true,
-  28: true,
-  29: true,
-  30: true,
+  26: true,   // ✅ s26.txt
+  27: true,   // ✅ s27.txt
+  28: true,   // ✅ s28.txt
+  29: true,   // ✅ s29.txt
+  30: true,   // ✅ s30.txt
 };
 
 // ノベルTXTのURL解決ヘルパー -- false のシーンは null を返す
@@ -2190,9 +2190,9 @@ export default function Arcadia() {
       <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,200,255,0.01) 3px,rgba(0,200,255,0.01) 4px)",pointerEvents:"none",zIndex:1}}/>
 
       {/* HUD top */}
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"8px 14px",background:"rgba(5,13,20,0.7)",borderBottom:`1px solid ${C.border}`,zIndex:10,position:"relative"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 14px",background:"rgba(5,13,20,0.7)",borderBottom:`1px solid ${C.border}`,zIndex:10,position:"relative"}}>
         <div style={{fontSize:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>{sc.loc}</div>
-        <div style={{display:"flex",gap:16,alignItems:"center"}}>
+        <div style={{display:"flex",gap:10,alignItems:"center"}}>
           <div style={{fontSize:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>
             <span style={{color:isHpLow?C.red:C.accent2,animation:isHpLow?"dngr 0.8s infinite":"none"}}>HP {hp}</span>
             <span style={{color:C.muted}}> / </span>
@@ -2201,6 +2201,18 @@ export default function Arcadia() {
           <div style={{fontSize:10,color:"#60a5fa",fontFamily:"'Share Tech Mono',monospace"}}>MP {mp}</div>
           <div style={{fontSize:10,color:C.gold,fontFamily:"'Share Tech Mono',monospace"}}>💰 {elk}</div>
           <div style={{fontSize:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>Lv.{lv}</div>
+          {hasPb && (
+            <button onClick={() => setOverlay(overlay==="pb"?null:"pb")}
+              style={{padding:"3px 8px",background:overlay==="pb"?`${C.accent}22`:"transparent",border:`1px solid ${overlay==="pb"?C.accent:C.border}`,color:overlay==="pb"?C.accent:C.muted,fontSize:9,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:1,transition:"all 0.2s",borderRadius:2}}>
+              📖 P.BOOK
+            </button>
+          )}
+          {lvUpInfo && (
+            <button onClick={() => setOverlay("lvup")}
+              style={{padding:"3px 8px",background:`${C.gold}22`,border:`1px solid ${C.gold}`,color:C.gold,fontSize:9,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:1,animation:"dngr 1s infinite",borderRadius:2}}>
+              ⭐ LV UP!
+            </button>
+          )}
         </div>
       </div>
 
@@ -2335,21 +2347,7 @@ export default function Arcadia() {
         )}
       </div>
 
-      {/* Bottom nav */}
-      <div style={{display:"flex",background:"rgba(5,13,20,0.95)",borderTop:`1px solid ${C.border}`,zIndex:20,flexShrink:0}}>
-        {hasPb && (
-          <button onClick={() => setOverlay(overlay==="pb"?null:"pb")}
-            style={{flex:1,padding:"10px 4px",background:"transparent",border:"none",color:overlay==="pb"?C.accent:C.muted,fontSize:11,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:1,borderRight:`1px solid ${C.border}`}}>
-            📖 P.BOOK
-          </button>
-        )}
-        {lvUpInfo && (
-          <button onClick={() => setOverlay("lvup")}
-            style={{flex:1,padding:"10px 4px",background:`${C.gold}22`,border:"none",color:C.gold,fontSize:11,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:1,animation:"dngr 1s infinite",borderRight:`1px solid ${C.border}`}}>
-            ⭐ LV UP!
-          </button>
-        )}
-      </div>
+
 
       {/* P.BOOK Overlay */}
       {overlay === "pb" && (
