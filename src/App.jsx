@@ -53,7 +53,7 @@ const SCENES = [
   { bg:["#1a0e06","#2a1808","#1a1208"], loc:"エルム村 ギルド", sprites:["🧑","📖"], dl:[
     { sp:"SYSTEM", t:"── パーソナル・ブック（P.B.）取得 ──\n\n✨ 新機能が解放されました！" },
     { sp:"クリケット", t:"「携帯パソコンのようなものだと\n思って構わないデシ。\n\nステータス、メール、マップ──\n全情報がここに集まるデシ」" },
-    { sp:"クリケット", t:"「下のナビから [P.BOOK] を押して\n確認できるデシよ。\n超重要事項だから絶対覚えるデシ！」" },
+    { sp:"クリケット", t:"「右上の光るシンボルが [P.BOOK] デシ。\n確認できるデシよ。\n超重要事項だから絶対覚えるデシ！」" },
     { sp:"ナレーション", t:"かくして、エルツの冒険は始まった。\n\nアルカディア──\n夢に見た理想郷の扉が、今、\n開かれようとしている。", next:7 }
   ]},
   { bg:["#0a1808","#184018","#2a2818"], loc:"エルム村 ギルド裏・草地", sprites:["🧑","🐰","🙍"], dl:[
@@ -1414,6 +1414,11 @@ export default function Arcadia() {
     @keyframes starBurst { 0%{opacity:0;transform:scale(0) rotate(0deg)} 50%{opacity:1;transform:scale(1.2) rotate(180deg)} 100%{opacity:0;transform:scale(0.8) rotate(360deg)} }
     @keyframes comboPop { 0%{opacity:0;transform:translate(-50%,-50%) scale(0.4)} 60%{opacity:1;transform:translate(-50%,-50%) scale(1.15)} 100%{opacity:1;transform:translate(-50%,-50%) scale(1)} }
     @keyframes comboPulse { 0%,100%{text-shadow:0 0 20px #f0c040cc,0 0 40px #f0c04088} 50%{text-shadow:0 0 40px #ffffffcc,0 0 80px #f0c040bb,0 0 120px #f0c04044} }
+    @keyframes pbSpin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+    @keyframes pbSpinR { 0%{transform:rotate(0deg)} 100%{transform:rotate(-360deg)} }
+    @keyframes pbPulse { 0%,100%{opacity:0.6;r:6} 50%{opacity:1;r:8} }
+    @keyframes pbGlow { 0%,100%{filter:drop-shadow(0 0 4px #00c8ff88)} 50%{filter:drop-shadow(0 0 10px #00c8ffcc) drop-shadow(0 0 20px #00c8ff44)} }
+    @keyframes lvPulse { 0%,100%{filter:drop-shadow(0 0 4px #f0c04088)} 50%{filter:drop-shadow(0 0 12px #f0c040cc) drop-shadow(0 0 24px #f0c04044)} }
   `;
 
   // @@SECTION:RENDER_VICTORY
@@ -2201,18 +2206,6 @@ export default function Arcadia() {
           <div style={{fontSize:10,color:"#60a5fa",fontFamily:"'Share Tech Mono',monospace"}}>MP {mp}</div>
           <div style={{fontSize:10,color:C.gold,fontFamily:"'Share Tech Mono',monospace"}}>💰 {elk}</div>
           <div style={{fontSize:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>Lv.{lv}</div>
-          {hasPb && (
-            <button onClick={() => setOverlay(overlay==="pb"?null:"pb")}
-              style={{padding:"3px 8px",background:overlay==="pb"?`${C.accent}22`:"transparent",border:`1px solid ${overlay==="pb"?C.accent:C.border}`,color:overlay==="pb"?C.accent:C.muted,fontSize:9,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:1,transition:"all 0.2s",borderRadius:2}}>
-              📖 P.BOOK
-            </button>
-          )}
-          {lvUpInfo && (
-            <button onClick={() => setOverlay("lvup")}
-              style={{padding:"3px 8px",background:`${C.gold}22`,border:`1px solid ${C.gold}`,color:C.gold,fontSize:9,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:1,animation:"dngr 1s infinite",borderRadius:2}}>
-              ⭐ LV UP!
-            </button>
-          )}
         </div>
       </div>
 
@@ -2226,6 +2219,51 @@ export default function Arcadia() {
             ))}
           </>
         )}
+
+        {/* P.BOOK 幾何学シンボル -- 右上固定 */}
+        {hasPb && (
+          <button
+            onClick={() => setOverlay(overlay==="pb"?null:"pb")}
+            style={{position:"absolute",top:12,right:14,width:52,height:52,background:"transparent",border:"none",padding:0,cursor:"pointer",zIndex:20,animation:"pbGlow 3s ease-in-out infinite"}}
+          >
+            <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* 外周リング -- 低速回転 */}
+              <circle cx="26" cy="26" r="24" stroke={overlay==="pb"?C.accent:C.border} strokeWidth="1" fill="none" strokeDasharray="4 3" style={{animation:"pbSpin 18s linear infinite",transformOrigin:"26px 26px"}}/>
+              {/* 内周リング -- 逆回転 */}
+              <circle cx="26" cy="26" r="19" stroke={overlay==="pb"?C.accent+"88":C.border+"66"} strokeWidth="0.8" fill="none" strokeDasharray="2 4" style={{animation:"pbSpinR 12s linear infinite",transformOrigin:"26px 26px"}}/>
+              {/* 六角形フレーム */}
+              <polygon points="26,5 44,15.5 44,36.5 26,47 8,36.5 8,15.5" stroke={overlay==="pb"?C.accent:C.border} strokeWidth="1" fill={overlay==="pb"?"rgba(0,200,255,0.08)":"rgba(10,26,38,0.7)"} />
+              {/* 中央 -- 菱形 */}
+              <polygon points="26,14 34,26 26,38 18,26" stroke={overlay==="pb"?C.accent:C.muted} strokeWidth="1" fill={overlay==="pb"?"rgba(0,200,255,0.15)":"transparent"} />
+              {/* 中心点 */}
+              <circle cx="26" cy="26" r="3" fill={overlay==="pb"?C.accent:C.muted} style={{animation:"pbPulse 2s ease-in-out infinite"}}/>
+              {/* 四方位の小ダイヤ */}
+              {[[26,9],[43,26],[26,43],[9,26]].map(([cx,cy],i) => (
+                <polygon key={i} points={`${cx},${cy-3} ${cx+2},${cy} ${cx},${cy+3} ${cx-2},${cy}`} fill={overlay==="pb"?C.accent:C.border} opacity="0.8"/>
+              ))}
+              {/* P.B テキスト */}
+              <text x="26" y="29" textAnchor="middle" fill={overlay==="pb"?C.accent:C.muted} fontSize="7" fontFamily="'Share Tech Mono',monospace" letterSpacing="1" opacity="0.9">P.B</text>
+            </svg>
+          </button>
+        )}
+
+        {/* LV UP シンボル -- P.BOOKの下 */}
+        {lvUpInfo && (
+          <button
+            onClick={() => setOverlay("lvup")}
+            style={{position:"absolute",top:hasPb?72:12,right:14,width:52,height:52,background:"transparent",border:"none",padding:0,cursor:"pointer",zIndex:20,animation:"lvPulse 1.2s ease-in-out infinite"}}
+          >
+            <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {/* 外周リング */}
+              <circle cx="26" cy="26" r="24" stroke={C.gold} strokeWidth="1" fill="none" strokeDasharray="3 3" style={{animation:"pbSpin 6s linear infinite",transformOrigin:"26px 26px"}}/>
+              {/* 星形 */}
+              <polygon points="26,7 29.5,19.5 42.5,19.5 32,27.5 35.5,40 26,32 16.5,40 20,27.5 9.5,19.5 22.5,19.5" fill={C.gold} opacity="0.85"/>
+              {/* LV テキスト */}
+              <text x="26" y="30" textAnchor="middle" fill={C.bg} fontSize="7" fontFamily="'Share Tech Mono',monospace" letterSpacing="0.5" fontWeight="bold">LV!</text>
+            </svg>
+          </button>
+        )}
+
         <div style={{display:"flex",gap:16,alignItems:"flex-end",justifyContent:"center",flexWrap:"wrap"}}>
           {sc.sprites.map((sp, i) => {
             const sprKey = SPRITE_MAP[sp];
