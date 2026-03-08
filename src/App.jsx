@@ -1066,6 +1066,13 @@ export default function Arcadia() {
     if (!dl) return;
     if (dl.choices) return;
 
+    // Ending フラグがある場合はエンディングへ遷移
+    if (dl.ending) {
+      setFade(true);
+      setTimeout(() => { setPhase("end"); setFade(false); }, 600);
+      return;
+    }
+
     if (dl.next !== undefined) {
       setFade(true);
       setTimeout(() => { setSceneIdx(dl.next); setDlIdx(0); setFade(false); }, 300);
@@ -1957,23 +1964,99 @@ export default function Arcadia() {
   }
 
   // @@SECTION:RENDER_ENDING
-  if (phase === "end") return (
-    <div style={{width:"100%",height:"100%",minHeight:"600px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:`linear-gradient(180deg,#030a06 0%,#0a1a0a 50%,#0d2010 100%)`,fontFamily:"'Noto Serif JP',serif",textAlign:"center",padding:40}}>
-      <style>{keyframes}</style>
-      <div style={{animation:"fadeIn 2s ease"}}>
-        <div style={{fontSize:11,letterSpacing:12,color:C.muted,marginBottom:20,fontFamily:"'Share Tech Mono',monospace"}}>─ EPISODE 1 END ─</div>
-        <div style={{fontSize:48,fontWeight:700,color:C.white,textShadow:`0 0 30px ${C.accent2}`,marginBottom:16}}>ARCADIA</div>
-        <div style={{fontSize:18,color:C.accent2,letterSpacing:4,marginBottom:40}}>旅立ちの日は明日──</div>
-        <div style={{width:240,height:1,background:`linear-gradient(90deg,transparent,${C.accent2},transparent)`,margin:"0 auto 32px"}}/>
-        <div style={{fontSize:13,color:C.muted,lineHeight:2}}>
-          <div>HP: {hp} / {mhp}</div>
-          <div>Lv: {lv} &nbsp;│&nbsp; EXP: {exp}</div>
-          <div>ELK: {elk}</div>
+  if (phase === "end") {
+    // ── セーブデータ生成 ────────────────────────────────────────────────────
+    const buildSaveData = () => ({
+      version:    "arcadia_ch1_v1",
+      chapter:    1,
+      savedAt:    new Date().toISOString(),
+      player: {
+        hp, mhp, mp, mmp,
+        elk, lv, exp,
+        weapon, weaponPatk,
+        statPoints,
+        statAlloc: { ...statAlloc },
+        hasPb, hasMapScan, inCom,
+      },
+    });
+
+    const handleExport = () => {
+      const data = buildSaveData();
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: "application/json" });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href     = url;
+      a.download = `arcadia_save_ch1_lv${lv}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    };
+
+    const resetToTitle = () => {
+      setPhase("title"); setSceneIdx(0); setDlIdx(0);
+      setElk(50); setHp(100); setMhp(100); setMp(80); setMmp(80);
+      setLv(1); setExp(0);
+      setWeapon("銅の短剣"); setWeaponPatk(3);
+      setStatPoints(0); setStatAlloc({patk:10,pdef:10,matk:10,spd:10});
+      setHasPb(false); setHasMapScan(false); setInCom(false);
+    };
+
+    return (
+      <div style={{width:"100%",height:"100%",minHeight:"600px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:`linear-gradient(180deg,#030a06 0%,#0a1a0a 50%,#0d2010 100%)`,fontFamily:"'Noto Serif JP',serif",textAlign:"center",padding:40}}>
+        <style>{keyframes}</style>
+        <div style={{animation:"fadeIn 2s ease",maxWidth:480,width:"100%"}}>
+          <div style={{fontSize:11,letterSpacing:12,color:C.muted,marginBottom:20,fontFamily:"'Share Tech Mono',monospace"}}>─ EPISODE 1 END ─</div>
+          <div style={{fontSize:48,fontWeight:700,color:C.white,textShadow:`0 0 30px ${C.accent2}`,marginBottom:16}}>ARCADIA</div>
+          <div style={{fontSize:18,color:C.accent2,letterSpacing:4,marginBottom:40}}>旅立ちの日は明日──</div>
+          <div style={{width:240,height:1,background:`linear-gradient(90deg,transparent,${C.accent2},transparent)`,margin:"0 auto 32px"}}/>
+
+          {/* ── ステータスサマリー ───────────────────────────────────────── */}
+          <div style={{background:"rgba(10,26,38,0.7)",border:`1px solid ${C.border}`,borderRadius:8,padding:"20px 28px",marginBottom:32,textAlign:"left"}}>
+            <div style={{fontSize:10,letterSpacing:6,color:C.muted,marginBottom:14,fontFamily:"'Share Tech Mono',monospace",textAlign:"center"}}>PLAYER DATA</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"6px 24px",fontSize:13,color:C.text,fontFamily:"'Share Tech Mono',monospace",lineHeight:1.8}}>
+              <div><span style={{color:C.muted}}>NAME</span>  Eltz</div>
+              <div><span style={{color:C.muted}}>Lv</span>    {lv}</div>
+              <div><span style={{color:C.muted}}>HP</span>    {hp} / {mhp}</div>
+              <div><span style={{color:C.muted}}>MP</span>    {mp} / {mmp}</div>
+              <div><span style={{color:C.muted}}>EXP</span>   {exp}</div>
+              <div><span style={{color:C.muted}}>ELK</span>   {elk}</div>
+              <div><span style={{color:C.muted}}>武器</span>  {weapon}</div>
+              <div><span style={{color:C.muted}}>ATK+</span>  {weaponPatk}</div>
+              <div><span style={{color:C.muted}}>PATK</span>  {statAlloc.patk}</div>
+              <div><span style={{color:C.muted}}>PDEF</span>  {statAlloc.pdef}</div>
+              <div><span style={{color:C.muted}}>MATK</span>  {statAlloc.matk}</div>
+              <div><span style={{color:C.muted}}>SPD</span>   {statAlloc.spd}</div>
+            </div>
+          </div>
+
+          {/* ── セーブデータエクスポート ─────────────────────────────────── */}
+          <div style={{marginBottom:16,fontSize:12,color:C.muted,letterSpacing:1,lineHeight:1.8}}>
+            第二章へ引き継ぐには、セーブデータをエクスポートして<br/>
+            ARCADIA Ch.2 で読み込んでください。
+          </div>
+          <button
+            onClick={handleExport}
+            style={{width:"100%",padding:"14px 0",marginBottom:12,background:`linear-gradient(135deg,rgba(0,200,255,0.15),rgba(0,255,204,0.1))`,border:`1px solid ${C.accent}`,color:C.accent,fontSize:14,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",borderRadius:4}}
+          >
+            💾 セーブデータをエクスポート
+          </button>
+          <div style={{fontSize:11,color:C.muted,marginBottom:32,fontFamily:"'Share Tech Mono',monospace",opacity:0.7}}>
+            arcadia_save_ch1_lv{lv}.json がダウンロードされます
+          </div>
+
+          <div style={{width:240,height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:"0 auto 24px"}}/>
+          <button
+            onClick={resetToTitle}
+            style={{padding:"10px 40px",background:"transparent",border:`1px solid ${C.muted}`,color:C.muted,fontSize:12,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",borderRadius:4}}
+          >
+            TITLE へ戻る
+          </button>
         </div>
-        <button onClick={() => { setPhase("title"); setSceneIdx(0); setDlIdx(0); setElk(50); setHp(100); setMhp(100); setMp(80); setMmp(80); setLv(1); setExp(0); setWeapon("銅の短剣"); setWeaponPatk(3); setStatPoints(0); setStatAlloc({patk:10,pdef:10,matk:10,spd:10}); setHasPb(false); setHasMapScan(false); setInCom(false); }} style={{marginTop:40,padding:"12px 40px",background:"transparent",border:`1px solid ${C.accent2}`,color:C.accent2,fontSize:14,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer"}}>TITLE へ戻る</button>
       </div>
-    </div>
-  );
+    );
+  }
 
   // @@SECTION:RENDER_BATTLE
   if (phase === "battle") {
