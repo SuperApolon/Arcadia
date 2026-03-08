@@ -351,11 +351,11 @@ const NOVEL_STATUS = {
   8:  true,   // ✅ s08.txt
   9:  true,   // ✅ s09.txt
   10: true,   // ✅ s10.txt
-  11: false,
-  12: false,
-  13: false,
-  14: false,
-  15: false,
+  11: true,   // ✅ s11.txt
+  12: true,   // ✅ s12.txt
+  13: true,   // ✅ s13.txt
+  14: true,   // ✅ s14.txt
+  15: true,   // ✅ s15.txt
   16: false,
   17: false,
   18: false,
