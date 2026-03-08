@@ -357,20 +357,20 @@ const NOVEL_STATUS = {
   14: true,   // ✅ s14.txt
   15: true,   // ✅ s15.txt
   16: false,
-  17: false,
-  18: false,
-  19: false,
-  20: false,
+  17: true,
+  18: true,
+  19: true,
+  20: true,
   21: false,
-  22: false,
+  22: true,
   23: false,
-  24: false,
+  24: true,
   25: false,
-  26: false,
-  27: false,
-  28: false,
-  29: false,
-  30: false,
+  26: true,
+  27: true,
+  28: true,
+  29: true,
+  30: true,
 };
 
 // ノベルTXTのURL解決ヘルパー -- false のシーンは null を返す
