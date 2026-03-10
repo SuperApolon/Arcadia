@@ -761,6 +761,8 @@ export default function Arcadia() {
   const textScrollRef = useRef(null);
   const tapStartYRef  = useRef(0);   // スクロール判定用
   const autoAdvTimerRef = useRef(null); // オート進行タイマー
+  const spriteAreaRef = useRef(null); // スプライトエリア実測高さ取得用
+  const [spriteAreaH, setSpriteAreaH] = useState(0); // スプライトエリア実測高さ(px)
 
   // ── BGM制御 ref ────────────────────────────────────────────────────────────
   const audioRef        = useRef(null);   // 現在再生中のAudioインスタンス
@@ -798,6 +800,18 @@ export default function Arcadia() {
       audio.volume = Math.min(targetVolume, audio.volume + delta);
       if (count >= steps) clearInterval(timer);
     }, interval);
+  }, []);
+
+  // ── スプライトエリア高さ実測（ResizeObserver）──────────────────────────────
+  useEffect(() => {
+    const el = spriteAreaRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(entries => {
+      const h = entries[0]?.contentRect?.height ?? 0;
+      if (h > 0) setSpriteAreaH(h);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
   // BGMを即再生する内部関数（アンロック済み前提）
@@ -2491,7 +2505,7 @@ export default function Arcadia() {
       </div>
 
       {/* Sprite area */}
-      <div style={{flex:1,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:isPortrait?"4px 8px 0":"clamp(4px,1vh,8px) 20px 0",position:"relative",zIndex:5,minHeight:isPortrait?160:"clamp(160px,48vh,320px)"}}>
+      <div ref={spriteAreaRef} style={{flex:1,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:isPortrait?"4px 8px 0":"clamp(4px,1vh,8px) 20px 0",position:"relative",zIndex:5,minHeight:isPortrait?160:"clamp(160px,48vh,320px)",overflow:"hidden"}}>
         {/* Scene-specific atmosphere */}
         {sc.loc.includes("洞窟") && (
           <>
@@ -2555,12 +2569,10 @@ export default function Arcadia() {
             // 人数ごとの高さ縮小率（6人が最大）
             const countScale = count <= 1 ? 1.0 : count <= 2 ? 0.95 : count <= 3 ? 0.90 : count <= 4 ? 0.84 : count <= 5 ? 0.78 : 0.70;
             const appliedScale = isHero ? sz.heroScale : sz.scale;
-            // 最大表示高さ: 縦長=30vh、横長=52vh を基準に人数・キャラscaleを乗算
-            // 横長は画面高さが小さいためvh基準を大きくしてキャラを縦長並みに見せる
-            const maxHPct = isPortrait
-              ? Math.round(30 * countScale * appliedScale)
-              : Math.round(52 * countScale * appliedScale);
-            const maxHStr = `${maxHPct}vh`;
+            // スプライトエリアの実測高さが取れていればpxで計算、取れなければvhフォールバック
+            const areaH = spriteAreaH > 0 ? spriteAreaH : (isPortrait ? window.innerHeight * 0.30 : window.innerHeight * 0.52);
+            const maxHPx = Math.round(areaH * countScale * appliedScale * 0.90);
+            const maxHStr = `${maxHPx}px`;
             const heroFilter = isHero ? "drop-shadow(0 0 8px rgba(0,200,255,0.3))" : "none";
             const fbSize = Math.round(sz.fallbackSize * countScale * appliedScale);
             // flexShrink:1 + minWidth:0 で人数が多くても画面内に収まるよう横幅を縮める
