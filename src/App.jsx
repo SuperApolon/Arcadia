@@ -1490,7 +1490,7 @@ export default function Arcadia() {
     const hasComboBonus = comboMult > 1.0;
 
     return (
-      <div style={{width:"100%",height:"100%",minHeight:"600px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"linear-gradient(180deg,#020608 0%,#050d14 40%,#0a1420 100%)",fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden",userSelect:"none"}}>
+      <div style={{width:"100%",height:"100%",minHeight:"min(600px,100dvh)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"linear-gradient(180deg,#020608 0%,#050d14 40%,#0a1420 100%)",fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden",userSelect:"none"}}>
         <style>{keyframes}</style>
 
         {fade && <div style={{position:"absolute",inset:0,background:"#050d14",zIndex:50}}/>}
@@ -1600,37 +1600,37 @@ export default function Arcadia() {
   if (phase === "title") {
     // ── 縦長タイトル ──────────────────────────────────────────────────────
     if (isPortrait) return (
-      <div style={{width:"100%",height:"100%",minHeight:"100dvh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:`linear-gradient(180deg,#020810 0%,#050d14 40%,#0a1828 100%)`,backgroundImage:`url(https://superapolon.github.io/Arcadia_Assets/title/title_bg.webp)`,backgroundSize:"cover",backgroundPosition:"center",fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden"}}>
+      <div style={{width:"100%",height:"100%",minHeight:"100dvh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:`linear-gradient(180deg,#020810 0%,#050d14 40%,#0a1828 100%)`,backgroundImage:`url(https://superapolon.github.io/Arcadia_Assets/title/title_bg.webp)`,backgroundSize:"cover",backgroundPosition:"center",fontFamily:"'Noto Serif JP',serif",position:"relative",overflowX:"hidden",overflowY:"auto"}}>
         <style>{keyframes}</style>
         <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,200,255,0.015) 2px,rgba(0,200,255,0.015) 4px)",pointerEvents:"none",zIndex:1}}/>
         {[...Array(20)].map((_,i)=>(
           <div key={i} style={{position:"absolute",width:i%5===0?2:1,height:i%5===0?2:1,borderRadius:"50%",background:"#adf",top:`${Math.random()*100}%`,left:`${Math.random()*100}%`,opacity:0.3+Math.random()*0.5,animation:`blnk ${1.5+Math.random()*2}s ${Math.random()*2}s infinite`}}/>
         ))}
-        <div style={{position:"relative",zIndex:2,textAlign:"center",animation:"fadeIn 1.5s ease",padding:"0 24px",width:"100%",maxWidth:420}}>
-          <div style={{fontSize:10,letterSpacing:10,color:C.muted,marginBottom:14,fontFamily:"'Share Tech Mono',monospace"}}>VRMMORPG</div>
-          <div style={{fontSize:"clamp(52px,16vw,80px)",fontWeight:700,letterSpacing:"clamp(8px,4vw,16px)",color:C.white,textShadow:`0 0 40px ${C.accent},0 0 80px ${C.accent}44`,lineHeight:1,marginBottom:8}}>ARCADIA</div>
-          <div style={{fontSize:12,letterSpacing:4,color:C.accent2,marginBottom:40,fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 10px ${C.accent2}`}}>─── 理想郷への扉 ───</div>
-          <div style={{width:"70%",height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:"0 auto 36px"}}/>
+        <div style={{position:"relative",zIndex:2,textAlign:"center",animation:"fadeIn 1.5s ease",padding:"clamp(16px,4vh,40px) 24px",width:"100%",maxWidth:420,boxSizing:"border-box"}}>
+          <div style={{fontSize:10,letterSpacing:10,color:C.muted,marginBottom:"clamp(8px,2vh,14px)",fontFamily:"'Share Tech Mono',monospace"}}>VRMMORPG</div>
+          <div style={{fontSize:"clamp(40px,12vw,72px)",fontWeight:700,letterSpacing:"clamp(4px,2.5vw,14px)",color:C.white,textShadow:`0 0 40px ${C.accent},0 0 80px ${C.accent}44`,lineHeight:1.1,marginBottom:"clamp(6px,1.5vh,10px)",whiteSpace:"nowrap"}}>ARCADIA</div>
+          <div style={{fontSize:"clamp(10px,2.5vw,12px)",letterSpacing:4,color:C.accent2,marginBottom:"clamp(20px,4vh,40px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 10px ${C.accent2}`}}>─── 理想郷への扉 ───</div>
+          <div style={{width:"70%",height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:`0 auto clamp(20px,4vh,36px)`}}/>
           <button
             onClick={() => { unlockAudio("bgm/title"); setTosScrolled(false); setPhase("tos"); }}
-            style={{width:"80%",padding:"18px 0",background:"transparent",border:`1px solid ${C.accent}`,color:C.accent,fontSize:17,letterSpacing:6,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",animation:"glow 2s infinite",transition:"all 0.3s",display:"block",margin:"0 auto"}}
+            style={{width:"80%",padding:"clamp(12px,2.5vh,18px) 0",background:"transparent",border:`1px solid ${C.accent}`,color:C.accent,fontSize:"clamp(14px,4vw,17px)",letterSpacing:6,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",animation:"glow 2s infinite",transition:"all 0.3s",display:"block",margin:"0 auto"}}
             onMouseEnter={e => e.target.style.background = `${C.accent}22`}
             onMouseLeave={e => e.target.style.background = "transparent"}
           >GAME START</button>
-          <div style={{marginTop:20,fontSize:11,color:C.muted,letterSpacing:2,fontFamily:"'Share Tech Mono',monospace"}}>VRS CONNECT ▶</div>
-          <div style={{marginTop:28,width:"70%",height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:"28px auto 0"}}/>
+          <div style={{marginTop:"clamp(12px,2.5vh,20px)",fontSize:11,color:C.muted,letterSpacing:2,fontFamily:"'Share Tech Mono',monospace"}}>VRS CONNECT ▶</div>
+          <div style={{width:"70%",height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:`clamp(16px,3vh,28px) auto 0`}}/>
           <button
             onClick={() => setPhase("patternEditor")}
-            style={{marginTop:18,padding:"12px 0",width:"60%",background:"transparent",border:`1px solid ${C.border}`,color:C.muted,fontSize:11,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",transition:"all 0.3s",display:"block",margin:"18px auto 0"}}
+            style={{marginTop:"clamp(12px,2vh,18px)",padding:"clamp(8px,1.5vh,12px) 0",width:"60%",background:"transparent",border:`1px solid ${C.border}`,color:C.muted,fontSize:11,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",transition:"all 0.3s",display:"block",margin:`clamp(12px,2vh,18px) auto 0`}}
             onMouseEnter={e => { e.currentTarget.style.color = C.gold; e.currentTarget.style.borderColor = C.gold; }}
             onMouseLeave={e => { e.currentTarget.style.color = C.muted; e.currentTarget.style.borderColor = C.border; }}
           >⚙ PATTERN EDITOR</button>
         </div>
       </div>
     );
-    // ── 横長タイトル（変更なし）──────────────────────────────────────────
+    // ── 横長タイトル ──────────────────────────────────────────────────────
     return (
-    <div style={{width:"100%",height:"100%",minHeight:"600px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:`linear-gradient(180deg,#020810 0%,#050d14 40%,#0a1828 100%)`,backgroundImage:`url(https://superapolon.github.io/Arcadia_Assets/title/title_bg.webp)`,backgroundSize:"cover",backgroundPosition:"center",fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden"}}>
+    <div style={{width:"100%",height:"100%",minHeight:"min(600px,100dvh)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:`linear-gradient(180deg,#020810 0%,#050d14 40%,#0a1828 100%)`,backgroundImage:`url(https://superapolon.github.io/Arcadia_Assets/title/title_bg.webp)`,backgroundSize:"cover",backgroundPosition:"center",fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden"}}>
       <style>{keyframes}</style>
       {/* Scanline effect */}
       <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,200,255,0.015) 2px,rgba(0,200,255,0.015) 4px)",pointerEvents:"none",zIndex:1}}/>
@@ -1639,25 +1639,25 @@ export default function Arcadia() {
         <div key={i} style={{position:"absolute",width:i%5===0?2:1,height:i%5===0?2:1,borderRadius:"50%",background:"#adf",top:`${Math.random()*100}%`,left:`${Math.random()*100}%`,opacity:0.3+Math.random()*0.5,animation:`blnk ${1.5+Math.random()*2}s ${Math.random()*2}s infinite`}}/>
       ))}
 
-      <div style={{position:"relative",zIndex:2,textAlign:"center",animation:"fadeIn 1.5s ease"}}>
-        <div style={{fontSize:11,letterSpacing:12,color:C.muted,marginBottom:16,fontFamily:"'Share Tech Mono',monospace"}}>VRMMORPG</div>
-        <div style={{fontSize:72,fontWeight:700,letterSpacing:16,color:C.white,textShadow:`0 0 40px ${C.accent},0 0 80px ${C.accent}44`,lineHeight:1,marginBottom:8}}>ARCADIA</div>
-        <div style={{fontSize:13,letterSpacing:4,color:C.accent2,marginBottom:48,fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 10px ${C.accent2}`}}>─── 理想郷への扉 ───</div>
+      <div style={{position:"relative",zIndex:2,textAlign:"center",animation:"fadeIn 1.5s ease",padding:"clamp(8px,2vh,20px) 24px",boxSizing:"border-box"}}>
+        <div style={{fontSize:11,letterSpacing:12,color:C.muted,marginBottom:"clamp(8px,1.5vh,16px)",fontFamily:"'Share Tech Mono',monospace"}}>VRMMORPG</div>
+        <div style={{fontSize:"clamp(44px,8vh,72px)",fontWeight:700,letterSpacing:"clamp(8px,1.5vh,16px)",color:C.white,textShadow:`0 0 40px ${C.accent},0 0 80px ${C.accent}44`,lineHeight:1,marginBottom:"clamp(4px,1vh,8px)",whiteSpace:"nowrap"}}>ARCADIA</div>
+        <div style={{fontSize:13,letterSpacing:4,color:C.accent2,marginBottom:"clamp(20px,4vh,48px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 10px ${C.accent2}`}}>─── 理想郷への扉 ───</div>
 
-        <div style={{width:280,height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:"0 auto 40px"}}/>
+        <div style={{width:280,height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:`0 auto clamp(16px,3vh,40px)`}}/>
 
         <button
           onClick={() => { unlockAudio("bgm/title"); setTosScrolled(false); setPhase("tos"); }}
-          style={{padding:"14px 48px",background:"transparent",border:`1px solid ${C.accent}`,color:C.accent,fontSize:16,letterSpacing:6,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",animation:"glow 2s infinite",transition:"all 0.3s"}}
+          style={{padding:"clamp(8px,1.8vh,14px) 48px",background:"transparent",border:`1px solid ${C.accent}`,color:C.accent,fontSize:"clamp(13px,2vh,16px)",letterSpacing:6,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",animation:"glow 2s infinite",transition:"all 0.3s"}}
           onMouseEnter={e => e.target.style.background = `${C.accent}22`}
           onMouseLeave={e => e.target.style.background = "transparent"}
         >GAME START</button>
 
-        <div style={{marginTop:24,fontSize:11,color:C.muted,letterSpacing:2,fontFamily:"'Share Tech Mono',monospace"}}>VRS CONNECT ▶</div>
-        <div style={{marginTop:32,width:280,height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`}}/>
+        <div style={{marginTop:"clamp(12px,2vh,24px)",fontSize:11,color:C.muted,letterSpacing:2,fontFamily:"'Share Tech Mono',monospace"}}>VRS CONNECT ▶</div>
+        <div style={{marginTop:"clamp(14px,2.5vh,32px)",width:280,height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`}}/>
         <button
           onClick={() => setPhase("patternEditor")}
-          style={{marginTop:20,padding:"8px 32px",background:"transparent",border:`1px solid ${C.border}`,color:C.muted,fontSize:11,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",transition:"all 0.3s"}}
+          style={{marginTop:"clamp(10px,1.8vh,20px)",padding:"clamp(5px,1vh,8px) 32px",background:"transparent",border:`1px solid ${C.border}`,color:C.muted,fontSize:11,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",transition:"all 0.3s"}}
           onMouseEnter={e => { e.currentTarget.style.color = C.gold; e.currentTarget.style.borderColor = C.gold; }}
           onMouseLeave={e => { e.currentTarget.style.color = C.muted; e.currentTarget.style.borderColor = C.border; }}
         >⚙ PATTERN EDITOR</button>
@@ -1668,7 +1668,7 @@ export default function Arcadia() {
 
   // @@SECTION:RENDER_TOS
   if (phase === "tos") {
-    const tosMinH = isPortrait ? "100dvh" : "600px";
+    const tosMinH = isPortrait ? "100dvh" : "min(600px,100dvh)";
     return (
       <div style={{width:"100%",height:"100%",minHeight:tosMinH,maxHeight:"100dvh",display:"flex",flexDirection:"column",background:`linear-gradient(180deg,#020810 0%,${C.bg} 100%)`,fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden"}}>
         <style>{keyframes}</style>
@@ -1761,7 +1761,7 @@ export default function Arcadia() {
       setPhase("game");
     };
     return (
-      <div style={{width:"100%",height:"100%",minHeight:"600px",position:"relative",background:"#000",overflow:"hidden"}}>
+      <div style={{width:"100%",height:"100%",minHeight:"min(600px,100dvh)",position:"relative",background:"#000",overflow:"hidden"}}>
         <style>{keyframes}</style>
         <video
           src={url}
@@ -1848,7 +1848,7 @@ export default function Arcadia() {
     const ACTION_COLOR_MAP = { atk:"#00ffcc", counter:"#f97316", dodge:"#a78bfa", unavoidable:"#ff4466", unavoidable_lite:"#f59e0b" };
 
     return (
-      <div style={{width:"100%",height:"100%",minHeight:"600px",display:"flex",flexDirection:"column",background:`linear-gradient(180deg,${C.bg} 0%,${C.panel} 100%)`,fontFamily:"'Noto Serif JP',serif",overflow:"hidden"}}>
+      <div style={{width:"100%",height:"100%",minHeight:"min(600px,100dvh)",display:"flex",flexDirection:"column",background:`linear-gradient(180deg,${C.bg} 0%,${C.panel} 100%)`,fontFamily:"'Noto Serif JP',serif",overflow:"hidden"}}>
         <style>{keyframes}</style>
 
         {/* ヘッダー */}
@@ -2149,7 +2149,7 @@ export default function Arcadia() {
       : `linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 50%,${ed.bg[2]} 100%)`;
 
     return (
-      <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"600px",display:"flex",flexDirection:"column",background:battleBg,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden"}}>
+      <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"min(600px,100dvh)",display:"flex",flexDirection:"column",background:battleBg,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden"}}>
         <style>{keyframes}</style>
         {notif && <div style={{position:"absolute",top:20,left:"50%",transform:"translateX(-50%)",background:"rgba(10,26,38,0.95)",border:`1px solid ${C.accent}`,color:C.accent,padding:"8px 20px",fontSize:13,letterSpacing:1,zIndex:100,whiteSpace:"nowrap",fontFamily:"'Share Tech Mono',monospace",animation:"notifIn 0.3s ease"}}>{notif}</div>}
 
@@ -2284,7 +2284,7 @@ export default function Arcadia() {
         <div style={{flex:1,display:"flex",flexDirection:"row",overflow:"hidden",minHeight:0}}>
 
           {/* 左カラム：エネミー表示 */}
-          <div style={{flex:"0 0 65%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"12px 8px",position:"relative",overflow:"hidden",gap:10}}>
+          <div style={{flex:"0 0 65%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"clamp(6px,1.5vh,12px) 8px",position:"relative",overflow:"hidden",gap:"clamp(4px,1vh,10px)"}}>
             {isBoss && <div style={{position:"absolute",top:10,left:"50%",transform:"translateX(-50%)",fontSize:11,letterSpacing:6,color:C.red,fontFamily:"'Share Tech Mono',monospace",animation:"dngr 1s infinite",whiteSpace:"nowrap",zIndex:2}}>─── BOSS ───</div>}
 
             {/* コンボ表示（3ターン以上継続時） */}
@@ -2457,7 +2457,7 @@ export default function Arcadia() {
   const isHpLow = hp / mhp <= 0.25;
 
   return (
-    <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"600px",display:"flex",flexDirection:"column",...bgStyle,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden",transition:"background 1s"}}>
+    <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"min(600px,100dvh)",display:"flex",flexDirection:"column",...bgStyle,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden",transition:"background 1s"}}>
       <style>{keyframes}</style>
 
       {/* Overlay fade */}
@@ -2485,7 +2485,7 @@ export default function Arcadia() {
       </div>
 
       {/* Sprite area */}
-      <div style={{flex:1,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:isPortrait?"8px 16px 0":"20px 20px 0",position:"relative",zIndex:5,minHeight:isPortrait?120:200}}>
+      <div style={{flex:1,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:isPortrait?"8px 16px 0":"clamp(8px,2vh,20px) 20px 0",position:"relative",zIndex:5,minHeight:isPortrait?120:"clamp(80px,20vh,200px)"}}>
         {/* Scene-specific atmosphere */}
         {sc.loc.includes("洞窟") && (
           <>
@@ -2545,12 +2545,15 @@ export default function Arcadia() {
             const sprUrl = sprKey ? assetUrl(sprKey) : null;
             const isHero = i === 0;
             const sz = SPRITE_SIZE[sp] ?? { height: 100, heroHeight: 130, offsetY: 0, fallbackSize: 40 };
-            // 縦長時はスプライトを55%に縮小してダイアログエリアを広く確保
+            // 縦長時は55%縮小、横長時はdvhに応じて縮小（28vh上限・固定px下限）
+            const baseH = isHero ? sz.heroHeight : sz.height;
             const scale = isPortrait ? 0.55 : 1;
-            const dispH = Math.round((isHero ? sz.heroHeight : sz.height) * scale);
+            // 横長：dvhで収まるよう maxHeight を "min(baseH, 22vh)" で制御
+            const dispH = isPortrait ? Math.round(baseH * scale) : baseH;
+            const maxHStyle = isPortrait ? {} : { maxHeight:`min(${baseH}px,22vh)` };
             const heroFilter = isHero ? "drop-shadow(0 0 8px rgba(0,200,255,0.3))" : "none";
             return sprUrl
-              ? <img key={i} src={sprUrl} alt={sp} style={{height:dispH,objectFit:"contain",marginBottom:sz.offsetY,animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter}} />
+              ? <img key={i} src={sprUrl} alt={sp} style={{height:dispH,objectFit:"contain",marginBottom:sz.offsetY,animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter,...maxHStyle}} />
               : <div key={i} style={{fontSize:Math.round(sz.fallbackSize * scale),animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter,marginBottom:sz.offsetY,textShadow:"0 4px 8px rgba(0,0,0,0.5)"}}>{sp}</div>;
           })}
         </div>
@@ -2565,7 +2568,7 @@ export default function Arcadia() {
         .arcadia-text-scroll { scrollbar-width: thin; scrollbar-color: ${C.border} transparent; }
       `}</style>
       <div
-        style={{position:"relative",zIndex:10,height:isPortrait?220:171,margin:isPortrait?"0 6px 6px":"0 8px 4px",flexShrink:0}}
+        style={{position:"relative",zIndex:10,height:isPortrait?220:"clamp(140px,28vh,171px)",margin:isPortrait?"0 6px 6px":"0 8px 4px",flexShrink:0}}
         onPointerDown={e => { tapStartYRef.current = e.clientY; }}
         onPointerUp={e => {
           const dy = Math.abs(e.clientY - tapStartYRef.current);
