@@ -2160,8 +2160,8 @@ export default function Arcadia() {
           /* ══ 縦長バトルレイアウト ══════════════════════════════════════════ */
           <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minHeight:0}}>
 
-            {/* 上部：エネミーエリア */}
-            <div style={{flex:"0 0 42%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"8px 8px 4px",position:"relative",overflow:"hidden",gap:6}}>
+            {/* 上部：エネミーエリア -- ボス/大型は広め */}
+            <div style={{flex:isBoss||["koza","shamerlot_lv3","shamerlot_lv5"].includes(currentEnemyType)?"0 0 52%":"0 0 42%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"8px 8px 4px",position:"relative",overflow:"hidden",gap:6}}>
               {isBoss && <div style={{position:"absolute",top:6,left:"50%",transform:"translateX(-50%)",fontSize:10,letterSpacing:6,color:C.red,fontFamily:"'Share Tech Mono',monospace",animation:"dngr 1s infinite",whiteSpace:"nowrap",zIndex:2}}>─── BOSS ───</div>}
 
               {/* コンボ表示 */}
@@ -2176,16 +2176,19 @@ export default function Arcadia() {
               )}
 
               {/* エネミー画像 */}
-              {enemyImgUrl
-                ? <img src={enemyImgUrl} alt={ed.name} style={{
-                    width:"auto", height:"75%", maxHeight:180, maxWidth:"80%", flexShrink:0,
-                    objectFit:"contain",
-                    animation:isBoss?"bossFloat 2s infinite":"idle 2s infinite",
-                    filter:isBoss?`drop-shadow(0 0 20px ${C.red})`:"drop-shadow(0 4px 16px rgba(0,0,0,0.6))",
-                    transform:btlAnimEnemy?"scale(1.05)":"scale(1)", transition:"transform 0.1s",
-                  }} />
-                : <div style={{fontSize:isBoss?80:60,lineHeight:1,animation:isBoss?"bossFloat 2s infinite":"idle 2s infinite",filter:isBoss?`drop-shadow(0 0 20px ${C.red})`:"none",transform:btlAnimEnemy?"scale(1.1)":"scale(1)",transition:"transform 0.1s",flexShrink:0}}>{ed.em}</div>
-              }
+              {(() => {
+                const isLargeEnemy = isBoss || ["koza","shamerlot_lv3","shamerlot_lv5"].includes(currentEnemyType);
+                const imgMaxH = isLargeEnemy ? 240 : 180;
+                return enemyImgUrl
+                  ? <img src={enemyImgUrl} alt={ed.name} style={{
+                      width:"auto", height:"75%", maxHeight:imgMaxH, maxWidth:"85%", flexShrink:0,
+                      objectFit:"contain",
+                      animation:isBoss?"bossFloat 2s infinite":"idle 2s infinite",
+                      filter:isBoss?`drop-shadow(0 0 20px ${C.red})`:"drop-shadow(0 4px 16px rgba(0,0,0,0.6))",
+                      transform:btlAnimEnemy?"scale(1.05)":"scale(1)", transition:"transform 0.1s",
+                    }} />
+                  : <div style={{fontSize:isBoss?90:60,lineHeight:1,animation:isBoss?"bossFloat 2s infinite":"idle 2s infinite",filter:isBoss?`drop-shadow(0 0 20px ${C.red})`:"none",transform:btlAnimEnemy?"scale(1.1)":"scale(1)",transition:"transform 0.1s",flexShrink:0}}>{ed.em}</div>;
+              })()}
 
               {/* エネミー名＋HPバー */}
               <div style={{width:"85%",flexShrink:0,zIndex:2,background:"rgba(5,13,20,0.65)",padding:"5px 10px",borderRadius:4}}>
@@ -2209,9 +2212,9 @@ export default function Arcadia() {
               </div>
 
               {/* バトルログ */}
-              <div style={{flex:1,overflowY:"auto",padding:"6px 14px",minHeight:0}}>
-                {btlLogs.slice(-6).map((l,i,arr) => (
-                  <div key={i} style={{fontSize:11,color:i===arr.length-1?C.white:C.muted,lineHeight:1.65,animation:i===arr.length-1?"slideUp 0.3s ease":"none"}}>{l}</div>
+              <div style={{flex:1,overflowY:"auto",padding:"4px 14px",minHeight:0}}>
+                {btlLogs.slice(-4).map((l,i,arr) => (
+                  <div key={i} style={{fontSize:10,color:i===arr.length-1?C.white:C.muted,lineHeight:1.55,animation:i===arr.length-1?"slideUp 0.3s ease":"none"}}>{l}</div>
                 ))}
               </div>
 
@@ -2542,30 +2545,27 @@ export default function Arcadia() {
           </button>
         )}
 
-        <div style={{display:"flex",gap:isPortrait?4:12,alignItems:"flex-end",justifyContent:"center",flexWrap:"nowrap",width:"100%",overflow:"visible"}}>
+        <div style={{display:"flex",gap:isPortrait?2:8,alignItems:"flex-end",justifyContent:"center",flexWrap:"nowrap",width:"100%",overflow:"hidden"}}>
           {sc.sprites.map((sp, i) => {
             const sprKey = SPRITE_MAP[sp];
             const sprUrl = sprKey ? assetUrl(sprKey) : null;
             const isHero = i === 0;
             const sz = SPRITE_SIZE[sp] ?? { scale: 0.9, heroScale: 1.0, offsetY: 0, fallbackSize: 40 };
-            // 表示人数が多いほど1人あたりのスペースが減るため、基準maxHeightを人数で調整
             const count = sc.sprites.length;
-            // 縦長モード：スプライトエリアの高さ基準をvhで確保
-            // 最大5人表示時を基準に、人数が減るほど大きく表示
-            const countScale = count <= 1 ? 1.0 : count <= 2 ? 0.95 : count <= 3 ? 0.90 : count <= 4 ? 0.84 : 0.78;
+            // 人数ごとの高さ縮小率（6人が最大）
+            const countScale = count <= 1 ? 1.0 : count <= 2 ? 0.95 : count <= 3 ? 0.90 : count <= 4 ? 0.84 : count <= 5 ? 0.78 : 0.70;
             const appliedScale = isHero ? sz.heroScale : sz.scale;
             // 最大表示高さ: 縦長=30vh、横長=34vh を基準に人数・キャラscaleを乗算
-            // 縦長: HUD約30px + ダイアログ220px + margin → スプライトエリアは残り約40vh前後
-            //       そのうち最大75%程度に収める → 30vh
             const maxHPct = isPortrait
               ? Math.round(30 * countScale * appliedScale)
               : Math.round(34 * countScale * appliedScale);
             const maxHStr = `${maxHPct}vh`;
             const heroFilter = isHero ? "drop-shadow(0 0 8px rgba(0,200,255,0.3))" : "none";
             const fbSize = Math.round(sz.fallbackSize * countScale * appliedScale);
+            // flexShrink:1 + minWidth:0 で人数が多くても画面内に収まるよう横幅を縮める
             return sprUrl
-              ? <img key={i} src={sprUrl} alt={sp} style={{maxHeight:maxHStr,width:"auto",objectFit:"contain",marginBottom:sz.offsetY,animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter,flexShrink:1}} />
-              : <div key={i} style={{fontSize:fbSize,animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter,marginBottom:sz.offsetY,textShadow:"0 4px 8px rgba(0,0,0,0.5)",lineHeight:1}}>{sp}</div>;
+              ? <img key={i} src={sprUrl} alt={sp} style={{maxHeight:maxHStr,width:"auto",maxWidth:`${Math.floor(100/count)-1}%`,objectFit:"contain",marginBottom:sz.offsetY,animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter,flexShrink:1,minWidth:0}} />
+              : <div key={i} style={{fontSize:fbSize,animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter,marginBottom:sz.offsetY,textShadow:"0 4px 8px rgba(0,0,0,0.5)",lineHeight:1,flexShrink:1,minWidth:0}}>{sp}</div>;
           })}
         </div>
       </div>
