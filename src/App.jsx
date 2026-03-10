@@ -2177,8 +2177,8 @@ export default function Arcadia() {
 
               {/* エネミー画像 */}
               {(() => {
-                const isLargeEnemy = isBoss || ["koza","shamerlot_lv3","shamerlot_lv5"].includes(currentEnemyType);
-                const imgMaxH = isLargeEnemy ? 240 : 180;
+                const isLargeEnemy = ["koza","shamerlot_lv3","shamerlot_lv5"].includes(currentEnemyType);
+                const imgMaxH = isBoss ? 400 : isLargeEnemy ? 345 : 210;
                 return enemyImgUrl
                   ? <img src={enemyImgUrl} alt={ed.name} style={{
                       width:"auto", height:"75%", maxHeight:imgMaxH, maxWidth:"85%", flexShrink:0,
