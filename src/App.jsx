@@ -1761,13 +1761,13 @@ export default function Arcadia() {
       setPhase("game");
     };
     return (
-      <div style={{width:"100%",height:"100%",minHeight:"min(600px,100dvh)",position:"relative",background:"#000",overflow:"hidden"}}>
+      <div style={{width:"100%",height:"100%",minHeight:"min(600px,100dvh)",position:"relative",background:"#000",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center"}}>
         <style>{keyframes}</style>
         <video
           src={url}
           autoPlay
           playsInline
-          style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}
+          style={{width:"100%",height:"100%",objectFit:"contain",display:"block"}}
           onEnded={onMovieEnd}
         />
         <button
