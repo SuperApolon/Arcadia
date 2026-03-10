@@ -658,8 +658,31 @@ function VictoryButton({ onFanfareStart, onProceed }) {
   );
 }
 
+// @@SECTION:ORIENTATION_HOOK ────────────────────────────────────────────────
+// 縦長（portrait）か横長（landscape）かを判定するカスタムフック。
+// portrait = true  → モバイル縦持ちレイアウトを使用
+// portrait = false → 既存の横長レイアウトをそのまま使用
+function useIsPortrait() {
+  const getPortrait = () => {
+    if (typeof window === "undefined") return false;
+    return window.innerHeight > window.innerWidth;
+  };
+  const [isPortrait, setIsPortrait] = useState(getPortrait);
+  useEffect(() => {
+    const handler = () => setIsPortrait(getPortrait());
+    window.addEventListener("resize", handler);
+    window.addEventListener("orientationchange", handler);
+    return () => {
+      window.removeEventListener("resize", handler);
+      window.removeEventListener("orientationchange", handler);
+    };
+  }, []);
+  return isPortrait;
+}
+
 // @@SECTION:MAIN_COMPONENT
 export default function Arcadia() {
+  const isPortrait = useIsPortrait();
   // @@SECTION:STATE_ADVENTURE
   const [phase, setPhase] = useState("title");
   const [tosScrolled, setTosScrolled] = useState(false);
@@ -1574,7 +1597,39 @@ export default function Arcadia() {
   }
 
   // @@SECTION:RENDER_TITLE
-  if (phase === "title") return (
+  if (phase === "title") {
+    // ── 縦長タイトル ──────────────────────────────────────────────────────
+    if (isPortrait) return (
+      <div style={{width:"100%",height:"100%",minHeight:"100dvh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:`linear-gradient(180deg,#020810 0%,#050d14 40%,#0a1828 100%)`,backgroundImage:`url(https://superapolon.github.io/Arcadia_Assets/title/title_bg.webp)`,backgroundSize:"cover",backgroundPosition:"center",fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden"}}>
+        <style>{keyframes}</style>
+        <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,200,255,0.015) 2px,rgba(0,200,255,0.015) 4px)",pointerEvents:"none",zIndex:1}}/>
+        {[...Array(20)].map((_,i)=>(
+          <div key={i} style={{position:"absolute",width:i%5===0?2:1,height:i%5===0?2:1,borderRadius:"50%",background:"#adf",top:`${Math.random()*100}%`,left:`${Math.random()*100}%`,opacity:0.3+Math.random()*0.5,animation:`blnk ${1.5+Math.random()*2}s ${Math.random()*2}s infinite`}}/>
+        ))}
+        <div style={{position:"relative",zIndex:2,textAlign:"center",animation:"fadeIn 1.5s ease",padding:"0 24px",width:"100%",maxWidth:420}}>
+          <div style={{fontSize:10,letterSpacing:10,color:C.muted,marginBottom:14,fontFamily:"'Share Tech Mono',monospace"}}>VRMMORPG</div>
+          <div style={{fontSize:"clamp(52px,16vw,80px)",fontWeight:700,letterSpacing:"clamp(8px,4vw,16px)",color:C.white,textShadow:`0 0 40px ${C.accent},0 0 80px ${C.accent}44`,lineHeight:1,marginBottom:8}}>ARCADIA</div>
+          <div style={{fontSize:12,letterSpacing:4,color:C.accent2,marginBottom:40,fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 10px ${C.accent2}`}}>─── 理想郷への扉 ───</div>
+          <div style={{width:"70%",height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:"0 auto 36px"}}/>
+          <button
+            onClick={() => { unlockAudio("bgm/title"); setTosScrolled(false); setPhase("tos"); }}
+            style={{width:"80%",padding:"18px 0",background:"transparent",border:`1px solid ${C.accent}`,color:C.accent,fontSize:17,letterSpacing:6,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",animation:"glow 2s infinite",transition:"all 0.3s",display:"block",margin:"0 auto"}}
+            onMouseEnter={e => e.target.style.background = `${C.accent}22`}
+            onMouseLeave={e => e.target.style.background = "transparent"}
+          >GAME START</button>
+          <div style={{marginTop:20,fontSize:11,color:C.muted,letterSpacing:2,fontFamily:"'Share Tech Mono',monospace"}}>VRS CONNECT ▶</div>
+          <div style={{marginTop:28,width:"70%",height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:"28px auto 0"}}/>
+          <button
+            onClick={() => setPhase("patternEditor")}
+            style={{marginTop:18,padding:"12px 0",width:"60%",background:"transparent",border:`1px solid ${C.border}`,color:C.muted,fontSize:11,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",transition:"all 0.3s",display:"block",margin:"18px auto 0"}}
+            onMouseEnter={e => { e.currentTarget.style.color = C.gold; e.currentTarget.style.borderColor = C.gold; }}
+            onMouseLeave={e => { e.currentTarget.style.color = C.muted; e.currentTarget.style.borderColor = C.border; }}
+          >⚙ PATTERN EDITOR</button>
+        </div>
+      </div>
+    );
+    // ── 横長タイトル（変更なし）──────────────────────────────────────────
+    return (
     <div style={{width:"100%",height:"100%",minHeight:"600px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:`linear-gradient(180deg,#020810 0%,#050d14 40%,#0a1828 100%)`,backgroundImage:`url(https://superapolon.github.io/Arcadia_Assets/title/title_bg.webp)`,backgroundSize:"cover",backgroundPosition:"center",fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden"}}>
       <style>{keyframes}</style>
       {/* Scanline effect */}
@@ -1608,12 +1663,14 @@ export default function Arcadia() {
         >⚙ PATTERN EDITOR</button>
       </div>
     </div>
-  );
+    );
+  }
 
   // @@SECTION:RENDER_TOS
   if (phase === "tos") {
+    const tosMinH = isPortrait ? "100dvh" : "600px";
     return (
-      <div style={{width:"100%",height:"100%",minHeight:"600px",maxHeight:"100vh",display:"flex",flexDirection:"column",background:`linear-gradient(180deg,#020810 0%,${C.bg} 100%)`,fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden"}}>
+      <div style={{width:"100%",height:"100%",minHeight:tosMinH,maxHeight:"100dvh",display:"flex",flexDirection:"column",background:`linear-gradient(180deg,#020810 0%,${C.bg} 100%)`,fontFamily:"'Noto Serif JP',serif",position:"relative",overflow:"hidden"}}>
         <style>{keyframes}</style>
         <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,200,255,0.012) 2px,rgba(0,200,255,0.012) 4px)",pointerEvents:"none",zIndex:0}}/>
 
@@ -2092,11 +2149,138 @@ export default function Arcadia() {
       : `linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 50%,${ed.bg[2]} 100%)`;
 
     return (
-      <div style={{width:"100%",height:"100%",minHeight:"600px",display:"flex",flexDirection:"column",background:battleBg,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden"}}>
+      <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"600px",display:"flex",flexDirection:"column",background:battleBg,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden"}}>
         <style>{keyframes}</style>
         {notif && <div style={{position:"absolute",top:20,left:"50%",transform:"translateX(-50%)",background:"rgba(10,26,38,0.95)",border:`1px solid ${C.accent}`,color:C.accent,padding:"8px 20px",fontSize:13,letterSpacing:1,zIndex:100,whiteSpace:"nowrap",fontFamily:"'Share Tech Mono',monospace",animation:"notifIn 0.3s ease"}}>{notif}</div>}
 
-        {/* ── メインエリア：左＝エネミー、右＝ログ＋ステータス＋ボタン ── */}
+        {isPortrait ? (
+          /* ══ 縦長バトルレイアウト ══════════════════════════════════════════ */
+          <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minHeight:0}}>
+
+            {/* 上部：エネミーエリア */}
+            <div style={{flex:"0 0 42%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"8px 8px 4px",position:"relative",overflow:"hidden",gap:6}}>
+              {isBoss && <div style={{position:"absolute",top:6,left:"50%",transform:"translateX(-50%)",fontSize:10,letterSpacing:6,color:C.red,fontFamily:"'Share Tech Mono',monospace",animation:"dngr 1s infinite",whiteSpace:"nowrap",zIndex:2}}>─── BOSS ───</div>}
+
+              {/* コンボ表示 */}
+              {noDmgStreak >= 3 && (
+                <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%, -50%)",zIndex:10,pointerEvents:"none",textAlign:"center",animation:"comboPop 0.4s cubic-bezier(0.34,1.56,0.64,1) both"}}>
+                  <div style={{fontSize:"clamp(32px,10vw,56px)",fontWeight:900,fontFamily:"'Share Tech Mono',monospace",color:C.gold,letterSpacing:2,lineHeight:1,animation:"comboPulse 1s infinite",WebkitTextStroke:`1px #ffffff44`}}>
+                    {noDmgStreak}
+                    <span style={{fontSize:"0.45em",letterSpacing:4,display:"block",marginTop:2,color:"#ffe08a"}}>COMBO</span>
+                  </div>
+                  <div style={{fontSize:9,color:"#ffe08a",fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,marginTop:3,opacity:0.85}}>MP +{5 + noDmgStreak} / turn</div>
+                </div>
+              )}
+
+              {/* エネミー画像 */}
+              {enemyImgUrl
+                ? <img src={enemyImgUrl} alt={ed.name} style={{
+                    width:"auto", height:"75%", maxHeight:180, maxWidth:"80%", flexShrink:0,
+                    objectFit:"contain",
+                    animation:isBoss?"bossFloat 2s infinite":"idle 2s infinite",
+                    filter:isBoss?`drop-shadow(0 0 20px ${C.red})`:"drop-shadow(0 4px 16px rgba(0,0,0,0.6))",
+                    transform:btlAnimEnemy?"scale(1.05)":"scale(1)", transition:"transform 0.1s",
+                  }} />
+                : <div style={{fontSize:isBoss?80:60,lineHeight:1,animation:isBoss?"bossFloat 2s infinite":"idle 2s infinite",filter:isBoss?`drop-shadow(0 0 20px ${C.red})`:"none",transform:btlAnimEnemy?"scale(1.1)":"scale(1)",transition:"transform 0.1s",flexShrink:0}}>{ed.em}</div>
+              }
+
+              {/* エネミー名＋HPバー */}
+              <div style={{width:"85%",flexShrink:0,zIndex:2,background:"rgba(5,13,20,0.65)",padding:"5px 10px",borderRadius:4}}>
+                <div style={{color:C.white,fontSize:12,fontWeight:700,letterSpacing:1,textAlign:"center",marginBottom:5,textShadow:"0 1px 4px #000"}}>{ed.name}</div>
+                <div style={{width:"100%",height:7,background:C.panel2,borderRadius:4,overflow:"hidden"}}>
+                  <div style={{height:"100%",width:`${enemyPct}%`,background:isBoss?`linear-gradient(90deg,${C.red},#ff8844)`:`linear-gradient(90deg,${C.accent2},${C.accent})`,transition:"width 0.4s",borderRadius:4}}/>
+                </div>
+                <div style={{fontSize:9,color:C.muted,fontFamily:"'Share Tech Mono',monospace",textAlign:"center",marginTop:2}}>{enemyHp} / {ed.maxHp}</div>
+              </div>
+            </div>
+
+            {/* 下部：ログ＋ステータス＋ボタン */}
+            <div style={{flex:1,display:"flex",flexDirection:"column",background:"rgba(5,13,20,0.88)",borderTop:`1px solid ${C.border}44`,overflow:"hidden",minHeight:0}}>
+
+              {/* すくみガイド */}
+              <div style={{padding:"3px 10px",borderBottom:`1px solid ${C.border}33`,display:"flex",gap:8,justifyContent:"center",flexShrink:0}}>
+                <span style={{fontSize:8,color:"#00ffcc88",fontFamily:"'Share Tech Mono',monospace"}}>⚔→🔄負</span>
+                <span style={{fontSize:8,color:"#f9731688",fontFamily:"'Share Tech Mono',monospace"}}>🔄→💨負</span>
+                <span style={{fontSize:8,color:"#a78bfa88",fontFamily:"'Share Tech Mono',monospace"}}>💨→⚔負</span>
+                <span style={{fontSize:8,color:"#ff446688",fontFamily:"'Share Tech Mono',monospace"}}>💥回避不能</span>
+              </div>
+
+              {/* バトルログ */}
+              <div style={{flex:1,overflowY:"auto",padding:"6px 14px",minHeight:0}}>
+                {btlLogs.slice(-6).map((l,i,arr) => (
+                  <div key={i} style={{fontSize:11,color:i===arr.length-1?C.white:C.muted,lineHeight:1.65,animation:i===arr.length-1?"slideUp 0.3s ease":"none"}}>{l}</div>
+                ))}
+              </div>
+
+              {/* プレイヤーステータス */}
+              <div style={{padding:"8px 14px",background:"rgba(10,26,38,0.98)",borderTop:`1px solid ${C.border}`,flexShrink:0}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:3}}>
+                  <div>
+                    <span style={{fontSize:10,color:C.muted,marginRight:5,fontFamily:"'Share Tech Mono',monospace"}}>HP</span>
+                    <span style={{fontSize:12,color:playerPct<=25?C.red:C.accent2,fontFamily:"'Share Tech Mono',monospace",animation:playerPct<=25?"dngr 0.8s infinite":"none"}}>{hp}/{mhp}</span>
+                  </div>
+                  <div>
+                    <span style={{fontSize:10,color:C.muted,marginRight:5,fontFamily:"'Share Tech Mono',monospace"}}>MP</span>
+                    <span style={{fontSize:12,color:"#60a5fa",fontFamily:"'Share Tech Mono',monospace"}}>{mp}/{mmp}</span>
+                  </div>
+                  <div style={{fontSize:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>Turn {turn}</div>
+                </div>
+                <div style={{height:3,background:C.panel2,borderRadius:2,marginBottom:2,overflow:"hidden"}}>
+                  <div style={{height:"100%",width:`${playerPct}%`,background:`linear-gradient(90deg,${C.red},${C.accent2})`,transition:"width 0.4s"}}/>
+                </div>
+                <div style={{height:3,background:C.panel2,borderRadius:2,marginBottom:6,overflow:"hidden"}}>
+                  <div style={{height:"100%",width:`${mpPct}%`,background:"linear-gradient(90deg,#2255cc,#60a5fa)",transition:"width 0.4s"}}/>
+                </div>
+
+                {/* 敵の次ターン行動予告 */}
+                {!victory && !defeat && enemyNextAction && (() => {
+                  const eLabel = ENEMY_ACTION_LABEL[enemyNextAction];
+                  const isUnavoidable = enemyNextAction === "unavoidable";
+                  const previewColor = isUnavoidable ? C.red : enemyNextAction === "counter" ? "#f97316" : enemyNextAction === "dodge" ? C.muted : "#60a5fa";
+                  return (
+                    <div style={{display:"flex",alignItems:"center",gap:5,padding:"3px 8px",background:`${previewColor}11`,border:`1px solid ${previewColor}44`,borderRadius:4,marginBottom:6}}>
+                      <span style={{fontSize:9,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>次のターン</span>
+                      <span style={{fontSize:10,color:previewColor,fontFamily:"'Share Tech Mono',monospace",fontWeight:700,animation:isUnavoidable?"dngr 0.8s infinite":"none"}}>
+                        {eLabel?.icon} {ed.name}：{eLabel?.text}
+                      </span>
+                      {isUnavoidable && <span style={{fontSize:8,color:C.red}}>⚠ 回避不能</span>}
+                    </div>
+                  );
+                })()}
+
+                {/* アクションボタン / 勝敗結果 */}
+                {!victory && !defeat ? (
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:6}}>
+                    {BATTLE_SKILLS.map(sk => {
+                      const canAfford = sk.cost === 0 || mp >= sk.cost;
+                      const btnStyle = canAfford
+                        ? { padding:"10px 4px", background:C.panel, border:`1px solid ${sk.color}44`, color:sk.color, fontSize:12, cursor:"pointer", borderRadius:4, transition:"all 0.2s", fontFamily:"'Noto Serif JP',serif" }
+                        : { padding:"10px 4px", background:C.panel, border:`1px solid ${C.border}`, color:C.muted, fontSize:12, cursor:"not-allowed", borderRadius:4, transition:"all 0.2s", fontFamily:"'Noto Serif JP',serif", opacity:0.5 };
+                      return (
+                        <button key={sk.id} onClick={() => canAfford && doBattleAction(sk.id)} style={btnStyle}
+                          onMouseEnter={e => { if (canAfford) e.currentTarget.style.background = `${sk.color}22`; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = C.panel; }}>
+                          <div style={{fontSize:20}}>{sk.icon}</div>
+                          <div style={{fontSize:10,marginTop:2}}>{sk.label}</div>
+                          {sk.cost > 0 && <div style={{fontSize:8,color:canAfford?C.muted:"#553333"}}>MP {sk.cost}</div>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"10px 0"}}>
+                    <div style={{fontSize:16,color:victory?C.gold:C.red,fontWeight:700,marginBottom:10,animation:"fadeIn 0.5s"}}>{victory ? "🏆 Victory！" : "💀 Defeat..."}</div>
+                    <button onClick={exitBattle} style={{padding:"10px 40px",background:"transparent",border:`1px solid ${victory?C.gold:C.muted}`,color:victory?C.gold:C.muted,fontSize:14,cursor:"pointer",letterSpacing:2,fontFamily:"'Share Tech Mono',monospace"}}>
+                      {victory ? "続ける ▶" : "戻る ▶"}
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ) : (
+        /* ══ 横長バトルレイアウト（変更なし）══════════════════════════════ */
+        /* ── メインエリア：左＝エネミー、右＝ログ＋ステータス＋ボタン ── */
         <div style={{flex:1,display:"flex",flexDirection:"row",overflow:"hidden",minHeight:0}}>
 
           {/* 左カラム：エネミー表示 */}
@@ -2262,6 +2446,7 @@ export default function Arcadia() {
             </div>
           </div>
         </div>
+        )}
       </div>
     );
   }
@@ -2272,7 +2457,7 @@ export default function Arcadia() {
   const isHpLow = hp / mhp <= 0.25;
 
   return (
-    <div style={{width:"100%",height:"100%",minHeight:"600px",display:"flex",flexDirection:"column",...bgStyle,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden",transition:"background 1s"}}>
+    <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"600px",display:"flex",flexDirection:"column",...bgStyle,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden",transition:"background 1s"}}>
       <style>{keyframes}</style>
 
       {/* Overlay fade */}
@@ -2285,22 +2470,22 @@ export default function Arcadia() {
       <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,200,255,0.01) 3px,rgba(0,200,255,0.01) 4px)",pointerEvents:"none",zIndex:1}}/>
 
       {/* HUD top */}
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"6px 14px",background:"rgba(5,13,20,0.7)",borderBottom:`1px solid ${C.border}`,zIndex:10,position:"relative"}}>
-        <div style={{fontSize:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>{sc.loc}</div>
-        <div style={{display:"flex",gap:10,alignItems:"center"}}>
-          <div style={{fontSize:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:isPortrait?"5px 12px":"6px 14px",background:"rgba(5,13,20,0.7)",borderBottom:`1px solid ${C.border}`,zIndex:10,position:"relative"}}>
+        <div style={{fontSize:isPortrait?9:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",maxWidth:"40%"}}>{sc.loc}</div>
+        <div style={{display:"flex",gap:isPortrait?7:10,alignItems:"center"}}>
+          <div style={{fontSize:isPortrait?9:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>
             <span style={{color:isHpLow?C.red:C.accent2,animation:isHpLow?"dngr 0.8s infinite":"none"}}>HP {hp}</span>
-            <span style={{color:C.muted}}> / </span>
+            <span style={{color:C.muted}}>/</span>
             <span style={{color:C.muted}}>{mhp}</span>
           </div>
-          <div style={{fontSize:10,color:"#60a5fa",fontFamily:"'Share Tech Mono',monospace"}}>MP {mp}</div>
-          <div style={{fontSize:10,color:C.gold,fontFamily:"'Share Tech Mono',monospace"}}>💰 {elk}</div>
-          <div style={{fontSize:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>Lv.{lv}</div>
+          <div style={{fontSize:isPortrait?9:10,color:"#60a5fa",fontFamily:"'Share Tech Mono',monospace"}}>MP {mp}</div>
+          <div style={{fontSize:isPortrait?9:10,color:C.gold,fontFamily:"'Share Tech Mono',monospace"}}>💰{elk}</div>
+          <div style={{fontSize:isPortrait?9:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>Lv.{lv}</div>
         </div>
       </div>
 
       {/* Sprite area */}
-      <div style={{flex:1,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:"20px 20px 0",position:"relative",zIndex:5,minHeight:200}}>
+      <div style={{flex:1,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:isPortrait?"8px 16px 0":"20px 20px 0",position:"relative",zIndex:5,minHeight:isPortrait?120:200}}>
         {/* Scene-specific atmosphere */}
         {sc.loc.includes("洞窟") && (
           <>
@@ -2354,17 +2539,19 @@ export default function Arcadia() {
           </button>
         )}
 
-        <div style={{display:"flex",gap:16,alignItems:"flex-end",justifyContent:"center",flexWrap:"wrap"}}>
+        <div style={{display:"flex",gap:isPortrait?8:16,alignItems:"flex-end",justifyContent:"center",flexWrap:"wrap"}}>
           {sc.sprites.map((sp, i) => {
             const sprKey = SPRITE_MAP[sp];
             const sprUrl = sprKey ? assetUrl(sprKey) : null;
             const isHero = i === 0;
             const sz = SPRITE_SIZE[sp] ?? { height: 100, heroHeight: 130, offsetY: 0, fallbackSize: 40 };
-            const dispH = isHero ? sz.heroHeight : sz.height;
+            // 縦長時はスプライトを55%に縮小してダイアログエリアを広く確保
+            const scale = isPortrait ? 0.55 : 1;
+            const dispH = Math.round((isHero ? sz.heroHeight : sz.height) * scale);
             const heroFilter = isHero ? "drop-shadow(0 0 8px rgba(0,200,255,0.3))" : "none";
             return sprUrl
               ? <img key={i} src={sprUrl} alt={sp} style={{height:dispH,objectFit:"contain",marginBottom:sz.offsetY,animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter}} />
-              : <div key={i} style={{fontSize:sz.fallbackSize,animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter,marginBottom:sz.offsetY,textShadow:"0 4px 8px rgba(0,0,0,0.5)"}}>{sp}</div>;
+              : <div key={i} style={{fontSize:Math.round(sz.fallbackSize * scale),animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter,marginBottom:sz.offsetY,textShadow:"0 4px 8px rgba(0,0,0,0.5)"}}>{sp}</div>;
           })}
         </div>
       </div>
@@ -2378,7 +2565,7 @@ export default function Arcadia() {
         .arcadia-text-scroll { scrollbar-width: thin; scrollbar-color: ${C.border} transparent; }
       `}</style>
       <div
-        style={{position:"relative",zIndex:10,height:171,margin:"0 8px 4px",flexShrink:0}}
+        style={{position:"relative",zIndex:10,height:isPortrait?220:171,margin:isPortrait?"0 6px 6px":"0 8px 4px",flexShrink:0}}
         onPointerDown={e => { tapStartYRef.current = e.clientY; }}
         onPointerUp={e => {
           const dy = Math.abs(e.clientY - tapStartYRef.current);
@@ -2446,7 +2633,7 @@ export default function Arcadia() {
           <div
             ref={textScrollRef}
             className="arcadia-text-scroll"
-            style={{flex:1,fontSize:13,color:C.white,lineHeight:1.85,whiteSpace:"pre-wrap",overflowY:"auto",overflowX:"hidden",paddingRight:6}}
+            style={{flex:1,fontSize:isPortrait?14:13,color:C.white,lineHeight:isPortrait?2.0:1.85,whiteSpace:"pre-wrap",overflowY:"auto",overflowX:"hidden",paddingRight:6}}
           >
             {displayText}
             {typing && <span style={{animation:"blnk 0.5s infinite",color:C.accent}}>█</span>}
@@ -2729,16 +2916,18 @@ export default function Arcadia() {
             </div>
 
             {/* 本体 -- 左ペイン（目次） + 右ペイン（本文） */}
-            <div style={{flex:1,display:"flex",overflow:"hidden"}}>
+            <div style={{flex:1,display:"flex",flexDirection:isPortrait?"column":"row",overflow:"hidden"}}>
 
               {/* 左ペイン -- チャプター/シーン一覧 */}
-              <div className="nv-scroll" style={{width:188,flexShrink:0,borderRight:`1px solid ${C.border}`,overflowY:"auto",background:"rgba(5,13,20,0.6)",padding:"8px 0"}}>
+              <div className="nv-scroll" style={isPortrait
+                ? {height:140,flexShrink:0,borderBottom:`1px solid ${C.border}`,overflowX:"auto",overflowY:"hidden",background:"rgba(5,13,20,0.6)",padding:"6px 0",display:"flex",flexDirection:"row",gap:0}
+                : {width:188,flexShrink:0,borderRight:`1px solid ${C.border}`,overflowY:"auto",background:"rgba(5,13,20,0.6)",padding:"8px 0"}}>
                 {NOVEL_CHAPTERS.map(ch => {
                   const anyVisited = ch.scenes.some(s => visitedSet.has(s.idx));
                   return (
-                    <div key={ch.id}>
+                    <div key={ch.id} style={isPortrait ? {display:"flex",flexDirection:"column",flexShrink:0,minWidth:120,borderRight:`1px solid ${C.border}44`} : {}}>
                       {/* チャプターヘッダー */}
-                      <div style={{padding:"8px 12px 5px",borderTop: ch.id>1 ? `1px solid ${C.border}44` : "none"}}>
+                      <div style={{padding:isPortrait?"4px 10px 3px":"8px 12px 5px",borderTop: (!isPortrait && ch.id>1) ? `1px solid ${C.border}44` : "none"}}>
                         <div style={{fontSize:8,letterSpacing:3,color: anyVisited ? C.accent : C.muted+"66",fontFamily:"'Share Tech Mono',monospace"}}>{ch.sub}</div>
                         <div style={{fontSize:11,color: anyVisited ? C.accent2 : C.muted+"66",fontWeight:"bold",letterSpacing:1,marginTop:1}}>{ch.label}</div>
                       </div>
@@ -2771,7 +2960,7 @@ export default function Arcadia() {
                                   .finally(() => setNovelLoading(false));
                               }
                             }}
-                            style={{display:"block",width:"100%",textAlign:"left",padding:"5px 14px 5px 18px",background:btnBg,border:"none",borderLeft: selected ? `3px solid ${C.accent}` : `3px solid transparent`,color:btnColor,fontSize:10,cursor: visited ? "pointer" : "default",fontFamily:"'Noto Serif JP',serif",letterSpacing:0.3,lineHeight:1.5,transition:"all 0.15s"}}
+                            style={{display:"block",width:"100%",textAlign:"left",padding:isPortrait?"3px 10px 3px 12px":"5px 14px 5px 18px",background:btnBg,border:"none",borderLeft: selected ? `3px solid ${C.accent}` : `3px solid transparent`,color:btnColor,fontSize:isPortrait?9:10,cursor: visited ? "pointer" : "default",fontFamily:"'Noto Serif JP',serif",letterSpacing:0.3,lineHeight:1.5,transition:"all 0.15s"}}
                             onMouseEnter={e=>{ if(visited && !selected){ e.currentTarget.style.background=`${C.accent}11`; e.currentTarget.style.color=C.white; }}}
                             onMouseLeave={e=>{ if(visited && !selected){ e.currentTarget.style.background="transparent"; e.currentTarget.style.color=C.text; }}}
                           >
