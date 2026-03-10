@@ -523,24 +523,27 @@ const SPRITE_MAP = {
 
 // @@SECTION:SPRITE_SIZE ────────────────────────────────────────────────────
 // スプライトごとの表示サイズ個別設定。変更したいときはここだけ編集する。
-// height:       画像の通常表示高さ（px）
-// heroHeight:   index=0（主人公）として表示されるときの高さ（px）
+//
+// scale:        最大表示高さ（スプライトエリア高さ）に対する比率（0.0〜1.0）
+//               5人表示時の最大キャラを基準1.0として各キャラの相対比率を指定。
+//               これにより人数が少ないほど大きく、かつキャラごとの身長差が出る。
+// heroScale:    index=0（主人公）として表示されるときのscale（通常より大きめにできる）
 // offsetY:      下端からの垂直オフセット（px）。正値で上に、負値で下にずらす
 // fallbackSize: 画像なしの場合の絵文字フォントサイズ（px）
 const SPRITE_SIZE = {
-  "🧑":           { height: 240, heroHeight: 240, offsetY:  0, fallbackSize: 52 }, // 🧑  eltz
-  "🧑‍🦱":           { height: 220, heroHeight: 240, offsetY:  0, fallbackSize: 48 }, // 🧑‍🦱 swift
-  "👩":           { height: 220, heroHeight: 240, offsetY:  0, fallbackSize: 48 }, // 👩  linz
-  "👦":           { height: 180, heroHeight: 240, offsetY:  0, fallbackSize: 40 }, // 👦  chopper
-  "🐰":           { height: 130, heroHeight: 220, offsetY:  0, fallbackSize: 40 }, // 🐰  cricket
-  "🙍":           { height: 205, heroHeight: 280, offsetY:  0, fallbackSize: 48 }, // 🙍  koza
-  "👩‍🦰":           { height: 233, heroHeight: 280, offsetY:  0, fallbackSize: 50 }, // 👩‍🦰 rose
-  "👨":           { height: 220, heroHeight: 280, offsetY:  0, fallbackSize: 50 }, // 👨  juda
-  "👧":           { height: 200, heroHeight: 260, offsetY:  0, fallbackSize: 50 }, // 👧  ymir
-  "🤓":           { height: 180, heroHeight: 280, offsetY:  0, fallbackSize: 48 }, // 🤓  rubens
-  "👤":           { height: 200, heroHeight: 260, offsetY:  0, fallbackSize: 50 }, // 👤  traveler
-  "👵":           { height: 190, heroHeight: 240, offsetY:  0, fallbackSize: 50 }, // 👵  old_woman
-  "🧓":           { height: 200, heroHeight: 260, offsetY:  0, fallbackSize: 50 }, // 🧓  shopkeeper
+  "🧑":    { scale: 0.50, heroScale: 0.50, offsetY:  0, fallbackSize: 52 }, // 🧑  eltz
+  "🧑‍🦱":    { scale: 0.48, heroScale: 0.50, offsetY:  0, fallbackSize: 48 }, // 🧑‍🦱 swift
+  "👩":    { scale: 0.47, heroScale: 0.50, offsetY:  0, fallbackSize: 48 }, // 👩  linz
+  "👦":    { scale: 0.37, heroScale: 0.50, offsetY:  0, fallbackSize: 40 }, // 👦  chopper（少年・低め）
+  "🐰":    { scale: 0.27, heroScale: 0.50, offsetY:  0, fallbackSize: 40 }, // 🐰  cricket（小さい）
+  "🙍":    { scale: 0.45, heroScale: 0.50, offsetY:  0, fallbackSize: 48 }, // 🙍  koza
+  "👩‍🦰":    { scale: 0.51, heroScale: 0.50, offsetY:  0, fallbackSize: 50 }, // 👩‍🦰 rose
+  "👨":    { scale: 0.49, heroScale: 0.50, offsetY:  0, fallbackSize: 50 }, // 👨  juda
+  "👧":    { scale: 0.43, heroScale: 0.50, offsetY:  0, fallbackSize: 50 }, // 👧  ymir
+  "🤓":    { scale: 0.40, heroScale: 0.50, offsetY:  0, fallbackSize: 48 }, // 🤓  rubens
+  "👤":    { scale: 0.44, heroScale: 0.50, offsetY:  0, fallbackSize: 50 }, // 👤  traveler
+  "👵":    { scale: 0.41, heroScale: 0.50, offsetY:  0, fallbackSize: 50 }, // 👵  old_woman
+  "🧓":    { scale: 0.44, heroScale: 0.50, offsetY:  0, fallbackSize: 50 }, // 🧓  shopkeeper
 };
 
 // @@SECTION:ENEMY_SIZE ─────────────────────────────────────────────────────
@@ -2485,7 +2488,7 @@ export default function Arcadia() {
       </div>
 
       {/* Sprite area */}
-      <div style={{flex:1,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:isPortrait?"8px 16px 0":"clamp(8px,2vh,20px) 20px 0",position:"relative",zIndex:5,minHeight:isPortrait?120:"clamp(80px,20vh,200px)"}}>
+      <div style={{flex:1,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:isPortrait?"4px 8px 0":"clamp(8px,2vh,16px) 20px 0",position:"relative",zIndex:5,minHeight:isPortrait?160:"clamp(120px,30vh,280px)"}}>
         {/* Scene-specific atmosphere */}
         {sc.loc.includes("洞窟") && (
           <>
@@ -2539,22 +2542,28 @@ export default function Arcadia() {
           </button>
         )}
 
-        <div style={{display:"flex",gap:isPortrait?8:16,alignItems:"flex-end",justifyContent:"center",flexWrap:"wrap"}}>
+        <div style={{display:"flex",gap:isPortrait?4:12,alignItems:"flex-end",justifyContent:"center",flexWrap:"nowrap",width:"100%",overflow:"visible"}}>
           {sc.sprites.map((sp, i) => {
             const sprKey = SPRITE_MAP[sp];
             const sprUrl = sprKey ? assetUrl(sprKey) : null;
             const isHero = i === 0;
-            const sz = SPRITE_SIZE[sp] ?? { height: 100, heroHeight: 130, offsetY: 0, fallbackSize: 40 };
-            // 縦長時は55%縮小、横長時はdvhに応じて縮小（28vh上限・固定px下限）
-            const baseH = isHero ? sz.heroHeight : sz.height;
-            const scale = isPortrait ? 0.55 : 1;
-            // 横長：dvhで収まるよう maxHeight を "min(baseH, 22vh)" で制御
-            const dispH = isPortrait ? Math.round(baseH * scale) : baseH;
-            const maxHStyle = isPortrait ? {} : { maxHeight:`min(${baseH}px,22vh)` };
+            const sz = SPRITE_SIZE[sp] ?? { scale: 0.9, heroScale: 1.0, offsetY: 0, fallbackSize: 40 };
+            // 表示人数が多いほど1人あたりのスペースが減るため、基準maxHeightを人数で調整
+            const count = sc.sprites.length;
+            // 縦長モード：スプライトエリアの高さ基準をvhで確保
+            // 最大5人表示時を基準に、人数が減るほど大きく表示
+            const countScale = count <= 1 ? 1.0 : count <= 2 ? 0.95 : count <= 3 ? 0.90 : count <= 4 ? 0.84 : 0.78;
+            const appliedScale = isHero ? sz.heroScale : sz.scale;
+            // 最大表示高さ: 縦長=48vh、横長=38vh を基準に人数・キャラscaleを乗算
+            const maxHPct = isPortrait
+              ? Math.round(48 * countScale * appliedScale)
+              : Math.round(38 * countScale * appliedScale);
+            const maxHStr = `${maxHPct}vh`;
             const heroFilter = isHero ? "drop-shadow(0 0 8px rgba(0,200,255,0.3))" : "none";
+            const fbSize = Math.round(sz.fallbackSize * countScale * appliedScale);
             return sprUrl
-              ? <img key={i} src={sprUrl} alt={sp} style={{height:dispH,objectFit:"contain",marginBottom:sz.offsetY,animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter,...maxHStyle}} />
-              : <div key={i} style={{fontSize:Math.round(sz.fallbackSize * scale),animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter,marginBottom:sz.offsetY,textShadow:"0 4px 8px rgba(0,0,0,0.5)"}}>{sp}</div>;
+              ? <img key={i} src={sprUrl} alt={sp} style={{maxHeight:maxHStr,width:"auto",objectFit:"contain",marginBottom:sz.offsetY,animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter,flexShrink:1}} />
+              : <div key={i} style={{fontSize:fbSize,animation:`idle ${2+i*0.3}s ${i*0.2}s infinite`,filter:heroFilter,marginBottom:sz.offsetY,textShadow:"0 4px 8px rgba(0,0,0,0.5)",lineHeight:1}}>{sp}</div>;
           })}
         </div>
       </div>
