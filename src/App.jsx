@@ -531,19 +531,19 @@ const SPRITE_MAP = {
 // offsetY:      下端からの垂直オフセット（px）。正値で上に、負値で下にずらす
 // fallbackSize: 画像なしの場合の絵文字フォントサイズ（px）
 const SPRITE_SIZE = {
-  "🧑":    { scale: 0.50, heroScale: 0.50, offsetY:  0, fallbackSize: 52 }, // 🧑  eltz
-  "🧑‍🦱":    { scale: 0.48, heroScale: 0.50, offsetY:  0, fallbackSize: 48 }, // 🧑‍🦱 swift
-  "👩":    { scale: 0.47, heroScale: 0.50, offsetY:  0, fallbackSize: 48 }, // 👩  linz
-  "👦":    { scale: 0.37, heroScale: 0.50, offsetY:  0, fallbackSize: 40 }, // 👦  chopper（少年・低め）
-  "🐰":    { scale: 0.27, heroScale: 0.50, offsetY:  0, fallbackSize: 40 }, // 🐰  cricket（小さい）
-  "🙍":    { scale: 0.45, heroScale: 0.50, offsetY:  0, fallbackSize: 48 }, // 🙍  koza
-  "👩‍🦰":    { scale: 0.51, heroScale: 0.50, offsetY:  0, fallbackSize: 50 }, // 👩‍🦰 rose
-  "👨":    { scale: 0.49, heroScale: 0.50, offsetY:  0, fallbackSize: 50 }, // 👨  juda
-  "👧":    { scale: 0.43, heroScale: 0.50, offsetY:  0, fallbackSize: 50 }, // 👧  ymir
-  "🤓":    { scale: 0.40, heroScale: 0.50, offsetY:  0, fallbackSize: 48 }, // 🤓  rubens
-  "👤":    { scale: 0.44, heroScale: 0.50, offsetY:  0, fallbackSize: 50 }, // 👤  traveler
-  "👵":    { scale: 0.41, heroScale: 0.50, offsetY:  0, fallbackSize: 50 }, // 👵  old_woman
-  "🧓":    { scale: 0.44, heroScale: 0.50, offsetY:  0, fallbackSize: 50 }, // 🧓  shopkeeper
+  "🧑":    { scale: 1.00, heroScale: 1.00, offsetY:  0, fallbackSize: 52 }, // 🧑  eltz
+  "🧑‍🦱":    { scale: 0.96, heroScale: 1.00, offsetY:  0, fallbackSize: 48 }, // 🧑‍🦱 swift
+  "👩":    { scale: 0.94, heroScale: 1.00, offsetY:  0, fallbackSize: 48 }, // 👩  linz
+  "👦":    { scale: 0.75, heroScale: 1.00, offsetY:  0, fallbackSize: 40 }, // 👦  chopper（少年・低め）
+  "🐰":    { scale: 0.55, heroScale: 0.92, offsetY:  0, fallbackSize: 40 }, // 🐰  cricket（小さい）
+  "🙍":    { scale: 0.90, heroScale: 1.05, offsetY:  0, fallbackSize: 48 }, // 🙍  koza
+  "👩‍🦰":    { scale: 0.97, heroScale: 1.05, offsetY:  0, fallbackSize: 50 }, // 👩‍🦰 rose
+  "👨":    { scale: 0.96, heroScale: 1.05, offsetY:  0, fallbackSize: 50 }, // 👨  juda
+  "👧":    { scale: 0.86, heroScale: 1.02, offsetY:  0, fallbackSize: 50 }, // 👧  ymir
+  "🤓":    { scale: 0.80, heroScale: 1.05, offsetY:  0, fallbackSize: 48 }, // 🤓  rubens
+  "👤":    { scale: 0.88, heroScale: 1.02, offsetY:  0, fallbackSize: 50 }, // 👤  traveler
+  "👵":    { scale: 0.82, heroScale: 1.00, offsetY:  0, fallbackSize: 50 }, // 👵  old_woman
+  "🧓":    { scale: 0.88, heroScale: 1.02, offsetY:  0, fallbackSize: 50 }, // 🧓  shopkeeper
 };
 
 // @@SECTION:ENEMY_SIZE ─────────────────────────────────────────────────────
@@ -2554,10 +2554,12 @@ export default function Arcadia() {
             // 最大5人表示時を基準に、人数が減るほど大きく表示
             const countScale = count <= 1 ? 1.0 : count <= 2 ? 0.95 : count <= 3 ? 0.90 : count <= 4 ? 0.84 : 0.78;
             const appliedScale = isHero ? sz.heroScale : sz.scale;
-            // 最大表示高さ: 縦長=48vh、横長=38vh を基準に人数・キャラscaleを乗算
+            // 最大表示高さ: 縦長=30vh、横長=34vh を基準に人数・キャラscaleを乗算
+            // 縦長: HUD約30px + ダイアログ220px + margin → スプライトエリアは残り約40vh前後
+            //       そのうち最大75%程度に収める → 30vh
             const maxHPct = isPortrait
-              ? Math.round(48 * countScale * appliedScale)
-              : Math.round(38 * countScale * appliedScale);
+              ? Math.round(30 * countScale * appliedScale)
+              : Math.round(34 * countScale * appliedScale);
             const maxHStr = `${maxHPct}vh`;
             const heroFilter = isHero ? "drop-shadow(0 0 8px rgba(0,200,255,0.3))" : "none";
             const fbSize = Math.round(sz.fallbackSize * countScale * appliedScale);
