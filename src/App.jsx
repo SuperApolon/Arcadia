@@ -2491,7 +2491,7 @@ export default function Arcadia() {
       </div>
 
       {/* Sprite area */}
-      <div style={{flex:1,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:isPortrait?"4px 8px 0":"clamp(8px,2vh,16px) 20px 0",position:"relative",zIndex:5,minHeight:isPortrait?160:"clamp(120px,30vh,280px)"}}>
+      <div style={{flex:1,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:isPortrait?"4px 8px 0":"clamp(4px,1vh,8px) 20px 0",position:"relative",zIndex:5,minHeight:isPortrait?160:"clamp(160px,48vh,320px)"}}>
         {/* Scene-specific atmosphere */}
         {sc.loc.includes("洞窟") && (
           <>
@@ -2555,10 +2555,11 @@ export default function Arcadia() {
             // 人数ごとの高さ縮小率（6人が最大）
             const countScale = count <= 1 ? 1.0 : count <= 2 ? 0.95 : count <= 3 ? 0.90 : count <= 4 ? 0.84 : count <= 5 ? 0.78 : 0.70;
             const appliedScale = isHero ? sz.heroScale : sz.scale;
-            // 最大表示高さ: 縦長=30vh、横長=34vh を基準に人数・キャラscaleを乗算
+            // 最大表示高さ: 縦長=30vh、横長=52vh を基準に人数・キャラscaleを乗算
+            // 横長は画面高さが小さいためvh基準を大きくしてキャラを縦長並みに見せる
             const maxHPct = isPortrait
               ? Math.round(30 * countScale * appliedScale)
-              : Math.round(34 * countScale * appliedScale);
+              : Math.round(52 * countScale * appliedScale);
             const maxHStr = `${maxHPct}vh`;
             const heroFilter = isHero ? "drop-shadow(0 0 8px rgba(0,200,255,0.3))" : "none";
             const fbSize = Math.round(sz.fallbackSize * countScale * appliedScale);
