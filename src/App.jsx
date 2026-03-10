@@ -1624,21 +1624,21 @@ export default function Arcadia() {
           <div key={i} style={{position:"absolute",width:i%5===0?2:1,height:i%5===0?2:1,borderRadius:"50%",background:"#adf",top:`${Math.random()*100}%`,left:`${Math.random()*100}%`,opacity:0.3+Math.random()*0.5,animation:`blnk ${1.5+Math.random()*2}s ${Math.random()*2}s infinite`}}/>
         ))}
         <div style={{position:"relative",zIndex:2,textAlign:"center",animation:"fadeIn 1.5s ease",padding:"clamp(16px,4vh,40px) 24px",width:"100%",maxWidth:420,boxSizing:"border-box"}}>
-          <div style={{fontSize:10,letterSpacing:10,color:C.muted,marginBottom:"clamp(8px,2vh,14px)",fontFamily:"'Share Tech Mono',monospace"}}>VRMMORPG</div>
-          <div style={{fontSize:"clamp(40px,12vw,72px)",fontWeight:700,letterSpacing:"clamp(4px,2.5vw,14px)",color:C.white,textShadow:`0 0 40px ${C.accent},0 0 80px ${C.accent}44`,lineHeight:1.1,marginBottom:"clamp(6px,1.5vh,10px)",whiteSpace:"nowrap"}}>ARCADIA</div>
-          <div style={{fontSize:"clamp(10px,2.5vw,12px)",letterSpacing:4,color:C.accent2,marginBottom:"clamp(20px,4vh,40px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 10px ${C.accent2}`}}>─── 理想郷への扉 ───</div>
+          <div style={{fontSize:11,letterSpacing:10,color:C.accent,marginBottom:"clamp(8px,2vh,14px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 12px ${C.accent},0 2px 6px rgba(0,0,0,0.9)`}}>VRMMORPG</div>
+          <div style={{fontSize:"clamp(40px,12vw,72px)",fontWeight:700,letterSpacing:"clamp(4px,2.5vw,14px)",paddingLeft:"clamp(4px,2.5vw,14px)",color:C.white,textShadow:`0 0 40px ${C.accent},0 0 80px ${C.accent}66,0 3px 14px rgba(0,0,0,1),0 0 2px rgba(0,0,0,1)`,lineHeight:1.1,marginBottom:"clamp(6px,1.5vh,10px)",whiteSpace:"nowrap"}}>ARCADIA</div>
+          <div style={{fontSize:"clamp(11px,2.5vw,13px)",letterSpacing:4,color:C.accent2,marginBottom:"clamp(20px,4vh,40px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 14px ${C.accent2},0 2px 8px rgba(0,0,0,0.95)`}}>─── 理想郷への扉 ───</div>
           <div style={{width:"70%",height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:`0 auto clamp(20px,4vh,36px)`}}/>
           <button
             onClick={() => { unlockAudio("bgm/title"); setTosScrolled(false); setPhase("tos"); }}
-            style={{width:"80%",padding:"clamp(12px,2.5vh,18px) 0",background:"transparent",border:`1px solid ${C.accent}`,color:C.accent,fontSize:"clamp(14px,4vw,17px)",letterSpacing:6,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",animation:"glow 2s infinite",transition:"all 0.3s",display:"block",margin:"0 auto"}}
+            style={{width:"80%",padding:"clamp(12px,2.5vh,18px) 0",background:"transparent",border:`2px solid ${C.accent}`,boxShadow:`0 0 12px ${C.accent}88,inset 0 0 8px rgba(0,200,255,0.05)`,color:C.accent,fontSize:"clamp(14px,4vw,17px)",letterSpacing:6,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",animation:"glow 2s infinite",transition:"all 0.3s",display:"block",margin:"0 auto"}}
             onMouseEnter={e => e.target.style.background = `${C.accent}22`}
             onMouseLeave={e => e.target.style.background = "transparent"}
           >GAME START</button>
-          <div style={{marginTop:"clamp(12px,2.5vh,20px)",fontSize:11,color:C.muted,letterSpacing:2,fontFamily:"'Share Tech Mono',monospace"}}>VRS CONNECT ▶</div>
+          <div style={{marginTop:"clamp(12px,2.5vh,20px)",fontSize:12,color:C.accent2,letterSpacing:2,fontFamily:"'Share Tech Mono',monospace"}}>VRS CONNECT ▶</div>
           <div style={{width:"70%",height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:`clamp(16px,3vh,28px) auto 0`}}/>
           <button
             onClick={() => setPhase("patternEditor")}
-            style={{marginTop:"clamp(12px,2vh,18px)",padding:"clamp(8px,1.5vh,12px) 0",width:"60%",background:"transparent",border:`1px solid ${C.border}`,color:C.muted,fontSize:11,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",transition:"all 0.3s",display:"block",margin:`clamp(12px,2vh,18px) auto 0`}}
+            style={{marginTop:"clamp(12px,2vh,18px)",padding:"clamp(8px,1.5vh,12px) 0",width:"60%",background:"transparent",border:`1px solid ${C.muted}`,color:C.text,fontSize:11,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",transition:"all 0.3s",display:"block",margin:`clamp(12px,2vh,18px) auto 0`}}
             onMouseEnter={e => { e.currentTarget.style.color = C.gold; e.currentTarget.style.borderColor = C.gold; }}
             onMouseLeave={e => { e.currentTarget.style.color = C.muted; e.currentTarget.style.borderColor = C.border; }}
           >⚙ PATTERN EDITOR</button>
@@ -1657,24 +1657,24 @@ export default function Arcadia() {
       ))}
 
       <div style={{position:"relative",zIndex:2,textAlign:"center",animation:"fadeIn 1.5s ease",padding:"clamp(8px,2vh,20px) 24px",boxSizing:"border-box"}}>
-        <div style={{fontSize:11,letterSpacing:12,color:C.muted,marginBottom:"clamp(8px,1.5vh,16px)",fontFamily:"'Share Tech Mono',monospace"}}>VRMMORPG</div>
-        <div style={{fontSize:"clamp(44px,8vh,72px)",fontWeight:700,letterSpacing:"clamp(8px,1.5vh,16px)",color:C.white,textShadow:`0 0 40px ${C.accent},0 0 80px ${C.accent}44`,lineHeight:1,marginBottom:"clamp(4px,1vh,8px)",whiteSpace:"nowrap"}}>ARCADIA</div>
-        <div style={{fontSize:13,letterSpacing:4,color:C.accent2,marginBottom:"clamp(20px,4vh,48px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 10px ${C.accent2}`}}>─── 理想郷への扉 ───</div>
+        <div style={{fontSize:12,letterSpacing:12,color:C.accent,marginBottom:"clamp(8px,1.5vh,16px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 12px ${C.accent},0 2px 6px rgba(0,0,0,0.9)`}}>VRMMORPG</div>
+        <div style={{fontSize:"clamp(44px,8vh,72px)",fontWeight:700,letterSpacing:"clamp(8px,1.5vh,16px)",paddingLeft:"clamp(8px,1.5vh,16px)",color:C.white,textShadow:`0 0 40px ${C.accent},0 0 80px ${C.accent}66,0 3px 14px rgba(0,0,0,1),0 0 2px rgba(0,0,0,1)`,lineHeight:1,marginBottom:"clamp(4px,1vh,8px)",whiteSpace:"nowrap"}}>ARCADIA</div>
+        <div style={{fontSize:13,letterSpacing:4,color:C.accent2,marginBottom:"clamp(20px,4vh,48px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 14px ${C.accent2},0 2px 8px rgba(0,0,0,0.95)`}}>─── 理想郷への扉 ───</div>
 
         <div style={{width:280,height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:`0 auto clamp(16px,3vh,40px)`}}/>
 
         <button
           onClick={() => { unlockAudio("bgm/title"); setTosScrolled(false); setPhase("tos"); }}
-          style={{padding:"clamp(8px,1.8vh,14px) 48px",background:"transparent",border:`1px solid ${C.accent}`,color:C.accent,fontSize:"clamp(13px,2vh,16px)",letterSpacing:6,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",animation:"glow 2s infinite",transition:"all 0.3s"}}
+          style={{padding:"clamp(8px,1.8vh,14px) 48px",background:"transparent",border:`2px solid ${C.accent}`,boxShadow:`0 0 12px ${C.accent}88,inset 0 0 8px rgba(0,200,255,0.05)`,color:C.accent,fontSize:"clamp(13px,2vh,16px)",letterSpacing:6,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",animation:"glow 2s infinite",transition:"all 0.3s"}}
           onMouseEnter={e => e.target.style.background = `${C.accent}22`}
           onMouseLeave={e => e.target.style.background = "transparent"}
         >GAME START</button>
 
-        <div style={{marginTop:"clamp(12px,2vh,24px)",fontSize:11,color:C.muted,letterSpacing:2,fontFamily:"'Share Tech Mono',monospace"}}>VRS CONNECT ▶</div>
+        <div style={{marginTop:"clamp(12px,2vh,24px)",fontSize:12,color:C.accent2,letterSpacing:2,fontFamily:"'Share Tech Mono',monospace"}}>VRS CONNECT ▶</div>
         <div style={{marginTop:"clamp(14px,2.5vh,32px)",width:280,height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`}}/>
         <button
           onClick={() => setPhase("patternEditor")}
-          style={{marginTop:"clamp(10px,1.8vh,20px)",padding:"clamp(5px,1vh,8px) 32px",background:"transparent",border:`1px solid ${C.border}`,color:C.muted,fontSize:11,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",transition:"all 0.3s"}}
+          style={{marginTop:"clamp(10px,1.8vh,20px)",padding:"clamp(5px,1vh,8px) 32px",background:"transparent",border:`1px solid ${C.muted}`,color:C.text,fontSize:11,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",transition:"all 0.3s"}}
           onMouseEnter={e => { e.currentTarget.style.color = C.gold; e.currentTarget.style.borderColor = C.gold; }}
           onMouseLeave={e => { e.currentTarget.style.color = C.muted; e.currentTarget.style.borderColor = C.border; }}
         >⚙ PATTERN EDITOR</button>
