@@ -1625,7 +1625,14 @@ export default function Arcadia() {
         ))}
         <div style={{position:"relative",zIndex:2,textAlign:"center",animation:"fadeIn 1.5s ease",padding:"clamp(16px,4vh,40px) 24px",width:"100%",maxWidth:420,boxSizing:"border-box"}}>
           <div style={{fontSize:11,letterSpacing:10,color:C.accent,marginBottom:"clamp(8px,2vh,14px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 12px ${C.accent},0 2px 6px rgba(0,0,0,0.9)`}}>VRMMORPG</div>
-          <div style={{fontSize:"clamp(40px,12vw,72px)",fontWeight:700,letterSpacing:"clamp(4px,2.5vw,14px)",paddingLeft:"clamp(4px,2.5vw,14px)",color:C.white,textShadow:`0 0 40px ${C.accent},0 0 80px ${C.accent}66,0 3px 14px rgba(0,0,0,1),0 0 2px rgba(0,0,0,1)`,lineHeight:1.1,marginBottom:"clamp(6px,1.5vh,10px)",whiteSpace:"nowrap",display:"inline-block"}}>ARCADIA</div>
+          <div style={{marginBottom:"clamp(6px,1.5vh,10px)",lineHeight:1.1,width:"100%"}}>
+            <svg viewBox="0 0 420 72" width="100%" style={{display:"block",overflow:"visible",filter:`drop-shadow(0 0 18px ${C.accent}) drop-shadow(0 0 40px ${C.accent}66)`}}>
+              <text x="210" y="68" textAnchor="middle"
+                fontFamily="'Noto Serif JP',serif" fontWeight="700"
+                fontSize="64" letterSpacing="10" fill={C.white}
+                stroke="rgba(0,0,0,0.95)" strokeWidth="5" paintOrder="stroke fill">ARCADIA</text>
+            </svg>
+          </div>
           <div style={{fontSize:"clamp(11px,2.5vw,13px)",letterSpacing:4,color:C.accent2,marginBottom:"clamp(20px,4vh,40px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 14px ${C.accent2},0 2px 8px rgba(0,0,0,0.95)`}}>─── 理想郷への扉 ───</div>
           <div style={{width:"70%",height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:`0 auto clamp(20px,4vh,36px)`}}/>
           <button
