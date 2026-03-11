@@ -1457,9 +1457,16 @@ export default function Arcadia() {
   const sceneImgKey = LOC_TO_SCENE_IMG[sc.loc];
   const sceneBgUrl = sceneImgKey ? assetUrl(sceneImgKey) : null;
   const sceneBgSt = SCENE_BG_STYLE[sc.loc] ?? { size: "cover", position: "center" };
-  const bgStyle = sceneBgUrl
-    ? { background: `url(${sceneBgUrl}) ${sceneBgSt.position}/${sceneBgSt.size} no-repeat, linear-gradient(180deg, ${bg[0]} 0%, ${bg[1]} 50%, ${bg[2]} 100%)` }
-    : { background: `linear-gradient(180deg, ${bg[0]} 0%, ${bg[1]} 50%, ${bg[2]} 100%)` };
+  // 背景はルートdivではなく position:absolute の専用レイヤーに貼る。
+  // こうすることで background-size がコンポーネント高さではなく
+  // 画面全体（inset:0）を基準にし、縦長画面でも余白が生まれない。
+  const gradientBg = `linear-gradient(180deg, ${bg[0]} 0%, ${bg[1]} 50%, ${bg[2]} 100%)`;
+  const sceneBgLayerStyle = sceneBgUrl ? {
+    backgroundImage: `url(${sceneBgUrl})`,
+    backgroundSize: sceneBgSt.size,
+    backgroundPosition: sceneBgSt.position,
+    backgroundRepeat: "no-repeat",
+  } : {};
 
   const keyframes = `
     @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Share+Tech+Mono&display=swap');
@@ -2178,13 +2185,23 @@ export default function Arcadia() {
     const enemyImgPct   = _sizeConf.pct  ?? 80;
 
     const bgSt = BATTLE_BG_STYLE[currentEnemyType] ?? { size: "cover", position: "center" };
-    const battleBg = battleBgUrl
-      ? `url(${battleBgUrl}) ${bgSt.position}/${bgSt.size} no-repeat, linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 50%,${ed.bg[2]} 100%)`
-      : `linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 50%,${ed.bg[2]} 100%)`;
+    const battleGradient = `linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 50%,${ed.bg[2]} 100%)`;
+    const battleBgLayerStyle = battleBgUrl ? {
+      backgroundImage: `url(${battleBgUrl})`,
+      backgroundSize: bgSt.size,
+      backgroundPosition: bgSt.position,
+      backgroundRepeat: "no-repeat",
+    } : {};
 
     return (
-      <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"min(600px,100dvh)",display:"flex",flexDirection:"column",background:battleBg,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden"}}>
+      <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"min(600px,100dvh)",display:"flex",flexDirection:"column",background:battleGradient,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden"}}>
         <style>{keyframes}</style>
+
+        {/* 背景画像レイヤー -- inset:0 で画面全体を常に覆う */}
+        {battleBgUrl && (
+          <div style={{position:"absolute",inset:0,zIndex:0,...battleBgLayerStyle}}/>
+        )}
+
         {notif && <div style={{position:"absolute",top:20,left:"50%",transform:"translateX(-50%)",background:"rgba(10,26,38,0.95)",border:`1px solid ${C.accent}`,color:C.accent,padding:"8px 20px",fontSize:13,letterSpacing:1,zIndex:100,whiteSpace:"nowrap",fontFamily:"'Share Tech Mono',monospace",animation:"notifIn 0.3s ease"}}>{notif}</div>}
 
         {isPortrait ? (
@@ -2494,8 +2511,13 @@ export default function Arcadia() {
   const isHpLow = hp / mhp <= 0.25;
 
   return (
-    <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"min(600px,100dvh)",display:"flex",flexDirection:"column",...bgStyle,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden",transition:"background 1s"}}>
+    <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"min(600px,100dvh)",display:"flex",flexDirection:"column",background:gradientBg,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden",transition:"background 1s"}}>
       <style>{keyframes}</style>
+
+      {/* 背景画像レイヤー -- inset:0 で常に画面全体を覆う。zIndex:0 で全UIより背面 */}
+      {sceneBgUrl && (
+        <div style={{position:"absolute",inset:0,zIndex:0,transition:"background-image 1s",...sceneBgLayerStyle}}/>
+      )}
 
       {/* Overlay fade */}
       {fade && <div style={{position:"absolute",inset:0,background:"#050d14",opacity:1,zIndex:50,transition:"opacity 0.3s"}}/>}
