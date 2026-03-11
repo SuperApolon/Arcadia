@@ -2192,8 +2192,19 @@ export default function Arcadia() {
       ? `url(${battleBgUrl}) ${bgSt.position}/${bgSt.size} no-repeat, linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 50%,${ed.bg[2]} 100%)`
       : `linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 50%,${ed.bg[2]} 100%)`;
 
+    // 縦長のとき: 最外divはグラデーション単色、エネミーエリアのみに背景画像を乗せる
+    // 横長のとき: 従来通り battleBg（画像＋グラデーション）を最外divに適用
+    const portraitOuterBg = `linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 50%,${ed.bg[2]} 100%)`;
+
+    // 縦長エネミーエリア用背景: 背景画像を中央40%エリアに集中させる構成
+    // object-position:"center 40%" でエネミーゾーン上部中心に合わせ、
+    // ログエリア境界で完全に途切れないよう background-size は "auto 120%" 指定
+    const portraitEnemyAreaBg = battleBgUrl
+      ? `url(${battleBgUrl}) center 40%/cover no-repeat, linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 100%)`
+      : `linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 100%)`;
+
     return (
-      <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"min(600px,100dvh)",display:"flex",flexDirection:"column",background:battleBg,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden"}}>
+      <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"min(600px,100dvh)",display:"flex",flexDirection:"column",background:isPortrait?portraitOuterBg:battleBg,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden"}}>
         <style>{keyframes}</style>
         {notif && <div style={{position:"absolute",top:20,left:"50%",transform:"translateX(-50%)",background:"rgba(10,26,38,0.95)",border:`1px solid ${C.accent}`,color:C.accent,padding:"8px 20px",fontSize:13,letterSpacing:1,zIndex:100,whiteSpace:"nowrap",fontFamily:"'Share Tech Mono',monospace",animation:"notifIn 0.3s ease"}}>{notif}</div>}
 
@@ -2201,8 +2212,8 @@ export default function Arcadia() {
           /* ══ 縦長バトルレイアウト ══════════════════════════════════════════ */
           <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minHeight:0}}>
 
-            {/* 上部：エネミーエリア -- ボス/大型は広め */}
-            <div style={{flex:isBoss||["koza","shamerlot_lv3","shamerlot_lv5"].includes(currentEnemyType)?"0 0 52%":"0 0 42%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"8px 8px 4px",position:"relative",overflow:"hidden",gap:6}}>
+            {/* 上部：エネミーエリア -- 背景画像はここだけに適用 */}
+            <div style={{flex:isBoss||["koza","shamerlot_lv3","shamerlot_lv5"].includes(currentEnemyType)?"0 0 52%":"0 0 42%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"8px 8px 4px",position:"relative",overflow:"hidden",gap:6,background:portraitEnemyAreaBg}}>
               {isBoss && <div style={{position:"absolute",top:6,left:"50%",transform:"translateX(-50%)",fontSize:10,letterSpacing:6,color:C.red,fontFamily:"'Share Tech Mono',monospace",animation:"dngr 1s infinite",whiteSpace:"nowrap",zIndex:2}}>─── BOSS ───</div>}
 
               {/* コンボ表示 */}
