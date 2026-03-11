@@ -583,15 +583,26 @@ const BATTLE_BG_MAP = {
 
 // @@SECTION:BATTLE_BG_STYLE ─────────────────────────────────────────────────
 // バトル背景画像のサイズ・位置をエネミーごとに個別調整する。
-// size:     CSS background-size 値（"cover" / "contain" / "120%" など）
-// position: CSS background-position 値（"center" / "top center" / "50% 30%" など）
+// size:     CSS background-size 値（"cover" 固定推奨）
+// position: CSS background-position 値（"center 40%" 固定推奨）
+//
+// 【バトル背景画像 制作ガイドライン】
+//   - 推奨解像度: 1600×900px（16:9）以上
+//   - 主要被写体・見せ場は画像の中央40%エリア（横40%×縦40%）に必ず収める
+//   - 周囲はネガティブスペース／グラデーション背景として余裕を持たせる
+//   - これにより 9:16縦長〜21:9超横長までどのアスペクト比にクロップされても
+//     被写体が切れない「アスペクト比フリー・セーフゾーン」構成になる
+//   - background-size:"cover" で必ずコンテナ全体を覆う（letterbox/pillarbox禁止）
+//   - background-position:"center 40%" でエネミーUIゾーン（上部エリア）の中心に合わせる
+//   - 暗め・ダーク系を推奨（エネミー画像の透過drop-shadowが映えるよう）
+// ※ 個別調整が必要な場合のみ position を変更する（size は基本 "cover" 固定）
 const BATTLE_BG_STYLE = {
-  seagull:       { size: "contain", position: "top center" },
-  koza:          { size: "contain", position: "top center" },
-  shamerlot:     { size: "contain", position: "top center" },
-  shamerlot_lv3: { size: "contain", position: "top center" },
-  shamerlot_lv5: { size: "contain", position: "top center" },
-  simuluu:       { size: "contain", position: "top center" },
+  seagull:       { size: "cover", position: "center 40%" },
+  koza:          { size: "cover", position: "center 40%" },
+  shamerlot:     { size: "cover", position: "center 40%" },
+  shamerlot_lv3: { size: "cover", position: "center 40%" },
+  shamerlot_lv5: { size: "cover", position: "center 40%" },
+  simuluu:       { size: "cover", position: "center 40%" },
 };
 
 // @@SECTION:SCENE_BG_STYLE ──────────────────────────────────────────────────
