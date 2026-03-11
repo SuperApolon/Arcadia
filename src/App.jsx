@@ -583,39 +583,49 @@ const BATTLE_BG_MAP = {
 
 // @@SECTION:BATTLE_BG_STYLE ─────────────────────────────────────────────────
 // バトル背景画像のサイズ・位置をエネミーごとに個別調整する。
-// size:     CSS background-size 値（"cover" / "contain" / "120%" など）
-// position: CSS background-position 値（"center" / "top center" / "50% 30%" など）
+// size:     CSS background-size 値（"cover" / "143%" など）
+// position: CSS background-position 値（"center" / "50% 30%" など）
+//
+// ★ セーフ構成: size "143%" + position "center" を標準とする。
+//   画像の主題が中央70%に収まっていれば、どのアスペクト比でも欠けない。
 const BATTLE_BG_STYLE = {
-  seagull:       { size: "contain", position: "top center" },
-  koza:          { size: "contain", position: "top center" },
-  shamerlot:     { size: "contain", position: "top center" },
-  shamerlot_lv3: { size: "contain", position: "top center" },
-  shamerlot_lv5: { size: "contain", position: "top center" },
-  simuluu:       { size: "contain", position: "top center" },
+  seagull:       { size: "143%", position: "center" },
+  koza:          { size: "143%", position: "center" },
+  shamerlot:     { size: "143%", position: "center" },
+  shamerlot_lv3: { size: "143%", position: "center" },
+  shamerlot_lv5: { size: "143%", position: "center" },
+  simuluu:       { size: "143%", position: "center" },
 };
 
 // @@SECTION:SCENE_BG_STYLE ──────────────────────────────────────────────────
 // シーン背景画像のサイズ・位置をロケーションごとに個別調整する。
-// size:     CSS background-size 値（"cover" / "contain" / "120%" など）
+// size:     CSS background-size 値（"cover" / "contain" / "143%" など）
 // position: CSS background-position 値（"center" / "top center" / "50% 30%" など）
 // ※ キーは LOC_TO_SCENE_IMG のキー（loc文字列）と一致させる
+//
+// ★ セーフ構成の考え方:
+//   画像の主題を中央70%エリアに収めてあることを前提に
+//   size: "143%" （≒100/0.7）+ position: "center" を標準とする。
+//   これにより9:16縦長〜16:9横長どちらにクロップされても
+//   中央の主題が必ず画面内に収まる。
+//   個別調整が必要な場合は position の数値（"50% 40%" 等）で上下位置を微調整する。
 const SCENE_BG_STYLE = {
-  "VRS接続中":               { size: "contain", position: "center" },
-  "旅立ちの浜辺":            { size: "contain", position: "center" },
-  "イルカ島 海岸線":         { size: "contain", position: "center" },
-  "エルム村":                { size: "contain", position: "center" },
-  "エルム村 ギルド":         { size: "contain", position: "center" },
-  "エルム村 ギルド裏・草地": { size: "contain", position: "center" },
-  "エルム村 宿屋":           { size: "contain", position: "center" },
-  "エルム村 レミングスの酒場":{ size: "contain", position: "center" },
-  "イルカ島 岩場":           { size: "contain", position: "center" },
-  "エルム村 交易所":         { size: "contain", position: "center" },
-  "エルム村 武器屋":         { size: "contain", position: "center" },
-  "エルム村 防具屋":         { size: "contain", position: "center" },
-  "イルカ島 船着場":         { size: "contain", position: "center" },
-  "イルカ島 西海岸":         { size: "contain", position: "center" },
-  "試練の洞窟 ─ 青の洞窟":  { size: "contain", position: "center" },
-  "試練の洞窟 ─ 最深部":    { size: "contain", position: "center" },
+  "VRS接続中":               { size: "143%", position: "center" },
+  "旅立ちの浜辺":            { size: "143%", position: "center" },
+  "イルカ島 海岸線":         { size: "143%", position: "center" },
+  "エルム村":                { size: "143%", position: "center" },
+  "エルム村 ギルド":         { size: "143%", position: "center" },
+  "エルム村 ギルド裏・草地": { size: "143%", position: "center" },
+  "エルム村 宿屋":           { size: "143%", position: "center" },
+  "エルム村 レミングスの酒場":{ size: "143%", position: "center" },
+  "イルカ島 岩場":           { size: "143%", position: "center" },
+  "エルム村 交易所":         { size: "143%", position: "center" },
+  "エルム村 武器屋":         { size: "143%", position: "center" },
+  "エルム村 防具屋":         { size: "143%", position: "center" },
+  "イルカ島 船着場":         { size: "143%", position: "center" },
+  "イルカ島 西海岸":         { size: "143%", position: "center" },
+  "試練の洞窟 ─ 青の洞窟":  { size: "143%", position: "center" },
+  "試練の洞窟 ─ 最深部":    { size: "143%", position: "center" },
 };
 
 const LOC_TO_SCENE_IMG = {
