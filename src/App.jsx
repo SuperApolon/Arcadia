@@ -596,26 +596,35 @@ const BATTLE_BG_STYLE = {
 
 // @@SECTION:SCENE_BG_STYLE ──────────────────────────────────────────────────
 // シーン背景画像のサイズ・位置をロケーションごとに個別調整する。
-// size:     CSS background-size 値（"cover" / "contain" / "120%" など）
-// position: CSS background-position 値（"center" / "top center" / "50% 30%" など）
+// size:     CSS background-size 値（"cover" 固定推奨）
+// position: CSS background-position 値（"center center" 固定推奨）
+//
+// 【画像制作ガイドライン】
+//   - 推奨解像度: 1600×900px（16:9）以上
+//   - 主要被写体・見せ場は画像中央40%エリア（横40%×縦40%）に必ず収める
+//   - 周囲60%はネガティブスペース／グラデーション背景として余裕を持たせる
+//   - これにより 9:16縦長〜21:9超横長までどのアスペクト比にクロップされても
+//     被写体が切れない「アスペクト比フリー・セーフゾーン」構成になる
+//   - HUD上部30px・ダイアログ下部200px付近はUIで隠れるため、
+//     重要な要素は画面中央〜やや上（画像の30〜60%の高さ帯）に配置すること
 // ※ キーは LOC_TO_SCENE_IMG のキー（loc文字列）と一致させる
 const SCENE_BG_STYLE = {
-  "VRS接続中":               { size: "contain", position: "center" },
-  "旅立ちの浜辺":            { size: "contain", position: "center" },
-  "イルカ島 海岸線":         { size: "contain", position: "center" },
-  "エルム村":                { size: "contain", position: "center" },
-  "エルム村 ギルド":         { size: "contain", position: "center" },
-  "エルム村 ギルド裏・草地": { size: "contain", position: "center" },
-  "エルム村 宿屋":           { size: "contain", position: "center" },
-  "エルム村 レミングスの酒場":{ size: "contain", position: "center" },
-  "イルカ島 岩場":           { size: "contain", position: "center" },
-  "エルム村 交易所":         { size: "contain", position: "center" },
-  "エルム村 武器屋":         { size: "contain", position: "center" },
-  "エルム村 防具屋":         { size: "contain", position: "center" },
-  "イルカ島 船着場":         { size: "contain", position: "center" },
-  "イルカ島 西海岸":         { size: "contain", position: "center" },
-  "試練の洞窟 ─ 青の洞窟":  { size: "contain", position: "center" },
-  "試練の洞窟 ─ 最深部":    { size: "contain", position: "center" },
+  "VRS接続中":               { size: "cover", position: "center center" },
+  "旅立ちの浜辺":            { size: "cover", position: "center center" },
+  "イルカ島 海岸線":         { size: "cover", position: "center center" },
+  "エルム村":                { size: "cover", position: "center center" },
+  "エルム村 ギルド":         { size: "cover", position: "center center" },
+  "エルム村 ギルド裏・草地": { size: "cover", position: "center center" },
+  "エルム村 宿屋":           { size: "cover", position: "center center" },
+  "エルム村 レミングスの酒場":{ size: "cover", position: "center center" },
+  "イルカ島 岩場":           { size: "cover", position: "center center" },
+  "エルム村 交易所":         { size: "cover", position: "center center" },
+  "エルム村 武器屋":         { size: "cover", position: "center center" },
+  "エルム村 防具屋":         { size: "cover", position: "center center" },
+  "イルカ島 船着場":         { size: "cover", position: "center center" },
+  "イルカ島 西海岸":         { size: "cover", position: "center center" },
+  "試練の洞窟 ─ 青の洞窟":  { size: "cover", position: "center center" },
+  "試練の洞窟 ─ 最深部":    { size: "cover", position: "center center" },
 };
 
 const LOC_TO_SCENE_IMG = {
@@ -1446,7 +1455,7 @@ export default function Arcadia() {
   const bg = sc.bg;
   const sceneImgKey = LOC_TO_SCENE_IMG[sc.loc];
   const sceneBgUrl = sceneImgKey ? assetUrl(sceneImgKey) : null;
-  const sceneBgSt = SCENE_BG_STYLE[sc.loc] ?? { size: "cover", position: "center" };
+  const sceneBgSt = SCENE_BG_STYLE[sc.loc] ?? { size: "cover", position: "center center" };
   const bgStyle = sceneBgUrl
     ? { background: `url(${sceneBgUrl}) ${sceneBgSt.position}/${sceneBgSt.size} no-repeat, linear-gradient(180deg, ${bg[0]} 0%, ${bg[1]} 50%, ${bg[2]} 100%)` }
     : { background: `linear-gradient(180deg, ${bg[0]} 0%, ${bg[1]} 50%, ${bg[2]} 100%)` };
