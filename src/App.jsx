@@ -583,49 +583,39 @@ const BATTLE_BG_MAP = {
 
 // @@SECTION:BATTLE_BG_STYLE ─────────────────────────────────────────────────
 // バトル背景画像のサイズ・位置をエネミーごとに個別調整する。
-// size:     CSS background-size 値（"cover" / "143%" など）
-// position: CSS background-position 値（"center" / "50% 30%" など）
-//
-// ★ セーフ構成: size "143%" + position "center" を標準とする。
-//   画像の主題が中央70%に収まっていれば、どのアスペクト比でも欠けない。
+// size:     CSS background-size 値（"cover" / "contain" / "120%" など）
+// position: CSS background-position 値（"center" / "top center" / "50% 30%" など）
 const BATTLE_BG_STYLE = {
-  seagull:       { size: "143%", position: "center" },
-  koza:          { size: "143%", position: "center" },
-  shamerlot:     { size: "143%", position: "center" },
-  shamerlot_lv3: { size: "143%", position: "center" },
-  shamerlot_lv5: { size: "143%", position: "center" },
-  simuluu:       { size: "143%", position: "center" },
+  seagull:       { size: "contain", position: "top center" },
+  koza:          { size: "contain", position: "top center" },
+  shamerlot:     { size: "contain", position: "top center" },
+  shamerlot_lv3: { size: "contain", position: "top center" },
+  shamerlot_lv5: { size: "contain", position: "top center" },
+  simuluu:       { size: "contain", position: "top center" },
 };
 
 // @@SECTION:SCENE_BG_STYLE ──────────────────────────────────────────────────
 // シーン背景画像のサイズ・位置をロケーションごとに個別調整する。
-// size:     CSS background-size 値（"cover" / "contain" / "143%" など）
+// size:     CSS background-size 値（"cover" / "contain" / "120%" など）
 // position: CSS background-position 値（"center" / "top center" / "50% 30%" など）
 // ※ キーは LOC_TO_SCENE_IMG のキー（loc文字列）と一致させる
-//
-// ★ セーフ構成の考え方:
-//   画像の主題を中央70%エリアに収めてあることを前提に
-//   size: "143%" （≒100/0.7）+ position: "center" を標準とする。
-//   これにより9:16縦長〜16:9横長どちらにクロップされても
-//   中央の主題が必ず画面内に収まる。
-//   個別調整が必要な場合は position の数値（"50% 40%" 等）で上下位置を微調整する。
 const SCENE_BG_STYLE = {
-  "VRS接続中":               { size: "143%", position: "center" },
-  "旅立ちの浜辺":            { size: "143%", position: "center" },
-  "イルカ島 海岸線":         { size: "143%", position: "center" },
-  "エルム村":                { size: "143%", position: "center" },
-  "エルム村 ギルド":         { size: "143%", position: "center" },
-  "エルム村 ギルド裏・草地": { size: "143%", position: "center" },
-  "エルム村 宿屋":           { size: "143%", position: "center" },
-  "エルム村 レミングスの酒場":{ size: "143%", position: "center" },
-  "イルカ島 岩場":           { size: "143%", position: "center" },
-  "エルム村 交易所":         { size: "143%", position: "center" },
-  "エルム村 武器屋":         { size: "143%", position: "center" },
-  "エルム村 防具屋":         { size: "143%", position: "center" },
-  "イルカ島 船着場":         { size: "143%", position: "center" },
-  "イルカ島 西海岸":         { size: "143%", position: "center" },
-  "試練の洞窟 ─ 青の洞窟":  { size: "143%", position: "center" },
-  "試練の洞窟 ─ 最深部":    { size: "143%", position: "center" },
+  "VRS接続中":               { size: "contain", position: "center" },
+  "旅立ちの浜辺":            { size: "contain", position: "center" },
+  "イルカ島 海岸線":         { size: "contain", position: "center" },
+  "エルム村":                { size: "contain", position: "center" },
+  "エルム村 ギルド":         { size: "contain", position: "center" },
+  "エルム村 ギルド裏・草地": { size: "contain", position: "center" },
+  "エルム村 宿屋":           { size: "contain", position: "center" },
+  "エルム村 レミングスの酒場":{ size: "contain", position: "center" },
+  "イルカ島 岩場":           { size: "contain", position: "center" },
+  "エルム村 交易所":         { size: "contain", position: "center" },
+  "エルム村 武器屋":         { size: "contain", position: "center" },
+  "エルム村 防具屋":         { size: "contain", position: "center" },
+  "イルカ島 船着場":         { size: "contain", position: "center" },
+  "イルカ島 西海岸":         { size: "contain", position: "center" },
+  "試練の洞窟 ─ 青の洞窟":  { size: "contain", position: "center" },
+  "試練の洞窟 ─ 最深部":    { size: "contain", position: "center" },
 };
 
 const LOC_TO_SCENE_IMG = {
@@ -1457,16 +1447,9 @@ export default function Arcadia() {
   const sceneImgKey = LOC_TO_SCENE_IMG[sc.loc];
   const sceneBgUrl = sceneImgKey ? assetUrl(sceneImgKey) : null;
   const sceneBgSt = SCENE_BG_STYLE[sc.loc] ?? { size: "cover", position: "center" };
-  // 背景はルートdivではなく position:absolute の専用レイヤーに貼る。
-  // こうすることで background-size がコンポーネント高さではなく
-  // 画面全体（inset:0）を基準にし、縦長画面でも余白が生まれない。
-  const gradientBg = `linear-gradient(180deg, ${bg[0]} 0%, ${bg[1]} 50%, ${bg[2]} 100%)`;
-  const sceneBgLayerStyle = sceneBgUrl ? {
-    backgroundImage: `url(${sceneBgUrl})`,
-    backgroundSize: sceneBgSt.size,
-    backgroundPosition: sceneBgSt.position,
-    backgroundRepeat: "no-repeat",
-  } : {};
+  const bgStyle = sceneBgUrl
+    ? { background: `url(${sceneBgUrl}) ${sceneBgSt.position}/${sceneBgSt.size} no-repeat, linear-gradient(180deg, ${bg[0]} 0%, ${bg[1]} 50%, ${bg[2]} 100%)` }
+    : { background: `linear-gradient(180deg, ${bg[0]} 0%, ${bg[1]} 50%, ${bg[2]} 100%)` };
 
   const keyframes = `
     @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Share+Tech+Mono&display=swap');
@@ -2185,23 +2168,13 @@ export default function Arcadia() {
     const enemyImgPct   = _sizeConf.pct  ?? 80;
 
     const bgSt = BATTLE_BG_STYLE[currentEnemyType] ?? { size: "cover", position: "center" };
-    const battleGradient = `linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 50%,${ed.bg[2]} 100%)`;
-    const battleBgLayerStyle = battleBgUrl ? {
-      backgroundImage: `url(${battleBgUrl})`,
-      backgroundSize: bgSt.size,
-      backgroundPosition: bgSt.position,
-      backgroundRepeat: "no-repeat",
-    } : {};
+    const battleBg = battleBgUrl
+      ? `url(${battleBgUrl}) ${bgSt.position}/${bgSt.size} no-repeat, linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 50%,${ed.bg[2]} 100%)`
+      : `linear-gradient(180deg,${ed.bg[0]} 0%,${ed.bg[1]} 50%,${ed.bg[2]} 100%)`;
 
     return (
-      <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"min(600px,100dvh)",display:"flex",flexDirection:"column",background:battleGradient,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden"}}>
+      <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"min(600px,100dvh)",display:"flex",flexDirection:"column",background:battleBg,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden"}}>
         <style>{keyframes}</style>
-
-        {/* 背景画像レイヤー -- inset:0 で画面全体を常に覆う */}
-        {battleBgUrl && (
-          <div style={{position:"absolute",inset:0,zIndex:0,...battleBgLayerStyle}}/>
-        )}
-
         {notif && <div style={{position:"absolute",top:20,left:"50%",transform:"translateX(-50%)",background:"rgba(10,26,38,0.95)",border:`1px solid ${C.accent}`,color:C.accent,padding:"8px 20px",fontSize:13,letterSpacing:1,zIndex:100,whiteSpace:"nowrap",fontFamily:"'Share Tech Mono',monospace",animation:"notifIn 0.3s ease"}}>{notif}</div>}
 
         {isPortrait ? (
@@ -2511,13 +2484,8 @@ export default function Arcadia() {
   const isHpLow = hp / mhp <= 0.25;
 
   return (
-    <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"min(600px,100dvh)",display:"flex",flexDirection:"column",background:gradientBg,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden",transition:"background 1s"}}>
+    <div style={{width:"100%",height:"100%",minHeight:isPortrait?"100dvh":"min(600px,100dvh)",display:"flex",flexDirection:"column",...bgStyle,fontFamily:"'Noto Serif JP',serif",userSelect:"none",position:"relative",overflow:"hidden",transition:"background 1s"}}>
       <style>{keyframes}</style>
-
-      {/* 背景画像レイヤー -- inset:0 で常に画面全体を覆う。zIndex:0 で全UIより背面 */}
-      {sceneBgUrl && (
-        <div style={{position:"absolute",inset:0,zIndex:0,transition:"background-image 1s",...sceneBgLayerStyle}}/>
-      )}
 
       {/* Overlay fade */}
       {fade && <div style={{position:"absolute",inset:0,background:"#050d14",opacity:1,zIndex:50,transition:"opacity 0.3s"}}/>}
