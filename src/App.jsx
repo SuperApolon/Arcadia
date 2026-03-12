@@ -241,6 +241,504 @@ const SCENES = [
   ]}
 ];
 
+// @@SECTION:SCENES_EN ──────────────────────────────────────────────────────────
+// English translation of SCENES. Structure is identical to SCENES.
+const SCENES_EN = [
+  { bg:["#050d14","#0a1820","#152838"], loc:"VRS Connecting", sprites:[], dl:[
+    { sp:"SYSTEM", t:"── Initiating VRS Connection ──\n\nConnecting to Brain Server..." },
+    { sp:"SYSTEM", t:"Connection established.\n\nWelcome, adventurer.\nThe VRMMORPG experienced with all five senses──\n\nEnter the world of『ARCADIA』." },
+    { sp:"SYSTEM", t:"Player: Eltz  Lv: 1\n\nStarting game──", next:1 }
+  ]},
+  { bg:["#0a1a30","#1a5080","#d4c8a0"], loc:"Departure Beach", sprites:["🧑"], dl:[
+    { sp:"Eltz", t:"\"Smoky. Huh, so beginnings\nare pretty rough around here.\"" },
+    { sp:"Eltz", t:"He takes a deep breath. The sea air\nflowing along the shore was crisp and clear.\n\n\"So this is the game world.\"" },
+    { sp:"Eltz", t:"\"I'd heard the rumors, but it really is beautiful...\n\nAn overwhelming presence that rivals reality.\nThis must be what VRS immersion feels like.\"" },
+    { sp:"Eltz", t:"\"Well, finding a village is the standard\nfirst move, I suppose.\"\n\nDeparture Beach. Where everything begins──", next:2 }
+  ]},
+  { bg:["#0a1808","#184010","#283020"], loc:"Dolphin Isle - Coast", sprites:["🧑","🌿"], dl:[
+    { sp:"Narration", t:"About an hour along the coast from\nDeparture Beach──\n\nThe nature of Dolphin Isle spreads before him." },
+    { sp:"Eltz", t:"\"Never seen that bird before... is it a monster?\"\n\nAbove, birds with white wings and black spots\nswirled through the air." },
+    { sp:"SYSTEM", t:"⚠ You sense a monster nearby...\n\nWhat do you do?", choices:[
+      { t:"⚔ Fight and advance", battle:true, battleType:"seagull", battleNext:3 },
+      { t:"💨 Avoid and move on", next:3 }
+    ]}
+  ]},
+  { bg:["#0a1808","#203818","#302820"], loc:"Elm Village", sprites:["🧑","👤"], dl:[
+    { sp:"Eltz", t:"\"Made it... a village.\"\n\nA village wrapped in flowers and trees\nspread out before him." },
+    { sp:"Traveler", t:"\"First timer, are you?\n\nIf you want information, start with the Guild\nfor a beginner's class.\nSee that big building in the back? That's the Guild.\"" },
+    { sp:"Eltz", t:"\"Thank you very much.\"", next:4 }
+  ]},
+  { bg:["#1a0e06","#3a2010","#1a1208"], loc:"Elm Village - Guild", sprites:["🧑","🧑‍🦱","👩"], dl:[
+    { sp:"Narration", t:"High ceilings, smoke rising from the hearth.\nA silver-haired young man and a blonde girl\nwere relaxing inside." },
+    { sp:"Swift", t:"\"Beginner's class? Guild staff are all out right now.\nHave a seat. I'm Swift, and this is Linz.\"" },
+    { sp:"Eltz", t:"\"I'm Eltz. Nice to meet you.\"" },
+    { sp:"Swift", t:"\"Eltz, you into MMOs?\nWhat do you like about them?\"" },
+    { sp:"Eltz", t:"\"Why... that's a hard question\nwhen you're asked point blank.\"", choices:[
+      { t:"\"Because I can feel the presence of others.\"", next:5 },
+      { t:"\"Because I want to enjoy the world it creates.\"", next:5 }
+    ]}
+  ]},
+  { bg:["#1a0e06","#3a2010","#1a1208"], loc:"Elm Village - Guild", sprites:["🧑","🐰"], dl:[
+    { sp:"Narration", t:"As they chatted──\nA shrill, angry voice came from outside the Guild." },
+    { sp:"Cricket", t:"\"All those Kumo Tte people, ab-so-lute-ly un-be-liev-a-ble!\nFighting over a piece of raw meat──\nthe height of foolishness!\"" },
+    { sp:"Eltz", t:"\"Wh-whoa, what the──!?\"\n\nA small, furry creature appeared.\nRabbit ears and cat whiskers──" },
+    { sp:"Cricket", t:"\"My apologies for the delay. I am the Guild Master,\n[Cricket]!\n\nHold out your hand and say『Book Open!』\nif you would.\"", pbOpen:true }
+  ]},
+  { bg:["#1a0e06","#2a1808","#1a1208"], loc:"Elm Village - Guild", sprites:["🧑","📖"], dl:[
+    { sp:"SYSTEM", t:"── Personal Book (P.B.) Obtained ──\n\n✨ New feature unlocked!" },
+    { sp:"Cricket", t:"\"Think of it as a pocket computer.\n\nStatus, mail, map──\nAll information gathers here.\"" },
+    { sp:"Cricket", t:"\"The glowing symbol in the upper right is [P.BOOK].\nYou can check it there.\nAbsolutely vital, so never forget it!\"" },
+    { sp:"Narration", t:"And so Eltz's adventure began.\n\nArcadia──\nThe door to the utopia of his dreams was now,\nat this very moment, opening.", next:7 }
+  ]},
+  { bg:["#0a1808","#184018","#2a2818"], loc:"Elm Village - Back Meadow", sprites:["🧑","🐰","🙍"], dl:[
+    { sp:"Narration", t:"Led by Cricket to the meadow behind the village──\nDappled sunlight poured through like a curtain of light." },
+    { sp:"Cricket", t:"\"First, set your Home Point.\nFace the goddess statue and say\n'Home Point On'.\"" },
+    { sp:"SYSTEM", t:"── Home Point Set ──\n\n📍 Elm Village - Goddess Statue\nYou can return here upon death." },
+    { sp:"Cricket", t:"\"Next is combat training.\nGo hunt that Rabby over there!\"" },
+    { sp:"Three", t:"\"...We can't.\"\n\nA round, fluffy pink creature hopping\nalong the meadow──\nAll three said in unison:\n\"It's too cute.\"" },
+    { sp:"Cricket", t:"\"...............I'll find a substitute.\"\n\"Koza! You'll be fighting them!\"" },
+    { sp:"Koza", t:"\"Please stop talking nonsense.\nWhy on earth do I have to fight?\"\n\n\"...Fine, I suppose it can't be helped. Don't expect me to go easy.\"", battle:true, battleType:"koza", battleNext:8 }
+  ]},
+  { bg:["#0a1808","#184018","#2a2818"], loc:"Elm Village - Back Meadow", sprites:["🧑","🙍"], dl:[
+    { sp:"Narration", t:"In an instant all three were knocked down.\nBut── Eltz stood back up.\n\nOn the third charge, a copper knife\nplunged into Koza's left chest──\nCritical hit!" },
+    { sp:"Koza", t:"\"Impossible...\nI never dreamed a beginner\nwould bring me to my knees.\"" },
+    { sp:"Cricket", t:"\"Those moves were splendid.\nHaven't seen anything like that in a while.\"" },
+    { sp:"Koza", t:"\"In a situation you can't win,\nmake escaping your top priority.\nThat's the key to surviving in this world.\"" },
+    { sp:"SYSTEM", t:"── Beginner's Class Complete ──\n\n🎖 Beginner's Certificate obtained!\nPATK / PDEF +1", certificate:true },
+    { sp:"Narration", t:"By the time the training ended, the area was\ntinted in the beautiful red of the evening sun.\n\nThree adventurers setting off on their journey.\nCricket and Koza watched until the three\nvanished from sight.", next:9 }
+  ]},
+  { bg:["#100a00","#1a1006","#0a0804"], loc:"Elm Village - Inn", sprites:["🧑","🧑‍🦱","👩","👵"], dl:[
+    { sp:"Narration", t:"Evening. The three head to the inn\nCricket told them about.\n\nA warm wooden building.\nOpening the door, smoke from the hearth\nand the scent of food drifted out." },
+    { sp:"Old Woman", t:"\"Looking for a room?\nGot plenty available.\nNot that they're ever fully booked.\"\n\n\"You're rookies, aren't you?\nThat kid can be a handful, I'm sure.\"" },
+    { sp:"Swift", t:"\"Yes. We just finished the beginner's class\nat the Guild today.\"" },
+    { sp:"Old Woman", t:"\"Is that right, is that right.\n\nSign this tablet for me.\nCheckout is set at ten tomorrow morning.\"" },
+    { sp:"SYSTEM", t:"── Check-In ──\n\n🏨 Elm Village Inn\n1 night: 20 ELK\n\nHP and MP fully restored.", innRest:true },
+    { sp:"Eltz", t:"\"My own room...\n\nIs it strange to be moved by how\nlittle different this is from reality?\"" },
+    { sp:"Eltz", t:"\"We're eating, sleeping, living in this world.\n\nThere's truly another dimension of reality here,\nentirely separate from the real world.\"" },
+    { sp:"Narration", t:"Lying in bed, Eltz briefly thought of the real world,\nthen quickly stopped.\n\nAfter all, he'd come here precisely\nto escape that real world.", next:10 }
+  ]},
+  { bg:["#0a1206","#1a2a0a","#100e04"], loc:"Elm Village - Lemming's Tavern", sprites:["🧑","🧑‍🦱","👩"], dl:[
+    { sp:"Narration", t:"An open terrace surrounded by trees.\nLanterns hung by vines leaked soft light.\n\nThat was Lemming's Tavern." },
+    { sp:"Swift", t:"\"Let's at least grab a seat.\n\nMight as well, it's a tavern after all.\nWanna drink?\"" },
+    { sp:"Eltz", t:"\"No... well, since we're here──\n\nAdd a beer.\"" },
+    { sp:"Swift", t:"\"You're drinking anyway!\"" },
+    { sp:"Narration", t:"A soft glow drifted to the center of the table,\nand three mugs of beer appeared." },
+    { sp:"Swift", t:"\"Mugs?!\"\n\n\"Well then, to celebrate our meeting──\nCheers!\"" },
+    { sp:"Eltz", t:"\"Ahh, I feel alive again!\"" },
+    { sp:"Narration", t:"The first night in this world, worthy of remembrance.\nWarmth in the food, and soon in the drink,\ntime slipping away so fast.\n\nAdorned by the welcome of good company.", next:11 }
+  ]},
+  { bg:["#0a1a30","#1a5080","#8ab8c8"], loc:"Dolphin Isle - Coast", sprites:["🧑","🧑‍🦱","👩"], dl:[
+    { sp:"Narration", t:"The next morning──\n\nThe three leave the inn and head outside.\nThrough a winding path, a clear blue sky\nand a vast blue sea spread before them." },
+    { sp:"Eltz", t:"\"Somehow it doesn't feel like I just arrived yesterday.\nIt feels like I came here long, long ago.\"" },
+    { sp:"Swift", t:"\"That just means yesterday was that dense and rich.\"" },
+    { sp:"Narration", t:"Countless creatures resembling large hermit crabs\nclustered around a sharp rocky outcrop──" },
+    { sp:"Eltz", t:"\"Is that... a Shamerlot?\n\nLet me check with MapScan on my PB... Lv1.\"" },
+    { sp:"Swift", t:"\"What do you think? Shall we try?\"" },
+    { sp:"Eltz", t:"\"Let's go.\n\nJust one first, let's watch and learn.\"", battle:true, battleType:"shamerlot", battleNext:12 }
+  ]},
+  { bg:["#0a1808","#184010","#283020"], loc:"Dolphin Isle - Rocky Shore", sprites:["🧑","🧑‍🦱","👩"], dl:[
+    { sp:"Narration", t:"Somehow they took one down.\n\nMinutes of striking its shell with a sword──\nthe rock crab dissolved into particles of light." },
+    { sp:"Eltz", t:"\"Hm, no EXP gained?\"" },
+    { sp:"Swift", t:"\"Does EXP not come in a party?\"" },
+    { sp:"SYSTEM", gainExp:"shamerlot", t:"Solo attempt result──\nEXP +20 gained!\n\nIn a party, EXP requires fighting monsters\nstronger than your current level." },
+    { sp:"Narration", t:"And so the three each began hunting\nShamerlot on their own.\n\nSweating in the virtual world,\nEltz quietly built his strength.", next:13 }
+  ]},
+  { bg:["#1a0e06","#2a1808","#1a1208"], loc:"Elm Village - Market", sprites:["🧑","🧑‍🦱","👩","👨","👩‍🦰"], dl:[
+    { sp:"Narration", t:"While having lunch at Lemming's Tavern,\nthe group was planning their next steps." },
+    { sp:"Eltz", t:"\"Information gathering first.\nWe can't move forward without understanding\nthe rules of this world.\"" },
+    { sp:"SYSTEM", t:"── Sale ──\n\nShamerlot Shell x3\n▶ 75 ELK obtained\n\nTotal funds: 175 ELK", sellElk:75 },
+    { sp:"Rose", t:"\"Don't know how to buy things?\nPull out your PB.\n\nChoose 'Viewer' from the index,\nthen select 'MapScan'.\"", mapScanUnlock:true },
+    { sp:"Eltz", t:"\"Wow, there's a feature like that.\nThank you, Rose.\"" },
+    { sp:"Rose", t:"\"For the Trial Cave, you can ask at the Guild.\n\nAlso... Juda!\nTeach these kids a little something.\"" },
+    { sp:"Juda", t:"\"...Do your best.\"\n\nWith only that, Juda\nturned back to his work." },
+    { sp:"Eltz", t:"\"Strange guy, but\nsomehow I didn't dislike him.\"", next:14 }
+  ]},
+  { bg:["#0a1808","#184010","#283020"], loc:"Dolphin Isle - Rocky Shore", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
+    { sp:"Narration", t:"Leaving the market, the group headed\nback to the rocky shore swarming with Shamerlot──\n\nThe rocky shore already had another visitor.\nA small boy, desperately fighting\na rock crab." },
+    { sp:"Chopper", t:"\"Hiyah, hiyah...!\"" },
+    { sp:"Eltz", t:"\"Let's each hunt for now.\nStay close enough to back each other up\nif things get bad.\"" },
+    { sp:"Narration", t:"And so the three each began hunting Shamerlot.\n\nThen suddenly──", next:15 }
+  ]},
+  { bg:["#0a1808","#1a2808","#301008"], loc:"Dolphin Isle - Rocky Shore", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
+    { sp:"Chopper", t:"\"Aaah!\n\nHelp me!!\"" },
+    { sp:"Narration", t:"At the sudden scream, all three turned\ntoward the voice──\n\nThe boy's body began glowing red,\nflashing rapidly.\n\n⚠ HP in the danger zone──Red alert!" },
+    { sp:"Swift", t:"\"That kid's HP!\"" },
+    { sp:"Eltz", t:"\"Move out, both of you!\"" },
+    { sp:"Narration", t:"A Lv3 Shamerlot was closing in on the boy.\nEltz drew his sword and charged──", battle:true, battleType:"shamerlot_lv3", battleNext:16 }
+  ]},
+  { bg:["#0a1808","#184010","#283020"], loc:"Dolphin Isle - Rocky Shore", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
+    { sp:"Eltz", t:"\"Almost died there.\nGuess blindly rushing in out of goodwill\nisn't the smartest move.\"" },
+    { sp:"Swift", t:"\"No no, charging in half-dead to rescue someone,\nthat's beautiful.\n\nCall it... selflessness.\"" },
+    { sp:"Chopper", t:"\"...You saved me?\"" },
+    { sp:"Eltz", t:"\"Yeah. You okay?\"" },
+    { sp:"Chopper", t:"\"Yeah... thank you.\"\n\nThe boy said it quietly, but clearly." },
+    { sp:"Eltz", t:"\"Chopper, right?\nWant to hunt with us?\nWe could actually use the extra help.\"" },
+    { sp:"Narration", t:"A four-person adventure now begins.", next:17 }
+  ]},
+  { bg:["#1a0e06","#2a1808","#1a1208"], loc:"Elm Village - Armory", sprites:["🧑","🧑‍🦱","👩","👦","🧓"], dl:[
+    { sp:"Narration", t:"The next day──\n\nThe four head to the weapons shop in Elm Village.\nThe time has come to gear up\nwith the ELK saved from hunting rock crabs." },
+    { sp:"Swift", t:"\"I'm going with a spear.\nThe fight with Koza taught me\nthe importance of reach.\"" },
+    { sp:"Shopkeeper", t:"\"Copper sword: 87 ELK,\nCopper spear: 95 ELK,\nCopper bow: 110 ELK,\nCopper dagger: 72 ELK.\"" },
+    { sp:"Eltz", t:"\"...Let me check what I can afford.\"", choices:[
+      { t:"⚔ Purchase Copper Sword (87 ELK)", buy:"sword" },
+      { t:"💰 Think a bit more", next:18 }
+    ]}
+  ]},
+  { bg:["#1a0e06","#2a1808","#1a1208"], loc:"Elm Village - Armory", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
+    { sp:"SYSTEM", t:"── Equipment Purchase ──\n\n⚔ Copper Sword obtained!\nPATK +6" },
+    { sp:"Chopper", t:"\"Chopper got a dagger too!\"" },
+    { sp:"Narration", t:"Each of the four now held a weapon\nsuited to themselves.\n\nDrawing out the maximum potential\nin any given environment──\n\nThat was Eltz's creed.", next:19 }
+  ]},
+  { bg:["#0a1a30","#1a5080","#8ab8d0"], loc:"Dolphin Isle - Pier", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
+    { sp:"Narration", t:"The next day after gearing up──\n\nThe four moved north along the island's coast.\nA small pier came into view." },
+    { sp:"Narration", t:"Beyond the pier stood a great gate\nradiating dazzling light.\n\n────────\nOrdination Gate\n(Oracle Gate)\n────────\n\nOnly those who have received\nordination may pass." },
+    { sp:"Eltz", t:"\"Ordination...\n\n\"That means beyond that gate\nis the next continent.\"" },
+    { sp:"Chopper", t:"\"That light is beautiful...\"" },
+    { sp:"Eltz", t:"\"But before that──\nThere's still something to do on this island.\"", next:20 }
+  ]},
+  { bg:["#0a1808","#183818","#1a2010"], loc:"Elm Village - Guild", sprites:["🧑","🧑‍🦱","👩","👦","👧"], dl:[
+    { sp:"Narration", t:"Returning to the Guild, the four were greeted\nby a single girl.\n\nA bright-spirited girl who seemed\neasy to get along with." },
+    { sp:"Ymir", t:"\"Oh, you're the beginners!\n\nLet me guess, haven't been to\nthe Trial Cave yet?\"" },
+    { sp:"Ymir", t:"\"Then you're right on time!\n\nI'm in a community called White Garden──\nWant to join?\n\nI can tell you everything about the Trial Cave!\"" },
+    { sp:"Eltz", t:"\"A community...\"", choices:[
+      { t:"\"Please, let us join.\"", joinCom:true },
+      { t:"\"Let me think about it a bit more.\"", next:21 }
+    ]}
+  ]},
+  { bg:["#0a1808","#183818","#1a2010"], loc:"Elm Village - Guild", sprites:["🧑","🧑‍🦱","👩","👦","👧"], dl:[
+    { sp:"SYSTEM", t:"── Community Joined ──\n\n🌸 Joined White Garden\n\nMembers: Ymir, Eltz, Swift, Linz, Chopper" },
+    { sp:"Ymir", t:"\"Yes!\n\nOkay, let me tell you about\nthe Trial Cave.\n\nWhen you go in, keep moving deeper.\nAt some point it opens up suddenly.\n\nThat's where he is── Simuluu.\"" },
+    { sp:"Eltz", t:"\"Simuluu... the boss.\"" },
+    { sp:"Ymir", t:"\"Yep. But if you all work together\nyou can definitely beat it!\n\nBe careful. Good luck.\"" },
+    { sp:"Narration", t:"Ymir's words and smile pushed\nthe four forward.\n\nThe Trial Cave──\nCarving the name into their hearts,\nthe four began preparing for tomorrow.", next:22 }
+  ]},
+  { bg:["#0a1808","#184010","#283020"], loc:"Dolphin Isle - Rocky Shore", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
+    { sp:"Narration", t:"Days of endless Shamerlot hunting continued──\n\nHunting time each day was limited.\nPhysically, four and a half hours was the limit for now.\n\nStrangely though, they never grew bored." },
+    { sp:"Swift", t:"\"How many today?\"" },
+    { sp:"Eltz", t:"\"No idea, I stopped counting a while ago.\"" },
+    { sp:"Narration", t:"Just as Eltz said that──\n\nSuddenly, Eltz's body was wrapped\nin a brilliant light.", battle:true, battleType:"shamerlot", battleNext:23 }
+  ]},
+  { bg:["#0a1808","#184010","#283020"], loc:"Dolphin Isle - Rocky Shore", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
+    { sp:"Narration", t:"Exchanging those words, the group\nreturned to their hunting.\n\nEnjoying the process itself──\nthat was Eltz's belief when it came to games.", next:24 }
+  ]},
+  { bg:["#1a0e06","#3a2010","#1a1208"], loc:"Elm Village - Guild", sprites:["🧑","🧑‍🦱","👩","👦","🙍","🤓"], dl:[
+    { sp:"Narration", t:"Two weeks later──\n\nThe four, who had been diligently hunting\nrock crabs, decided the time had come\nto head to the Trial Cave." },
+    { sp:"Koza", t:"\"Your journey has only just begun.\n\nI shall pray here that your journey ahead\nshines with brilliance.\"" },
+    { sp:"Koza", t:"\"May light be upon your journey.\nGood fortune in battle.\"\n\nLight spilled from the door──\nVibrant nature and a blue sky spread out.", next:25 }
+  ]},
+  { bg:["#0a1a30","#1a5080","#8ab8c8"], loc:"Dolphin Isle - West Coast", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
+    { sp:"Narration", t:"The western coastline stretching from the Guild's back entrance──\n\nFurther north, the cave gaped open,\nwaiting in ambush for adventurers." },
+    { sp:"Swift", t:"\"Don't worry, Chopper.\nGames are always designed\nso they can be cleared.\"" },
+    { sp:"Chopper", t:"\"...Yeah.\"" },
+    { sp:"Eltz", t:"\"Let's go, everyone.\"", next:26 }
+  ]},
+  { bg:["#020818","#0a2040","#0d3860"], loc:"Trial Cave - Azure Cavern", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
+    { sp:"Narration", t:"Entering the dim cave──\n\nA world of blue spread in every direction.\n\nThe seawater that had seeped in radiated a deep cerulean glow,\nthat brilliance illuminating the entire cave\nin shades of blue." },
+    { sp:"Swift", t:"\"No... way.\"" },
+    { sp:"Narration", t:"That pure blue was more beautiful\nand more sacred than any color\nthey had ever seen." },
+    { sp:"Swift", t:"\"I've never seen a sight this beautiful.\n\nI thought that meadow with the dappled light\nwas stunning, but... this is on another level.\"" },
+    { sp:"Narration", t:"Swift stepped closer to the water's surface and cupped some.\n\nBlue droplets fell from his hands,\ndrifting down to dissolve into the ground──" },
+    { sp:"Eltz", t:"\"Let's go. Deeper.\n\n\"Everyone, check your gear and\nstatus while you still can.\"" },
+    { sp:"Narration", t:"Treading upon the beautiful blue water,\nthe four pressed forward step by step\ninto the depths of the cave.", next:27 }
+  ]},
+  { bg:["#010610","#050e28","#0a1840"], loc:"Trial Cave - Innermost Chamber", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
+    { sp:"Narration", t:"The space opened before them suddenly.\n\nThe air had, without them noticing,\nshifted into a clear, distinct chill." },
+    { sp:"Narration", t:"A white shadow slowly creeping\nacross the blue water's surface.\n\nOn its smooth grey-white skin clung bleached shells,\na white mane ran along its long neck,\nand from its head rose majestic antlers toward the sky──" },
+    { sp:"Eltz", t:"\"That's... Simuluu.\"" },
+    { sp:"Narration", t:"\"Kyu──uuu─────!!!!\"\n\nA cry echoing through the cave.\nA warning to the intruders who had\nstepped into its domain.\n\nThat ivory form was, to all of them\nstanding before battle,\nalmost heartbreakingly beautiful.", next:28 }
+  ]},
+  { bg:["#010610","#050e28","#0a1840"], loc:"Trial Cave - Innermost Chamber", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
+    { sp:"Eltz", t:"\"I suppose we don't have\nthe luxury of standing here in awe.\"" },
+    { sp:"Eltz", t:"\"Spread out for now.\n\nLinz, long-range cover from the rear.\nWe three, close-range attack\nfrom a triangle formation.\"" },
+    { sp:"Swift", t:"\"Rather broad orders, if I may say so.\"" },
+    { sp:"Narration", t:"Water spheres began floating up\naround Simuluu's water surface──\nAbout one meter in diameter.\n\n\"Not those balls again!!\"\n\nThey drifted and swayed,\nthen flew straight for the group!", battle:true, battleType:"simuluu", battleNext:29 }
+  ]},
+  { bg:["#020818","#0a2040","#0d3860"], loc:"Trial Cave - Azure Cavern", sprites:["🧑","🧑‍🦱","👩","👦"], dl:[
+    { sp:"Narration", t:"Before the great fallen lord of the waters,\nstood those who had just overcome their trial.\n\nSilhouettes of four, dancing\nwithin the Azure Cavern." },
+    { sp:"Eltz", t:"\"...We did it.\"" },
+    { sp:"Swift", t:"\"We won!!\"" },
+    { sp:"Chopper", t:"\"We did it we did it!!\"" },
+    { sp:"Narration", t:"An abundance of life energy scattered\nthroughout the cave,\nboth beautiful and fleeting.\n\nBowing to that existence with respect,\nEltz and the others made this battle\ntheir own sustenance.", next:30 }
+  ]},
+  { bg:["#0a1206","#1a2a0a","#100e04"], loc:"Elm Village - Lemming's Tavern", sprites:["🧑","🧑‍🦱","👩","👦","👧"], dl:[
+    { sp:"Ymir", t:"\"Then, to celebrate safely clearing\nthe Trial Cave── Cheers!\"" },
+    { sp:"Narration", t:"Cups thrust forward all at once\nbeneath the lantern light hanging from vines.\n\nChopper spilling apple juice spectacularly\nthe moment of the toast.\n\n\"Come on, wipe it up yourself!\"\nYmir laughing while nearly losing it." },
+    { sp:"Eltz", t:"\"Easy! It was easy, wasn't it Chopper.\"" },
+    { sp:"Ymir", t:"\"Speak for yourself, I was terrified!\"" },
+    { sp:"Ymir", t:"\"The continent you're heading to next\n─ Lexia ─ is where magic is\nan everyday sight.\"" },
+    { sp:"Eltz", t:"\"─ Lexia ─, huh.\nCan't wait.\"" },
+    { sp:"Eltz", t:"\"Everyone, what do you think is\nthe strongest desire of mankind?\"" },
+    { sp:"Swift", t:"\"What is that even. If it's something\nstupid I'm gonna be mad.\"" },
+    { sp:"Eltz", t:"\"The urge to use the bathroom.\"" },
+    { sp:"Swift", t:"\"You dragged this out just to go\nwith bathroom humor?!\n\nGive me a break, you drunk!\"" },
+    { sp:"Narration", t:"The sound of a dry retort echoing\nacross the table once more.\n\nWith longing for the new world\nas the finest drinking snack in hand,\nthe adventurers talked on and on\ndeep into that night.\n\nDeparture day is tomorrow──\nFrom there, a whole new world awaits.", ending:true }
+  ]}
+];
+
+// @@SECTION:UI_TEXT ────────────────────────────────────────────────────────────
+// UIテキスト辞書。lang="ja"|"en" で切り替える。
+const UI_TEXT = {
+  ja: {
+    // ── タイトル ─────────────────────────────────────────────────────
+    subtitle:       "─── 理想郷への扉 ───",
+    gameStart:      "GAME START",
+    vrsConnect:     "VRS CONNECT ▶",
+    // ── TOS ──────────────────────────────────────────────────────────
+    tosTitle:       "利用規約 / 同意書",
+    tosSubtitle:    "── プレイ前に必ず全文をお読みください ──",
+    tosScrollNote:  "↓ 下までスクロールして内容をご確認ください",
+    tosScrollDone:  "✓ 内容の確認が完了しました",
+    tosDisagree:    "同意しない",
+    tosAgree:       "同意する  ▶  ゲーム開始",
+    tosAgreeWait:   "同意する（要スクロール）",
+    // ── 言語選択 ─────────────────────────────────────────────────────
+    langTitle:      "言語選択",
+    langSubtitle:   "Select Language",
+    // ── ムービー ─────────────────────────────────────────────────────
+    chapterLabel:   "CHAPTER 1 -- 旅立ち",
+    // ── バトル ───────────────────────────────────────────────────────
+    nextTurn:       "次のターン",
+    unavoidable:    "⚠ 回避不能",
+    victory:        "🏆 Victory！",
+    defeat:         "💀 Defeat...",
+    continueBtn:    "続ける ▶",
+    returnBtn:      "戻る ▶",
+    battleStart:    "との戦闘が始まった！",
+    defeatMsg:      "💀 敗北... 直前のシーンへ戻る",
+    // ── バトルスキル ─────────────────────────────────────────────────
+    skills: [
+      { id:"atk",     label:"強攻" },
+      { id:"counter", label:"カウンター" },
+      { id:"dodge",   label:"回避" },
+      { id:"heal",    label:"回復" },
+    ],
+    // ── バトルリザルト ───────────────────────────────────────────────
+    battleResult:   "── BATTLE RESULT ──",
+    victoryTitle:   "戦闘勝利",
+    gainExp:        "取得 EXP",
+    gradeBonus:     "┗ 格上ボーナス",
+    comboBonus:     "┗ Combo ボーナス",
+    totalMult:      "┗ 合計倍率",
+    gainElk:        "取得 ELK",
+    holdElk:        "所持 ELK",
+    currentExp:     "現在 EXP",
+    toNextLv:       "次のLvまで",
+    dropItems:      "ドロップ",
+    dropNone:       "なし",
+    checkResult:    "結果を確認  ▶",
+    nextBtn:        "次へ ▶",
+    // ── エンディング ─────────────────────────────────────────────────
+    ep1End:         "─ EPISODE 1 END ─",
+    endTagline:     "旅立ちの日は明日──",
+    playerData:     "PLAYER DATA",
+    weaponLabel:    "武器",
+    saveExportNote: "第二章へ引き継ぐには、セーブデータをエクスポートして\nARCADIA Ch.2 で読み込んでください。",
+    saveExportBtn:  "💾 セーブデータをエクスポート",
+    saveFileNote:   "arcadia_save_ch1_lv",
+    backTitle:      "TITLE へ戻る",
+    // ── P.BOOK ───────────────────────────────────────────────────────
+    pbWeapon:       "武器",
+    pbPatk:         "物理ATK",
+    pbPdef:         "物理DEF",
+    pbPoints:       "未振り",
+    pbCom:          "コミュニティ",
+    pbStatBtn:      "⭐ ステータス振り分け",
+    pbMailFrom1:    "クリケットより",
+    pbMailBody1:    "P.BOOKの初期設定を\n完了してください。\n\n冒険者よ、健闘を祈る！",
+    pbMailFrom2:    "ユミルより",
+    pbMailBody2:    "White Garden へようこそ！\n一緒に頑張ろうね。🌸",
+    pbMailNone:     "メールなし",
+    pbMapEncounter: "── エンカウント ──",
+    pbMapFight:     "⚔",
+    pbExpNone:      "経験値なし",
+    pbExpEqual:     "EXP 等倍",
+    // ── ステータス振り分け ───────────────────────────────────────────
+    statTitle:      "ステータス振り分け",
+    statBack:       "戻る",
+    statRemain:     "残りポイント:",
+    statPatk:       "物理攻撃力",
+    statPdef:       "物理防御力",
+    // ── ノベルログ ───────────────────────────────────────────────────
+    novelTitle:     "小説ログ / NOVELIZE",
+    novelClose:     "✕ 閉じる",
+    novelSelect:    "左のリストからシーンを選択してください",
+    novelSelectSub: "訪問済みのシーンのみ閲覧できます",
+    novelLoading:   "読み込み中...",
+    novelFailed:    "読み込みに失敗しました",
+    novelFailedSub: "ネットワーク接続を確認してください",
+    novelWIP:       "このシーンのノベルはまだ執筆中です",
+    novelWIPSub:    "GAME LOG タブでゲームログを確認できます",
+    novelLogNone:   "── ログがありません ──",
+    novelFooter:    "シーン解放済み",
+    novelReturn:    "ゲームに戻る ▶",
+    novelChapters: [
+      { id:1, label:"序章",       sub:"Chapter 1" },
+      { id:2, label:"初心者講習", sub:"Chapter 2" },
+      { id:3, label:"仲間との狩り",sub:"Chapter 3" },
+      { id:4, label:"準備と旅立ち",sub:"Chapter 4" },
+      { id:5, label:"試練の洞窟", sub:"Chapter 5" },
+    ],
+    novelSceneLabels: [
+      "S00 VRS接続中","S01 旅立ちの浜辺","S02 イルカ島 海岸線","S03 エルム村",
+      "S04 エルム村 ギルド（出会い）","S05 P.BOOK取得","S06 チュートリアル説明",
+      "S07 ギルド裏・草地（コーザ戦）","S08 講習終了・卒業証","S09 宿屋の夜",
+      "S10 レミングスの酒場","S11 シャメロット初戦","S12 経験値の謎",
+      "S13 交易所・ローズとジュダ","S14 チョッパー登場","S15 チョッパー救出（赤信号）",
+      "S16 四人パーティ結成","S17 武器屋","S18 防具屋","S19 船着場・洗礼の門",
+      "S20 ホワイトガーデン加入","S21 Simuluu情報入手","S22 狩り継続・レベルアップ",
+      "S23 岩場（継続）","S24 コーザの餞別","S25 西海岸・洞窟入口",
+      "S26 青の洞窟","S27 最深部・Simuluu遭遇","S28 ボス戦前","S29 撃破・勝利",
+      "S30 祝杯・エンディング",
+    ],
+    // ── ゲーム通知 ───────────────────────────────────────────────────
+    notifMapScan:   "📡 MapScan 解放！",
+    notifInn:       "🏨 HP・MP が全回復した！",
+    notifElk:       "ELK 獲得！",
+    notifCert:      "🎖 物理攻撃力・物理防御力 +1！",
+    notifLvUp:      "Lv UP！",
+    weaponName:     "銅の短剣",
+    weaponSword:    "銅の剣",
+  },
+  en: {
+    // ── Title ─────────────────────────────────────────────────────
+    subtitle:       "─── Gateway to Utopia ───",
+    gameStart:      "GAME START",
+    vrsConnect:     "VRS CONNECT ▶",
+    // ── TOS ──────────────────────────────────────────────────────────
+    tosTitle:       "Terms of Service / Agreement",
+    tosSubtitle:    "── Please read the full text before playing ──",
+    tosScrollNote:  "↓ Scroll to the bottom to confirm contents",
+    tosScrollDone:  "✓ Content review complete",
+    tosDisagree:    "Decline",
+    tosAgree:       "Agree  ▶  Start Game",
+    tosAgreeWait:   "Agree (scroll required)",
+    // ── Language Selection ────────────────────────────────────────────
+    langTitle:      "Language Selection",
+    langSubtitle:   "言語選択",
+    // ── Movie ─────────────────────────────────────────────────────────
+    chapterLabel:   "CHAPTER 1 -- Departure",
+    // ── Battle ────────────────────────────────────────────────────────
+    nextTurn:       "Next turn",
+    unavoidable:    "⚠ Unavoidable",
+    victory:        "🏆 Victory!",
+    defeat:         "💀 Defeat...",
+    continueBtn:    "Continue ▶",
+    returnBtn:      "Return ▶",
+    battleStart:    "Battle started!",
+    defeatMsg:      "💀 Defeated... returning to previous scene",
+    // ── Battle Skills ─────────────────────────────────────────────────
+    skills: [
+      { id:"atk",     label:"Strike" },
+      { id:"counter", label:"Counter" },
+      { id:"dodge",   label:"Dodge" },
+      { id:"heal",    label:"Heal" },
+    ],
+    // ── Battle Result ─────────────────────────────────────────────────
+    battleResult:   "── BATTLE RESULT ──",
+    victoryTitle:   "VICTORY",
+    gainExp:        "EXP Gained",
+    gradeBonus:     "┗ Grade Bonus",
+    comboBonus:     "┗ Combo Bonus",
+    totalMult:      "┗ Total Mult.",
+    gainElk:        "ELK Gained",
+    holdElk:        "ELK Held",
+    currentExp:     "Current EXP",
+    toNextLv:       "To Next Lv",
+    dropItems:      "Drops",
+    dropNone:       "None",
+    checkResult:    "Check Results  ▶",
+    nextBtn:        "Next ▶",
+    // ── Ending ────────────────────────────────────────────────────────
+    ep1End:         "─ EPISODE 1 END ─",
+    endTagline:     "Departure day is tomorrow──",
+    playerData:     "PLAYER DATA",
+    weaponLabel:    "Weapon",
+    saveExportNote: "To carry your data to Chapter 2,\nexport your save and load it in ARCADIA Ch.2.",
+    saveExportBtn:  "💾 Export Save Data",
+    saveFileNote:   "arcadia_save_ch1_lv",
+    backTitle:      "Back to TITLE",
+    // ── P.BOOK ────────────────────────────────────────────────────────
+    pbWeapon:       "Weapon",
+    pbPatk:         "PATK",
+    pbPdef:         "PDEF",
+    pbPoints:       "Unspent",
+    pbCom:          "Community",
+    pbStatBtn:      "⭐ Allocate Stats",
+    pbMailFrom1:    "From Cricket",
+    pbMailBody1:    "Please complete the initial\nP.BOOK setup.\n\nAdventurer, good luck out there!",
+    pbMailFrom2:    "From Ymir",
+    pbMailBody2:    "Welcome to White Garden!\nLet's do our best together. 🌸",
+    pbMailNone:     "No mail",
+    pbMapEncounter: "── Encounters ──",
+    pbMapFight:     "⚔",
+    pbExpNone:      "No EXP",
+    pbExpEqual:     "EXP ×1",
+    // ── Stat Allocation ───────────────────────────────────────────────
+    statTitle:      "Stat Allocation",
+    statBack:       "Back",
+    statRemain:     "Remaining pts:",
+    statPatk:       "Phys. Attack",
+    statPdef:       "Phys. Defense",
+    // ── Novel Log ─────────────────────────────────────────────────────
+    novelTitle:     "Story Log / NOVELIZE",
+    novelClose:     "✕ Close",
+    novelSelect:    "Select a scene from the list",
+    novelSelectSub: "Only visited scenes can be viewed",
+    novelLoading:   "Loading...",
+    novelFailed:    "Failed to load",
+    novelFailedSub: "Please check your network connection",
+    novelWIP:       "Novel for this scene is still being written",
+    novelWIPSub:    "Check the GAME LOG tab for dialogue log",
+    novelLogNone:   "── No log available ──",
+    novelFooter:    "scenes unlocked",
+    novelReturn:    "Return to Game ▶",
+    novelChapters: [
+      { id:1, label:"Prologue",       sub:"Chapter 1" },
+      { id:2, label:"Beginner Class", sub:"Chapter 2" },
+      { id:3, label:"Hunting Together",sub:"Chapter 3" },
+      { id:4, label:"Prepare & Depart",sub:"Chapter 4" },
+      { id:5, label:"Trial Cave",     sub:"Chapter 5" },
+    ],
+    novelSceneLabels: [
+      "S00 VRS Connecting","S01 Departure Beach","S02 Dolphin Isle - Coast","S03 Elm Village",
+      "S04 Guild (First Meeting)","S05 P.BOOK Obtained","S06 Tutorial",
+      "S07 Back Meadow (vs Koza)","S08 Class Complete","S09 Inn Night",
+      "S10 Lemming's Tavern","S11 First Shamerlot","S12 EXP Mystery",
+      "S13 Market - Rose & Juda","S14 Chopper Appears","S15 Rescue Chopper",
+      "S16 Party of Four","S17 Weapons Shop","S18 Armor Shop","S19 Pier - Oracle Gate",
+      "S20 Join White Garden","S21 Simuluu Intel","S22 Level Grind",
+      "S23 Rocky Shore (cont.)","S24 Koza's Farewell","S25 West Coast - Cave Entrance",
+      "S26 Azure Cavern","S27 Innermost - Simuluu","S28 Pre-Boss","S29 Victory",
+      "S30 Toast - Ending",
+    ],
+    // ── Game Notifications ────────────────────────────────────────────
+    notifMapScan:   "📡 MapScan unlocked!",
+    notifInn:       "🏨 HP & MP fully restored!",
+    notifElk:       "ELK obtained!",
+    notifCert:      "🎖 PATK / PDEF +1!",
+    notifLvUp:      "Lv UP!",
+    weaponName:     "Copper Dagger",
+    weaponSword:    "Copper Sword",
+  },
+};
+
+// ENEMY_ACTION_LABEL はlang依存のため後でコンポーネント内で定義する
+// （ここでは静的に両言語分を用意）
+const ENEMY_ACTION_LABEL_JA = {
+  atk:          { icon:"⚔",  text:"強攻" },
+  counter:      { icon:"🔄", text:"カウンター" },
+  dodge:        { icon:"💨", text:"回避" },
+  unavoidable:  { icon:"💥", text:"回避不能攻撃！" },
+  unavoidable_lite: { icon:"💥", text:"強打！" },
+};
+const ENEMY_ACTION_LABEL_EN = {
+  atk:          { icon:"⚔",  text:"Strike" },
+  counter:      { icon:"🔄", text:"Counter" },
+  dodge:        { icon:"💨", text:"Dodge" },
+  unavoidable:  { icon:"💥", text:"Unavoidable Attack!" },
+  unavoidable_lite: { icon:"💥", text:"Power Strike!" },
+};
+
 // @@SECTION:BATTLE_CONFIG ─────────────────────────────────────────────────────
 // 【編集ガイド】
 //   敵のパターンを変えたいとき → 各エネミーの pattern: [...] だけ書き換える
@@ -265,7 +763,7 @@ const BATTLE_SKILLS = [
 const INITIAL_BATTLE_DEFS = {
 
   seagull: {
-    name:"カモメ型モンスター", em:"🦅",
+    name:"カモメ型モンスター", nameEn:"Seagull-type Monster", em:"🦅",
     maxHp:55, atk:[8,14], elk:20, exp:15, lv:1,
     bg:["#0a1628","#0d2a5e","#1a5fa0"], isFloating:true, isGround:false,
     // ★ パターン調整ポイント ─────────────────────────────────────────────
@@ -273,7 +771,7 @@ const INITIAL_BATTLE_DEFS = {
   },
 
   koza: {
-    name:"コーザ（訓練）", em:"🙍",
+    name:"コーザ（訓練）", nameEn:"Koza (Training)", em:"🙍",
     maxHp:120, atk:[10,16], elk:0, exp:0, lv:1,
     bg:["#0a1808","#184018","#2a2818"], isFloating:false, isGround:true,
     // ★ パターン調整ポイント ─────────────────────────────────────────────
@@ -281,7 +779,7 @@ const INITIAL_BATTLE_DEFS = {
   },
 
   shamerlot: {
-    name:"シャメロット Lv.1", em:"🦀",
+    name:"シャメロット Lv.1", nameEn:"Shamerlot Lv.1", em:"🦀",
     maxHp:80, atk:[6,12], elk:30, exp:20, lv:1,
     bg:["#0a1808","#184010","#283020"], isFloating:false, isGround:true,
     // ★ パターン調整ポイント ─────────────────────────────────────────────
@@ -289,7 +787,7 @@ const INITIAL_BATTLE_DEFS = {
   },
 
   shamerlot_lv3: {
-    name:"シャメロット Lv.3", em:"🦀",
+    name:"シャメロット Lv.3", nameEn:"Shamerlot Lv.3", em:"🦀",
     maxHp:130, atk:[10,18], elk:50, exp:40, lv:3,
     bg:["#0a1808","#1a2808","#301008"], isFloating:false, isGround:true,
     // ★ パターン調整ポイント ─────────────────────────────────────────────
@@ -297,7 +795,7 @@ const INITIAL_BATTLE_DEFS = {
   },
 
   shamerlot_lv5: {
-    name:"シャメロット Lv.5", em:"🦀",
+    name:"シャメロット Lv.5", nameEn:"Shamerlot Lv.5", em:"🦀",
     maxHp:200, atk:[14,24], elk:80, exp:70, lv:5,
     bg:["#0a1808","#1a2808","#301008"], isFloating:false, isGround:true,
     // ★ パターン調整ポイント ─────────────────────────────────────────────
@@ -305,7 +803,7 @@ const INITIAL_BATTLE_DEFS = {
   },
 
   simuluu: {
-    name:"Simuluu ─ 試練の主", em:"🦌",
+    name:"Simuluu ─ 試練の主", nameEn:"Simuluu ─ Lord of Trials", em:"🦌",
     maxHp:400, atk:[15,25], elk:200, exp:200, lv:6,
     bg:["#010610","#050e28","#0a1840"], isBoss:true, isFloating:false, isGround:true,
     // ★ パターン調整ポイント ─────────────────────────────────────────────
@@ -378,6 +876,14 @@ function novelUrl(sceneIdx) {
   if (!NOVEL_STATUS[sceneIdx]) return null;
   const key = String(sceneIdx).padStart(2, "0");
   return `${NOVEL_BASE_URL}s${key}.txt`;
+}
+
+// 英語版ノベルTXT URL（novels/en/s{xx}.txt）
+const NOVEL_EN_BASE_URL = "https://superapolon.github.io/Arcadia_Assets/novels/en/";
+function novelUrlEn(sceneIdx) {
+  if (!NOVEL_STATUS[sceneIdx]) return null;
+  const key = String(sceneIdx).padStart(2, "0");
+  return `${NOVEL_EN_BASE_URL}s${key}.txt`;
 }
 
 // @@SECTION:ASSETS
@@ -476,6 +982,22 @@ const LOC_BGM = {
   "エルム村 レミングスの酒場": "bgm/night",
   "試練の洞窟 ─ 青の洞窟":   "bgm/cave",
   "試練の洞窟 ─ 最深部":     "bgm/cave",
+  // English location names
+  "VRS Connecting":              "bgm/field",
+  "Departure Beach":             "bgm/field",
+  "Dolphin Isle - Coast":        "bgm/field",
+  "Elm Village":                 "bgm/field",
+  "Elm Village - Guild":         "bgm/field",
+  "Elm Village - Back Meadow":   "bgm/field",
+  "Elm Village - Market":        "bgm/field",
+  "Elm Village - Armory":        "bgm/field",
+  "Dolphin Isle - Rocky Shore":  "bgm/field",
+  "Dolphin Isle - Pier":         "bgm/field",
+  "Dolphin Isle - West Coast":   "bgm/field",
+  "Elm Village - Inn":           "bgm/night",
+  "Elm Village - Lemming's Tavern": "bgm/night",
+  "Trial Cave - Azure Cavern":   "bgm/cave",
+  "Trial Cave - Innermost Chamber": "bgm/cave",
 };
 
 const BATTLE_BGM = {
@@ -620,6 +1142,7 @@ const BATTLE_BG_STYLE = {
 //     重要な要素は画面中央〜やや上（画像の30〜60%の高さ帯）に配置すること
 // ※ キーは LOC_TO_SCENE_IMG のキー（loc文字列）と一致させる
 const SCENE_BG_STYLE = {
+  // ── 日本語 ──────────────────────────────────────────────
   "VRS接続中":               { size: "cover", position: "center center" },
   "旅立ちの浜辺":            { size: "cover", position: "center center" },
   "イルカ島 海岸線":         { size: "cover", position: "center center" },
@@ -636,9 +1159,26 @@ const SCENE_BG_STYLE = {
   "イルカ島 西海岸":         { size: "cover", position: "center center" },
   "試練の洞窟 ─ 青の洞窟":  { size: "cover", position: "center center" },
   "試練の洞窟 ─ 最深部":    { size: "cover", position: "center center" },
+  // ── English ─────────────────────────────────────────────
+  "VRS Connecting":                  { size: "cover", position: "center center" },
+  "Departure Beach":                 { size: "cover", position: "center center" },
+  "Dolphin Isle - Coast":            { size: "cover", position: "center center" },
+  "Elm Village":                     { size: "cover", position: "center center" },
+  "Elm Village - Guild":             { size: "cover", position: "center center" },
+  "Elm Village - Back Meadow":       { size: "cover", position: "center center" },
+  "Elm Village - Inn":               { size: "cover", position: "center center" },
+  "Elm Village - Lemming's Tavern":  { size: "cover", position: "center center" },
+  "Dolphin Isle - Rocky Shore":      { size: "cover", position: "center center" },
+  "Elm Village - Market":            { size: "cover", position: "center center" },
+  "Elm Village - Armory":            { size: "cover", position: "center center" },
+  "Dolphin Isle - Pier":             { size: "cover", position: "center center" },
+  "Dolphin Isle - West Coast":       { size: "cover", position: "center center" },
+  "Trial Cave - Azure Cavern":       { size: "cover", position: "center center" },
+  "Trial Cave - Innermost Chamber":  { size: "cover", position: "center center" },
 };
 
 const LOC_TO_SCENE_IMG = {
+  // ── 日本語 ──────────────────────────────────────────────
   "VRS接続中":               "scenes/s00_vrs",
   "旅立ちの浜辺":            "scenes/s01_beach",
   "イルカ島 海岸線":         "scenes/s02_coast",
@@ -655,6 +1195,22 @@ const LOC_TO_SCENE_IMG = {
   "イルカ島 西海岸":         "scenes/s25_westcoast",
   "試練の洞窟 ─ 青の洞窟":  "scenes/s26_cave_blue",
   "試練の洞窟 ─ 最深部":    "scenes/s27_cave_deep",
+  // ── English ─────────────────────────────────────────────
+  "VRS Connecting":                  "scenes/s00_vrs",
+  "Departure Beach":                 "scenes/s01_beach",
+  "Dolphin Isle - Coast":            "scenes/s02_coast",
+  "Elm Village":                     "scenes/s03_village",
+  "Elm Village - Guild":             "scenes/s04_guild",
+  "Elm Village - Back Meadow":       "scenes/s07_meadow",
+  "Elm Village - Inn":               "scenes/s09_inn",
+  "Elm Village - Lemming's Tavern":  "scenes/s10_tavern",
+  "Dolphin Isle - Rocky Shore":      "scenes/s14_rocks",
+  "Elm Village - Market":            "scenes/s13_market",
+  "Elm Village - Armory":            "scenes/s17_armory",
+  "Dolphin Isle - Pier":             "scenes/s19_pier",
+  "Dolphin Isle - West Coast":       "scenes/s25_westcoast",
+  "Trial Cave - Azure Cavern":       "scenes/s26_cave_blue",
+  "Trial Cave - Innermost Chamber":  "scenes/s27_cave_deep",
 };
 
 // 勝利画面ボタン -- 1回目押下でファンファーレ開始、2回目押下でシーン遷移
@@ -708,6 +1264,10 @@ export default function Arcadia() {
   const isPortrait = useIsPortrait();
   // @@SECTION:STATE_ADVENTURE
   const [phase, setPhase] = useState("title");
+  const [lang, setLang] = useState("ja"); // "ja" | "en"
+  const T = UI_TEXT[lang];
+  const ACTIVE_SCENES = lang === "en" ? SCENES_EN : SCENES;
+  const ENEMY_ACTION_LABEL = lang === "en" ? ENEMY_ACTION_LABEL_EN : ENEMY_ACTION_LABEL_JA;
   const [tosScrolled, setTosScrolled] = useState(false);
   // エネミーパターンをランタイムで編集可能なステートとして保持
   const [battleDefs, setBattleDefs] = useState(INITIAL_BATTLE_DEFS);
@@ -728,7 +1288,7 @@ export default function Arcadia() {
   const [novelLog, setNovelLog] = useState([]);  // { sp, t, sIdx }[] -- 全ダイアログ履歴
   const [novelSelScene, setNovelSelScene] = useState(null);  // 表示中のシーンindex
   const [novelTab, setNovelTab] = useState("novel");  // "novel" | "log"
-  const [novelCache, setNovelCache] = useState({});   // { [sceneIdx]: string | null } fetchキャッシュ
+  const [novelCache, setNovelCache] = useState({});   // { ["ja_N" | "en_N"]: string | null } lang別キャッシュ
   const [novelLoading, setNovelLoading] = useState(false);  // fetch中フラグ
   // パターンエディター用ステート
   const [editorSelKey, setEditorSelKey] = useState("seagull");
@@ -742,7 +1302,7 @@ export default function Arcadia() {
   const [elk, setElk] = useState(50);
   const [lv, setLv] = useState(1);
   const [exp, setExp] = useState(0);
-  const [weapon, setWeapon] = useState("銅の短剣");
+  const [weapon, setWeapon] = useState(UI_TEXT["ja"].weaponName);
   const [weaponPatk, setWeaponPatk] = useState(3);   // 武器による物理ATK補正（銅の短剣+3）
   const [statPoints, setStatPoints] = useState(0);
   const [statAlloc, setStatAlloc] = useState({patk:10,pdef:10,matk:10,spd:10});
@@ -940,7 +1500,7 @@ export default function Arcadia() {
   }, []);
 
   const showDl = useCallback((sIdx, dIdx) => {
-    const sc = SCENES[sIdx];
+    const sc = ACTIVE_SCENES[sIdx];
     if (!sc) return;
     const dl = sc.dl[dIdx];
     if (!dl) return;
@@ -950,16 +1510,16 @@ export default function Arcadia() {
 
     // Handle events
     if (dl.pbOpen) setHasPb(true);
-    if (dl.mapScanUnlock) { setHasMapScan(true); showNotif("📡 MapScan 解放！"); }
+    if (dl.mapScanUnlock) { setHasMapScan(true); showNotif(T.notifMapScan); }
     if (dl.innRest) {
       setHp(h => { const v = Math.max(h, mhp); return v; });
       setMp(m => { const v = Math.max(m, mmp); return v; });
       setHp(mhp); setMp(mmp);
-      showNotif("🏨 HP・MP が全回復した！");
+      showNotif(T.notifInn);
     }
     if (dl.sellElk) {
       setElk(e => e + dl.sellElk);
-      if (dl.sellElk > 0) showNotif(`💰 ${dl.sellElk} ELK 獲得！`);
+      if (dl.sellElk > 0) showNotif(`💰 ${dl.sellElk} ${T.notifElk}`);
     }
     if (dl.gainExp) {
       const ed = battleDefs[dl.gainExp];
@@ -968,7 +1528,7 @@ export default function Arcadia() {
     if (dl.joinCom) setInCom(true);
     if (dl.certificate) {
       setStatAlloc(sa => ({ ...sa, patk: sa.patk + 1, pdef: sa.pdef + 1 }));
-      showNotif("🎖 物理攻撃力・物理防御力 +1！");
+      showNotif(T.notifCert);
     }
 
     // Battle
@@ -978,7 +1538,7 @@ export default function Arcadia() {
       setBattleEnemy(ed);
       setCurrentEnemyType(eKey);
       setEnemyHp(ed.maxHp);
-      setBtlLogs([`⚔ ${ed.name} との戦闘が始まった！`]);
+      setBtlLogs([`⚔ ${lang==="en" ? (ed.nameEn ?? ed.name) : ed.name} ${T.battleStart}`]);
       setGuarding(false);
       setVictory(false);
       setDefeat(false);
@@ -1013,13 +1573,13 @@ export default function Arcadia() {
             return;
           }
           // 次のダイアログへ
-          const sc2 = SCENES[sIdx];
+          const sc2 = ACTIVE_SCENES[sIdx];
           const nextDl = dIdx + 1;
           if (nextDl < sc2.dl.length) {
             setDlIdx(nextDl);
           } else {
             const nextSc = sIdx + 1;
-            if (nextSc < SCENES.length) {
+            if (nextSc < ACTIVE_SCENES.length) {
               setFade(true);
               setTimeout(() => { setSceneIdx(nextSc); setDlIdx(0); setFade(false); }, 300);
             }
@@ -1027,13 +1587,13 @@ export default function Arcadia() {
         }, 1800);
       }
     });
-  }, [mhp, mmp, showNotif, startType]);
+  }, [mhp, mmp, showNotif, startType, lang]);
 
   // enemyLv を受け取り、プレイヤーLvとの差で倍率を計算して経験値付与
   const handleExpGain = useCallback((amount, enemyLv, comboMult) => {
     // 自分以下のLvの敵からは経験値なし（コーザ/シムルー除外フラグは呼び出し側で制御）
     if (enemyLv !== undefined && enemyLv <= lv - 1) {
-      showNotif("経験値なし（格下の敵）");
+      showNotif(lang==="en"?"No EXP (lower level enemy)":"経験値なし（格下の敵）");
       return;
     }
     // 格上ボーナス: 敵Lvが自分より高いほど多く入手
@@ -1080,8 +1640,8 @@ export default function Arcadia() {
     if (gradeBonus > 1.0)          bonusParts.push(`格上×${gradeBonus}`);
     if ((comboMult ?? 1.0) > 1.0)  bonusParts.push(`Combo×${(comboMult ?? 1.0).toFixed(2)}`);
     const bonusStr = bonusParts.length > 0 ? ` (${bonusParts.join(", ")})` : "";
-    showNotif(`✨ EXP +${finalAmount}${bonusStr}！`);
-  }, [lv, exp, showNotif]);
+    showNotif(`✨ EXP +${finalAmount}${bonusStr}${lang==="en"?"!":"！"}`);
+  }, [lv, exp, showNotif, lang]);
 
   useEffect(() => {
     if (phase === "game") {
@@ -1098,7 +1658,7 @@ export default function Arcadia() {
 
   // ── BGM切り替え（フェーズ・シーン・バトル敵が変わるたびに呼ぶ）──────────
   useEffect(() => {
-    const sceneLoc = SCENES[sceneIdx]?.loc;
+    const sceneLoc = ACTIVE_SCENES[sceneIdx]?.loc;
     const nextId   = resolveBgmId(phase, sceneLoc, currentEnemyType);
     switchBgm(nextId);
   }, [phase, sceneIdx, currentEnemyType, switchBgm]);
@@ -1119,7 +1679,7 @@ export default function Arcadia() {
     if (autoAdvTimerRef.current) clearTimeout(autoAdvTimerRef.current);
     if (typing) {
       if (typeTimerRef.current) clearTimeout(typeTimerRef.current);
-      const sc = SCENES[sceneIdx];
+      const sc = ACTIVE_SCENES[sceneIdx];
       const dl = sc?.dl[dlIdx];
       if (dl) setDisplayText(dl.t);
       setTyping(false);
@@ -1127,7 +1687,7 @@ export default function Arcadia() {
       return;
     }
     // Advance
-    const sc = SCENES[sceneIdx];
+    const sc = ACTIVE_SCENES[sceneIdx];
     const dl = sc?.dl[dlIdx];
     if (!dl) return;
     if (dl.choices) return;
@@ -1147,10 +1707,10 @@ export default function Arcadia() {
       if (nextDl < sc.dl.length) { setDlIdx(nextDl); }
       else {
         const nextSc = sceneIdx + 1;
-        if (nextSc < SCENES.length) { setFade(true); setTimeout(() => { setSceneIdx(nextSc); setDlIdx(0); setFade(false); }, 300); }
+        if (nextSc < ACTIVE_SCENES.length) { setFade(true); setTimeout(() => { setSceneIdx(nextSc); setDlIdx(0); setFade(false); }, 300); }
       }
     }
-  }, [choices, typing, sceneIdx, dlIdx]);
+  }, [choices, typing, sceneIdx, dlIdx, lang]);
 
   // @@SECTION:LOGIC_CHOICE
   const onChoice = useCallback((ch) => {
@@ -1158,23 +1718,23 @@ export default function Arcadia() {
     if (ch.buy === "sword") {
       if (elk >= 87) {
         setElk(e => e - 87);
-        setWeapon("銅の剣");
+        setWeapon(T.weaponSword);
         setWeaponPatk(6);
-        showNotif("⚔ 銅の剣を購入した！ 物理ATK +6");
+        showNotif(lang==="en"?"⚔ Bought Copper Sword! PATK +6":"⚔ 銅の剣を購入した！ 物理ATK +6");
         const nextSc = sceneIdx + 1;
         setFade(true);
         setTimeout(() => { setSceneIdx(nextSc); setDlIdx(0); setFade(false); }, 300);
       } else {
-        showNotif("💸 ELKが足りない！");
+        showNotif(lang==="en"?"💸 Not enough ELK!":"💸 ELKが足りない！");
         const nextDl = dlIdx + 1;
-        const sc = SCENES[sceneIdx];
+        const sc = ACTIVE_SCENES[sceneIdx];
         if (nextDl < sc.dl.length) setDlIdx(nextDl);
       }
       return;
     }
     if (ch.joinCom) {
       setInCom(true);
-      showNotif("🌸 White Garden に加入した！");
+      showNotif(lang==="en"?"🌸 Joined White Garden!":"🌸 White Garden に加入した！");
       const nextSc = sceneIdx + 1;
       setFade(true);
       setTimeout(() => { setSceneIdx(nextSc); setDlIdx(0); setFade(false); }, 300);
@@ -1186,7 +1746,7 @@ export default function Arcadia() {
       setBattleEnemy(ed);
       setCurrentEnemyType(eKey);
       setEnemyHp(ed.maxHp);
-      setBtlLogs([`⚔ ${ed.name} との戦闘が始まった！`]);
+      setBtlLogs([`⚔ ${lang==="en" ? (ed.nameEn ?? ed.name) : ed.name} ${T.battleStart}`]);
       setGuarding(false); setVictory(false); setDefeat(false); setTurn(0); setNoDmgStreak(0);
       setBattleResultBonus({ comboMult: 1.0, gradeMult: 1.0 });
       setEnemyTurnIdx(0);
@@ -1201,14 +1761,14 @@ export default function Arcadia() {
       setTimeout(() => { setSceneIdx(ch.next); setDlIdx(0); setFade(false); }, 300);
     } else if (ch.reply !== undefined) {
       const nextDl = dlIdx + 1;
-      const sc = SCENES[sceneIdx];
+      const sc = ACTIVE_SCENES[sceneIdx];
       if (nextDl < sc.dl.length) setDlIdx(nextDl);
     } else {
       const nextDl = dlIdx + 1;
-      const sc = SCENES[sceneIdx];
+      const sc = ACTIVE_SCENES[sceneIdx];
       if (nextDl < sc.dl.length) setDlIdx(nextDl);
     }
-  }, [elk, sceneIdx, dlIdx, showNotif]);
+  }, [elk, sceneIdx, dlIdx, showNotif, lang]);
 
   // @@SECTION:LOGIC_BATTLE
   // ─── すくみ判定ヘルパー ───────────────────────────────────────────────
@@ -1232,21 +1792,14 @@ export default function Arcadia() {
     return "neutral";
   }
 
-  const ENEMY_ACTION_LABEL = {
-    atk:         { icon:"⚔",  text:"強攻" },
-    counter:     { icon:"🔄", text:"カウンター" },
-    dodge:       { icon:"💨", text:"回避" },
-    unavoidable: { icon:"💥", text:"回避不能攻撃！" },
-    unavoidable_lite: { icon:"⚡", text:"強化攻撃！" },
-  };
-
   const doBattleAction = useCallback((skillId) => {
     if (victory || defeat) return;
     const sk = BATTLE_SKILLS.find(s => s.id === skillId);
     if (!sk) return;
-    if (sk.cost > 0 && mp < sk.cost) { showNotif("MPが足りない！"); return; }
+    if (sk.cost > 0 && mp < sk.cost) { showNotif(lang==="en"?"Not enough MP!":"MPが足りない！"); return; }
 
     const ed = battleEnemy;
+    const eName = lang==="en" ? (ed.nameEn ?? ed.name) : ed.name;
     // battleDefsから最新パターンを取得（エディターで変更されても即反映）
     const pattern = (battleDefs[currentEnemyType]?.pattern) || ed.pattern || ["atk"];
     const eAction = pattern[enemyTurnIdx % pattern.length];
@@ -1275,22 +1828,22 @@ export default function Arcadia() {
 
       if (skillId === "atk" && rps === "lose") {
         // 強攻 → 敵カウンター: プレイヤー攻撃は無効化
-        logs.push(`⚔ 強攻！ → 🔄 ${ed.name}にカウンターされた！ 攻撃無効！`);
+        logs.push(lang==="en" ? `⚔ Strike! → 🔄 Countered by ${eName}! Attack nullified!` : `⚔ 強攻！ → 🔄 ${eName}にカウンターされた！ 攻撃無効！`);
       } else if (skillId === "atk" && eAction === "dodge") {
         // 強攻 → 敵回避: 看破してダメージ（1行で表現）
         newEnemyHp = Math.max(0, enemyHp - rawDmg);
-        logs.push(`⚔ ${ed.name}の回避を看破！ 強攻 ${rawDmg} ダメージ！`);
+        logs.push(lang==="en" ? `⚔ Saw through ${eName}'s dodge! Strike ${rawDmg} dmg!` : `⚔ ${eName}の回避を看破！ 強攻 ${rawDmg} ダメージ！`);
       } else if (skillId === "counter" && rps === "lose") {
         // カウンター → 敵回避: カウンター空振り
-        logs.push(`🔄 カウンター！ → 💨 ${ed.name}に回避された！ カウンター空振り！`);
+        logs.push(lang==="en" ? `🔄 Counter! → 💨 ${eName} dodged it! Counter missed!` : `🔄 カウンター！ → 💨 ${eName}に回避された！ カウンター空振り！`);
       } else if (skillId === "counter" && rps === "win") {
         // カウンター → 敵強攻: 追加ダメージ付与
         const bonusDmg = Math.floor(rawDmg * 1.5);
         newEnemyHp = Math.max(0, enemyHp - bonusDmg);
-        logs.push(`🔄 カウンター成功！ ${ed.name} に ${bonusDmg} ダメージ（×1.5）！`);
+        logs.push(lang==="en" ? `🔄 Counter hit! ${eName} takes ${bonusDmg} dmg (×1.5)!` : `🔄 カウンター成功！ ${eName} に ${bonusDmg} ダメージ（×1.5）！`);
       } else {
         newEnemyHp = Math.max(0, enemyHp - rawDmg);
-        logs.push(`${sk.icon} ${sk.label}！ ${ed.name} に ${rawDmg} ダメージ！`);
+        logs.push(lang==="en" ? `${sk.icon} ${sk.labelEn ?? sk.label}! ${eName} takes ${rawDmg} dmg!` : `${sk.icon} ${sk.label}！ ${eName} に ${rawDmg} ダメージ！`);
       }
     }
 
@@ -1304,46 +1857,46 @@ export default function Arcadia() {
         const actualUDmg = Math.max(1, uDmg - defBonus);
         newHp = Math.max(0, newHp - actualUDmg);
         if (rps === "lose_unavoidable") {
-          logs.push(`💥 回避不能攻撃！ カウンター/回避を粉砕！ ${actualUDmg} ダメージ！`);
+          logs.push(lang==="en" ? `💥 Unavoidable attack! Crushes Counter/Dodge! ${actualUDmg} dmg!` : `💥 回避不能攻撃！ カウンター/回避を粉砕！ ${actualUDmg} ダメージ！`);
         } else {
-          logs.push(`💥 回避不能攻撃！ ${actualUDmg} ダメージ！`);
+          logs.push(lang==="en" ? `💥 Unavoidable attack! ${actualUDmg} dmg!` : `💥 回避不能攻撃！ ${actualUDmg} ダメージ！`);
         }
       } else if (eAction === "unavoidable_lite") {
         const uDmg = randInt(18, 28);
         const actualUDmg = Math.max(1, uDmg - defBonus);
         newHp = Math.max(0, newHp - actualUDmg);
         if (rps === "lose_unavoidable_lite") {
-          logs.push(`⚡ 強化攻撃！ 回避を粉砕！ ${actualUDmg} ダメージ！`);
+          logs.push(lang==="en" ? `⚡ Power attack! Crushes dodge! ${actualUDmg} dmg!` : `⚡ 強化攻撃！ 回避を粉砕！ ${actualUDmg} ダメージ！`);
         } else {
-          logs.push(`⚡ 強化攻撃！ ${actualUDmg} ダメージ！`);
+          logs.push(lang==="en" ? `⚡ Power attack! ${actualUDmg} dmg!` : `⚡ 強化攻撃！ ${actualUDmg} ダメージ！`);
         }
       } else if (eAction === "dodge") {
         if (skillId === "atk") {
           // 強攻 vs 敵回避: ダメージ・ログはプレイヤー行動フェーズで処理済み（行動不能）
         } else if (skillId === "counter") {
           // 敵回避 vs プレイヤーカウンター: すでに上で「カウンター空振り」処理済み
-          logs.push(`💨 ${ed.name}は身をかわした！（行動なし）`);
+          logs.push(lang==="en" ? `💨 ${eName} dodged! (no action)` : `💨 ${eName}は身をかわした！（行動なし）`);
         } else {
-          logs.push(`💨 ${ed.name}は身をかわした！（行動なし）`);
+          logs.push(lang==="en" ? `💨 ${eName} dodged! (no action)` : `💨 ${eName}は身をかわした！（行動なし）`);
         }
       } else if (eAction === "counter") {
         if (skillId === "atk") {
           // 敵カウンター vs プレイヤー強攻: カウンターダメージ
           const cDmg = Math.max(1, randInt(ed.atk[0], ed.atk[1]) + Math.floor(ed.atk[1] * 0.3) - defBonus);
           newHp = Math.max(0, newHp - cDmg);
-          logs.push(`🔄 ${ed.name}のカウンター！ ${cDmg} ダメージ！（プレイヤーの攻撃は無効化）`);
+          logs.push(lang==="en" ? `🔄 ${eName}'s counter! ${cDmg} dmg! (player attack nullified)` : `🔄 ${eName}のカウンター！ ${cDmg} ダメージ！（プレイヤーの攻撃は無効化）`);
         } else if (skillId === "counter") {
           // 敵カウンター vs プレイヤーカウンター成功: 敵攻撃を完全無効化
           // newHpはそのまま（ダメージなし）
-          logs.push(`🔄 カウンターで ${ed.name}の攻撃を完全に無効化した！`);
+          logs.push(lang==="en" ? `🔄 Countered ${eName}'s attack completely!` : `🔄 カウンターで ${eName}の攻撃を完全に無効化した！`);
         } else if (skillId === "dodge") {
           // 敵カウンター vs プレイヤー回避: 回避成功
-          logs.push(`💨 回避成功！ ${ed.name}のカウンターをかわした！`);
+          logs.push(lang==="en" ? `💨 Dodged ${eName}'s counter!` : `💨 回避成功！ ${eName}のカウンターをかわした！`);
         } else {
           // 回復など: カウンターは発動するが通常ダメージ
           const eDmg = Math.max(1, randInt(ed.atk[0], ed.atk[1]) - defBonus);
           newHp = Math.max(0, newHp - eDmg);
-          logs.push(`🔄 ${ed.name}のカウンター！ ${eDmg} ダメージ！`);
+          logs.push(lang==="en" ? `🔄 ${eName}'s counter! ${eDmg} dmg!` : `🔄 ${eName}のカウンター！ ${eDmg} ダメージ！`);
         }
       } else {
         // 敵の通常強攻
@@ -1354,11 +1907,11 @@ export default function Arcadia() {
           // プレイヤー回避 vs 敵強攻: 回避できない
           const eDmg = Math.max(1, randInt(ed.atk[0], ed.atk[1]) - defBonus);
           newHp = Math.max(0, newHp - eDmg);
-          logs.push(`⚔ ${ed.name}の強攻！ 回避できず ${eDmg} ダメージ！`);
+          logs.push(lang==="en" ? `⚔ ${eName}'s strike! Couldn't dodge, ${eDmg} dmg!` : `⚔ ${eName}の強攻！ 回避できず ${eDmg} ダメージ！`);
         } else {
           const eDmg = Math.max(1, randInt(ed.atk[0], ed.atk[1]) - defBonus);
           newHp = Math.max(0, newHp - eDmg);
-          logs.push(`⚔ ${ed.name}の強攻！ ${eDmg} ダメージ！`);
+          logs.push(lang==="en" ? `⚔ ${eName}'s strike! ${eDmg} dmg!` : `⚔ ${eName}の強攻！ ${eDmg} ダメージ！`);
         }
       }
     }
@@ -1402,8 +1955,8 @@ export default function Arcadia() {
 
     if (newEnemyHp <= 0) {
       setVictory(true);
-      setBtlLogs(prev => [...prev, `🏆 ${ed.name}を倒した！`]);
-      if (ed.elk > 0) { setElk(e => e + ed.elk); showNotif(`💰 ${ed.elk} ELK 獲得！`); }
+      setBtlLogs(prev => [...prev, lang==="en" ? `🏆 ${lang==="en"?(ed.nameEn??ed.name):ed.name} defeated!` : `🏆 ${ed.name}を倒した！`]);
+      if (ed.elk > 0) { setElk(e => e + ed.elk); showNotif(`💰 ${ed.elk} ${T.notifElk}`); }
       if (ed.exp > 0) {
         const comboTier = Math.floor(newStreak / 15);
         const comboMult = comboTier > 0 ? Math.pow(1.5, comboTier) : 1;
@@ -1424,15 +1977,15 @@ export default function Arcadia() {
       }
     } else if (newHp <= 0) {
       setDefeat(true);
-      setBtlLogs(prev => [...prev, "💀 戦闘不能..."]);
+      setBtlLogs(prev => [...prev, lang==="en" ? "💀 Defeated..." : "💀 戦闘不能..."]);
     }
-  }, [victory, defeat, mp, enemyHp, hp, mhp, mmp, lv, battleEnemy, statAlloc, weaponPatk, enemyTurnIdx, noDmgStreak, showNotif, handleExpGain, setBattleResultBonus]);
+  }, [victory, defeat, mp, enemyHp, hp, mhp, mmp, lv, battleEnemy, statAlloc, weaponPatk, enemyTurnIdx, noDmgStreak, showNotif, handleExpGain, setBattleResultBonus, lang]);
 
   const exitBattle = useCallback(() => {
     if (defeat) {
       setHp(Math.floor(mhp * 0.3));
       setMp(Math.floor(mmp * 0.3));
-      showNotif("💀 敗北... 直前のシーンへ戻る");
+      showNotif(T.defeatMsg);
       const prevSc = battlePrev !== null ? battlePrev : sceneIdx;
       setFade(true);
       setTimeout(() => {
@@ -1462,7 +2015,7 @@ export default function Arcadia() {
   }, [defeat, mhp, mmp, battleNext, battlePrev, sceneIdx, showNotif, battleEnemy, battleResultBonus]);
 
   // ──────────── RENDER ────────────
-  const sc = SCENES[sceneIdx] || SCENES[0];
+  const sc = ACTIVE_SCENES[sceneIdx] || ACTIVE_SCENES[0];
   const bg = sc.bg;
   const sceneImgKey = LOC_TO_SCENE_IMG[sc.loc];
   const sceneBgUrl = sceneImgKey ? assetUrl(sceneImgKey) : null;
@@ -1559,7 +2112,7 @@ export default function Arcadia() {
 
           {/* BATTLE RESULT ヘッダー */}
           <div style={{fontSize:10,letterSpacing:8,color:C.gold,fontFamily:"'Share Tech Mono',monospace",marginBottom:12,animation:"fadeIn 1s 0.3s ease both"}}>── BATTLE RESULT ──</div>
-          <div style={{fontSize:52,fontWeight:700,letterSpacing:6,color:C.gold,animation:"victoryRise 0.8s 0.4s cubic-bezier(0.22,1,0.36,1) both, victoryGlow 2.5s 1.2s ease-in-out infinite",lineHeight:1.1,marginBottom:4}}>戦闘勝利</div>
+          <div style={{fontSize:52,fontWeight:700,letterSpacing:6,color:C.gold,animation:"victoryRise 0.8s 0.4s cubic-bezier(0.22,1,0.36,1) both, victoryGlow 2.5s 1.2s ease-in-out infinite",lineHeight:1.1,marginBottom:4}}>{T.victoryTitle}</div>
           <div style={{fontSize:13,letterSpacing:4,color:C.accent2,fontFamily:"'Share Tech Mono',monospace",animation:"fadeIn 1s 1s ease both",marginBottom:20}}>VICTORY</div>
 
           {/* ─── リザルトパネル ─── */}
@@ -1567,14 +2120,14 @@ export default function Arcadia() {
 
             {/* 取得EXP */}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`1px solid ${C.border}33`}}>
-              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>取得 EXP</span>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>{T.gainExp}</span>
               <span style={{fontSize:14,color:C.accent2,fontFamily:"'Share Tech Mono',monospace",fontWeight:700}}>+{gainExp}</span>
             </div>
 
             {/* 格上ボーナス（1.0超のときのみ表示） */}
             {hasGradeBonus && (
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"5px 0 5px 12px",borderBottom:`1px solid ${C.border}22`}}>
-                <span style={{fontSize:10,color:C.gold,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>┗ 格上ボーナス</span>
+                <span style={{fontSize:10,color:C.gold,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>{T.gradeBonus}</span>
                 <span style={{fontSize:12,color:C.gold,fontFamily:"'Share Tech Mono',monospace",fontWeight:700}}>×{gradeMult.toFixed(1)}</span>
               </div>
             )}
@@ -1582,7 +2135,7 @@ export default function Arcadia() {
             {/* コンボボーナス（1.0超のときのみ表示） */}
             {hasComboBonus && (
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"5px 0 5px 12px",borderBottom:`1px solid ${C.border}22`}}>
-                <span style={{fontSize:10,color:C.accent2,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>┗ Combo ボーナス</span>
+                <span style={{fontSize:10,color:C.accent2,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>{T.comboBonus}</span>
                 <span style={{fontSize:12,color:C.accent2,fontFamily:"'Share Tech Mono',monospace",fontWeight:700}}>×{comboMult.toFixed(2)}</span>
               </div>
             )}
@@ -1590,38 +2143,38 @@ export default function Arcadia() {
             {/* 合計倍率（いずれかのボーナスがある場合のみ） */}
             {(hasGradeBonus || hasComboBonus) && (
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"5px 0 5px 12px",borderBottom:`1px solid ${C.border}33`}}>
-                <span style={{fontSize:10,color:C.accent,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>┗ 合計倍率</span>
+                <span style={{fontSize:10,color:C.accent,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>{T.totalMult}</span>
                 <span style={{fontSize:12,color:C.accent,fontFamily:"'Share Tech Mono',monospace",fontWeight:700}}>×{totalMult.toFixed(2)}</span>
               </div>
             )}
 
             {/* 取得ELK */}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`1px solid ${C.border}33`}}>
-              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>取得 ELK</span>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>{T.gainElk}</span>
               <span style={{fontSize:14,color:C.gold,fontFamily:"'Share Tech Mono',monospace",fontWeight:700}}>+{gainElk}</span>
             </div>
 
             {/* 所持ELK */}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`1px solid ${C.border}33`}}>
-              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>所持 ELK</span>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>{T.holdElk}</span>
               <span style={{fontSize:14,color:C.text,fontFamily:"'Share Tech Mono',monospace"}}>{elk}</span>
             </div>
 
             {/* 現在EXP / 次のLvまで */}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`1px solid ${C.border}33`}}>
-              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>現在 EXP</span>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>{T.currentExp}</span>
               <span style={{fontSize:14,color:C.text,fontFamily:"'Share Tech Mono',monospace"}}>{exp}</span>
             </div>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0",borderBottom:`1px solid ${C.border}33`}}>
-              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>次のLvまで</span>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>{T.toNextLv}</span>
               <span style={{fontSize:14,color:C.accent,fontFamily:"'Share Tech Mono',monospace"}}>{expToNext !== null ? expToNext : "MAX"}</span>
             </div>
 
             {/* ドロップアイテム（将来実装 -- 今は「なし」表示） */}
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"7px 0"}}>
-              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>ドロップ</span>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>{T.dropItems}</span>
               <span style={{fontSize:12,color:dropItems.length > 0 ? C.accent2 : C.muted,fontFamily:"'Share Tech Mono',monospace"}}>
-                {dropItems.length > 0 ? dropItems.join(" / ") : "なし"}
+                {dropItems.length > 0 ? dropItems.join(" / ") : T.dropNone}
               </span>
             </div>
           </div>
@@ -1653,10 +2206,10 @@ export default function Arcadia() {
                 stroke="rgba(0,0,0,0.95)" strokeWidth="5" paintOrder="stroke fill">ARCADIA</text>
             </svg>
           </div>
-          <div style={{fontSize:"clamp(11px,2.5vw,13px)",letterSpacing:4,color:C.accent2,marginBottom:"clamp(20px,4vh,40px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 14px ${C.accent2},0 2px 8px rgba(0,0,0,0.95)`}}>─── 理想郷への扉 ───</div>
+          <div style={{fontSize:"clamp(11px,2.5vw,13px)",letterSpacing:4,color:C.accent2,marginBottom:"clamp(20px,4vh,40px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 14px ${C.accent2},0 2px 8px rgba(0,0,0,0.95)`}}>{T.subtitle}</div>
           <div style={{width:"70%",height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:`0 auto clamp(20px,4vh,36px)`}}/>
           <button
-            onClick={() => { unlockAudio("bgm/title"); setTosScrolled(false); setPhase("tos"); }}
+            onClick={() => { unlockAudio("bgm/title"); setPhase("langSelect"); }}
             style={{width:"80%",padding:"clamp(12px,2.5vh,18px) 0",background:"transparent",border:`2px solid ${C.accent}`,boxShadow:`0 0 12px ${C.accent}88,inset 0 0 8px rgba(0,200,255,0.05)`,color:C.accent,fontSize:"clamp(14px,4vw,17px)",letterSpacing:6,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",animation:"glow 2s infinite",transition:"all 0.3s",display:"block",margin:"0 auto"}}
             onMouseEnter={e => e.target.style.background = `${C.accent}22`}
             onMouseLeave={e => e.target.style.background = "transparent"}
@@ -1686,12 +2239,12 @@ export default function Arcadia() {
       <div style={{position:"relative",zIndex:2,textAlign:"center",animation:"fadeIn 1.5s ease",padding:"clamp(8px,2vh,20px) 24px",boxSizing:"border-box"}}>
         <div style={{fontSize:12,letterSpacing:12,color:C.accent,marginBottom:"clamp(8px,1.5vh,16px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 12px ${C.accent},0 2px 6px rgba(0,0,0,0.9)`}}>VRMMORPG</div>
         <div style={{fontSize:"clamp(44px,8vh,72px)",fontWeight:700,letterSpacing:"clamp(8px,1.5vh,16px)",paddingLeft:"clamp(8px,1.5vh,16px)",color:C.white,textShadow:`0 0 40px ${C.accent},0 0 80px ${C.accent}66,0 3px 14px rgba(0,0,0,1),0 0 2px rgba(0,0,0,1)`,lineHeight:1,marginBottom:"clamp(4px,1vh,8px)",whiteSpace:"nowrap"}}>ARCADIA</div>
-        <div style={{fontSize:13,letterSpacing:4,color:C.accent2,marginBottom:"clamp(20px,4vh,48px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 14px ${C.accent2},0 2px 8px rgba(0,0,0,0.95)`}}>─── 理想郷への扉 ───</div>
+        <div style={{fontSize:13,letterSpacing:4,color:C.accent2,marginBottom:"clamp(20px,4vh,48px)",fontFamily:"'Share Tech Mono',monospace",textShadow:`0 0 14px ${C.accent2},0 2px 8px rgba(0,0,0,0.95)`}}>{T.subtitle}</div>
 
         <div style={{width:280,height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:`0 auto clamp(16px,3vh,40px)`}}/>
 
         <button
-          onClick={() => { unlockAudio("bgm/title"); setTosScrolled(false); setPhase("tos"); }}
+          onClick={() => { unlockAudio("bgm/title"); setPhase("langSelect"); }}
           style={{padding:"clamp(8px,1.8vh,14px) 48px",background:"transparent",border:`2px solid ${C.accent}`,boxShadow:`0 0 12px ${C.accent}88,inset 0 0 8px rgba(0,200,255,0.05)`,color:C.accent,fontSize:"clamp(13px,2vh,16px)",letterSpacing:6,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",animation:"glow 2s infinite",transition:"all 0.3s"}}
           onMouseEnter={e => e.target.style.background = `${C.accent}22`}
           onMouseLeave={e => e.target.style.background = "transparent"}
@@ -1710,6 +2263,41 @@ export default function Arcadia() {
     );
   }
 
+  // @@SECTION:RENDER_LANG_SELECT
+  if (phase === "langSelect") {
+    return (
+      <div style={{width:"100%",height:"100%",minHeight:"100dvh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:`linear-gradient(180deg,#020810 0%,${C.bg} 100%)`,fontFamily:"'Share Tech Mono',monospace",position:"relative",overflow:"hidden"}}>
+        <style>{keyframes}</style>
+        <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,200,255,0.012) 2px,rgba(0,200,255,0.012) 4px)",pointerEvents:"none"}}/>
+        <div style={{position:"relative",zIndex:1,textAlign:"center",animation:"fadeIn 0.6s ease"}}>
+          <div style={{fontSize:11,letterSpacing:8,color:C.accent,marginBottom:8}}>ARCADIA</div>
+          <div style={{fontSize:22,fontWeight:"bold",letterSpacing:4,color:C.white,marginBottom:6}}>{T.langTitle}</div>
+          <div style={{fontSize:13,letterSpacing:3,color:C.muted,marginBottom:40}}>{T.langSubtitle}</div>
+          <div style={{display:"flex",flexDirection:"column",gap:16,alignItems:"center"}}>
+            <button
+              onClick={() => { setLang("ja"); setTosScrolled(false); setPhase("tos"); }}
+              style={{width:260,padding:"16px 0",background:"transparent",border:`2px solid ${C.accent}`,color:C.accent,fontSize:16,letterSpacing:6,cursor:"pointer",transition:"all 0.2s",borderRadius:2}}
+              onMouseEnter={e => e.currentTarget.style.background = `${C.accent}22`}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+            >日本語</button>
+            <button
+              onClick={() => { setLang("en"); setTosScrolled(false); setPhase("tos"); }}
+              style={{width:260,padding:"16px 0",background:"transparent",border:`2px solid ${C.accent2}`,color:C.accent2,fontSize:16,letterSpacing:6,cursor:"pointer",transition:"all 0.2s",borderRadius:2}}
+              onMouseEnter={e => e.currentTarget.style.background = `${C.accent2}22`}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+            >English</button>
+          </div>
+          <button
+            onClick={() => setPhase("title")}
+            style={{marginTop:32,background:"transparent",border:"none",color:C.muted,fontSize:12,letterSpacing:3,cursor:"pointer"}}
+            onMouseEnter={e => e.currentTarget.style.color = C.text}
+            onMouseLeave={e => e.currentTarget.style.color = C.muted}
+          >← BACK</button>
+        </div>
+      </div>
+    );
+  }
+
   // @@SECTION:RENDER_TOS
   if (phase === "tos") {
     const tosMinH = isPortrait ? "100dvh" : "min(600px,100dvh)";
@@ -1721,8 +2309,8 @@ export default function Arcadia() {
         {/* ヘッダー */}
         <div style={{padding:"16px 24px 14px",borderBottom:`1px solid ${C.border}`,background:"rgba(5,13,20,0.92)",flexShrink:0,position:"relative",zIndex:1}}>
           <div style={{fontSize:10,letterSpacing:6,color:C.muted,fontFamily:"'Share Tech Mono',monospace",marginBottom:4}}>ARCADIA -- VRS SYSTEM</div>
-          <div style={{fontSize:16,color:C.white,fontWeight:"bold",letterSpacing:2}}>利用規約 / 同意書</div>
-          <div style={{fontSize:10,color:C.muted,marginTop:4,fontFamily:"'Share Tech Mono',monospace"}}>── プレイ前に必ず全文をお読みください ──</div>
+          <div style={{fontSize:16,color:C.white,fontWeight:"bold",letterSpacing:2}}>{T.tosTitle}</div>
+          <div style={{fontSize:10,color:C.muted,marginTop:4,fontFamily:"'Share Tech Mono',monospace"}}>{T.tosSubtitle}</div>
         </div>
 
         {/* スクロール本文 */}
@@ -1733,36 +2321,64 @@ export default function Arcadia() {
               setTosScrolled(true);
             }
           }}>
-          <div style={{color:C.accent,fontSize:13,fontWeight:"bold",marginTop:22,marginBottom:8,paddingLeft:10,borderLeft:`3px solid ${C.accent}`,letterSpacing:1}}>■ ご挨拶</div>
-          <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>この度は弊社製品をご購入頂きまして誠にありがとうございます。本製品はVRS[Virtual Reality System]を採用しております。プレーヤーはVRSによって創り出された仮想現実空間に広がる世界を自由に探索する事が可能です。壮大かつ繊細な世界を思う存分お楽しみ下さい。</p>
-          <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>つきまして、プレイされる前に必ず本説明書をご覧下さい。説明書には、本製品をプレイするにあたっての同意書が含まれておりますので、ご確認下さい。</p>
+          {lang === "en" ? (<>
+            <div style={{color:C.accent,fontSize:13,fontWeight:"bold",marginTop:22,marginBottom:8,paddingLeft:10,borderLeft:`3px solid ${C.accent}`,letterSpacing:1}}>■ Foreword</div>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>Thank you for purchasing our product. This product employs the VRS [Virtual Reality System]. Players are free to explore the vast virtual reality world created by the VRS. Please enjoy this grand and intricate world to the fullest.</p>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>Before playing, please be sure to read this manual. It contains the agreement required to play this product.</p>
 
-          <div style={{color:C.accent,fontSize:13,fontWeight:"bold",marginTop:22,marginBottom:8,paddingLeft:10,borderLeft:`3px solid ${C.accent}`,letterSpacing:1}}>■ 注意事項</div>
+            <div style={{color:C.accent,fontSize:13,fontWeight:"bold",marginTop:22,marginBottom:8,paddingLeft:10,borderLeft:`3px solid ${C.accent}`,letterSpacing:1}}>■ Important Notices</div>
 
-          <div style={{color:C.gold,fontSize:12,fontWeight:"bold",marginTop:16,marginBottom:5,letterSpacing:1}}>◇ プレイヤーの身体情報</div>
-          <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>プレイヤーの身体情報については、これは現実と同期という形を取らさせて頂きます。つまり現実の姿形がゲーム内においても適応されるという事です。ゲーム内においてキャラクターが変更出来る身体情報については、髪型・髪色・瞳色の三点となっております。</p>
-          <p style={{color:C.muted,fontSize:11,lineHeight:1.85,marginBottom:8}}>※ 身長・体重・声質・性別・年齢といったキャラクターの基本情報については、あくまで現実の情報が適応されますので、ご注意下さい。</p>
+            <div style={{color:C.gold,fontSize:12,fontWeight:"bold",marginTop:16,marginBottom:5,letterSpacing:1}}>◇ Player Physical Information</div>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>Your physical information will be synchronized with your real-world appearance. This means your real-world form will be reflected in-game. The only physical attributes you may customize in-game are hairstyle, hair color, and eye color.</p>
+            <p style={{color:C.muted,fontSize:11,lineHeight:1.85,marginBottom:8}}>※ Basic character attributes such as height, weight, voice, gender, and age are based on your real-world information.</p>
 
-          <div style={{color:C.gold,fontSize:12,fontWeight:"bold",marginTop:16,marginBottom:5,letterSpacing:1}}>◇ 死亡定義</div>
-          <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>本製品において『死亡』の定義は現実世界とは大きく異なり、ゲーム内でプレイヤーが死亡した場合においては、いかなる場合においても蘇生が可能です。</p>
-          <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>また、ゲーム内ではモンスターの攻撃によってダメージを受けた際、致死レベルの痛覚を受けないよう調整させて頂いております。これは、ゲーム内でのV-Shock[バーチャル・ショック]による事故死を防ぐための処置です。</p>
-          <p style={{color:C.muted,fontSize:11,lineHeight:1.85,marginBottom:8}}>※ ゲーム内においての視覚・嗅覚・味覚・聴覚・触覚についてはシステム上、個人差がありません。</p>
+            <div style={{color:C.gold,fontSize:12,fontWeight:"bold",marginTop:16,marginBottom:5,letterSpacing:1}}>◇ Definition of Death</div>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>In this product, the definition of "death" differs greatly from the real world. If a player dies in-game, resurrection is always possible under any circumstances.</p>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>Additionally, damage received from monster attacks has been adjusted so that players do not experience lethal levels of pain. This is a safety measure to prevent accidental death due to V-Shock [Virtual Shock] within the game.</p>
+            <p style={{color:C.muted,fontSize:11,lineHeight:1.85,marginBottom:8}}>※ In-game senses -- sight, smell, taste, hearing, and touch -- are uniform across all players by system design.</p>
 
-          <div style={{color:C.gold,fontSize:12,fontWeight:"bold",marginTop:16,marginBottom:5,letterSpacing:1}}>◇ 時層差</div>
-          <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>本製品では、時層弛緩技術を用いる事で現実世界の二十四倍というスピードでの時流を実現しています。つまりARCADIAで二十四時間経過した場合、現実での一日に相当します。</p>
-          <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>なお、肉体の老化につきましては、現実の経過時間に即して身体が疲弊します。老化につきましては、個人差がありますので、あらかじめご了承ください。現状、本製品の連続使用による副次的作用は報告されておりませんが、ゲーム内時間において七十二日に一度は現実世界へ帰還される事を推奨致します。</p>
+            <div style={{color:C.gold,fontSize:12,fontWeight:"bold",marginTop:16,marginBottom:5,letterSpacing:1}}>◇ Time Dilation</div>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>This product uses temporal relaxation technology to achieve a time flow 24 times faster than the real world. This means 24 hours in ARCADIA is equivalent to one real-world day.</p>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>Note that physical aging follows real-world elapsed time. Individual variation applies. No adverse effects from continuous use have been reported, but we recommend returning to the real world at least once every 72 in-game days.</p>
 
-          <div style={{color:C.gold,fontSize:12,fontWeight:"bold",marginTop:16,marginBottom:5,letterSpacing:1}}>◇ 医療提携について</div>
-          <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>また弊社は医療機関と提携させて頂いております。万が一、本製品によって身体に何らかの障害が発生した場合、弊社では医療機関とその症状を分析し、その医療責任が弊社のシステムに由ると判断された場合に限り、お客様の医療負担を負うものとさせて頂きます。</p>
+            <div style={{color:C.gold,fontSize:12,fontWeight:"bold",marginTop:16,marginBottom:5,letterSpacing:1}}>◇ Medical Partnership</div>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>Our company has partnered with medical institutions. In the unlikely event that this product causes any physical harm, we will work with those institutions to analyze the condition. We will assume the medical costs only if it is determined that our system is responsible.</p>
 
-          <div style={{color:C.accent,fontSize:13,fontWeight:"bold",marginTop:22,marginBottom:8,paddingLeft:10,borderLeft:`3px solid ${C.accent}`,letterSpacing:1}}>■ 免責事項</div>
-          <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>本製品アルカディアは多くのプレイヤーの皆様が同時に参加されるという性質上、仮想世界では他のプレイヤーの方々との接触があります。そのため、お客様間で発生する問題については弊社においてサポートデスク、又はGM[ゲームマスター]を通して対応をさせて頂きますが、多数のお問い合わせが集中した場合、運営上、全てのお問い合わせに対して円滑に対応出来ない状況が予想されます。</p>
-          <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>基本的にサポートデスク、及びGMはゲーム上の不具合改善のために存在します。こうしたアクセスが混雑した状況を未然に防ぐためにも、ゲームに関する攻略のご質問、又はお客様間でのトラブルについては、なるべくお客様自身で解消される事をお願い致します。お客様の良識ある行動[プレイ]を心よりお願い申し上げます。</p>
+            <div style={{color:C.accent,fontSize:13,fontWeight:"bold",marginTop:22,marginBottom:8,paddingLeft:10,borderLeft:`3px solid ${C.accent}`,letterSpacing:1}}>■ Disclaimer</div>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>Due to the nature of ARCADIA as a shared multiplayer environment, players will encounter others in the virtual world. Issues arising between players will be handled through our support desk or GM [Game Master], but high volumes of inquiries may result in delays in response.</p>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>The support desk and GMs exist primarily to address technical issues. To prevent congestion, we ask that players resolve gameplay questions and interpersonal disputes among themselves where possible. We sincerely thank you for your cooperation and good conduct.</p>
+          </>) : (<>
+            <div style={{color:C.accent,fontSize:13,fontWeight:"bold",marginTop:22,marginBottom:8,paddingLeft:10,borderLeft:`3px solid ${C.accent}`,letterSpacing:1}}>■ ご挨拶</div>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>この度は弊社製品をご購入頂きまして誠にありがとうございます。本製品はVRS[Virtual Reality System]を採用しております。プレーヤーはVRSによって創り出された仮想現実空間に広がる世界を自由に探索する事が可能です。壮大かつ繊細な世界を思う存分お楽しみ下さい。</p>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>つきまして、プレイされる前に必ず本説明書をご覧下さい。説明書には、本製品をプレイするにあたっての同意書が含まれておりますので、ご確認下さい。</p>
+
+            <div style={{color:C.accent,fontSize:13,fontWeight:"bold",marginTop:22,marginBottom:8,paddingLeft:10,borderLeft:`3px solid ${C.accent}`,letterSpacing:1}}>■ 注意事項</div>
+
+            <div style={{color:C.gold,fontSize:12,fontWeight:"bold",marginTop:16,marginBottom:5,letterSpacing:1}}>◇ プレイヤーの身体情報</div>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>プレイヤーの身体情報については、これは現実と同期という形を取らさせて頂きます。つまり現実の姿形がゲーム内においても適応されるという事です。ゲーム内においてキャラクターが変更出来る身体情報については、髪型・髪色・瞳色の三点となっております。</p>
+            <p style={{color:C.muted,fontSize:11,lineHeight:1.85,marginBottom:8}}>※ 身長・体重・声質・性別・年齢といったキャラクターの基本情報については、あくまで現実の情報が適応されますので、ご注意下さい。</p>
+
+            <div style={{color:C.gold,fontSize:12,fontWeight:"bold",marginTop:16,marginBottom:5,letterSpacing:1}}>◇ 死亡定義</div>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>本製品において『死亡』の定義は現実世界とは大きく異なり、ゲーム内でプレイヤーが死亡した場合においては、いかなる場合においても蘇生が可能です。</p>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>また、ゲーム内ではモンスターの攻撃によってダメージを受けた際、致死レベルの痛覚を受けないよう調整させて頂いております。これは、ゲーム内でのV-Shock[バーチャル・ショック]による事故死を防ぐための処置です。</p>
+            <p style={{color:C.muted,fontSize:11,lineHeight:1.85,marginBottom:8}}>※ ゲーム内においての視覚・嗅覚・味覚・聴覚・触覚についてはシステム上、個人差がありません。</p>
+
+            <div style={{color:C.gold,fontSize:12,fontWeight:"bold",marginTop:16,marginBottom:5,letterSpacing:1}}>◇ 時層差</div>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>本製品では、時層弛緩技術を用いる事で現実世界の二十四倍というスピードでの時流を実現しています。つまりARCADIAで二十四時間経過した場合、現実での一日に相当します。</p>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>なお、肉体の老化につきましては、現実の経過時間に即して身体が疲弊します。老化につきましては、個人差がありますので、あらかじめご了承ください。現状、本製品の連続使用による副次的作用は報告されておりませんが、ゲーム内時間において七十二日に一度は現実世界へ帰還される事を推奨致します。</p>
+
+            <div style={{color:C.gold,fontSize:12,fontWeight:"bold",marginTop:16,marginBottom:5,letterSpacing:1}}>◇ 医療提携について</div>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>また弊社は医療機関と提携させて頂いております。万が一、本製品によって身体に何らかの障害が発生した場合、弊社では医療機関とその症状を分析し、その医療責任が弊社のシステムに由ると判断された場合に限り、お客様の医療負担を負うものとさせて頂きます。</p>
+
+            <div style={{color:C.accent,fontSize:13,fontWeight:"bold",marginTop:22,marginBottom:8,paddingLeft:10,borderLeft:`3px solid ${C.accent}`,letterSpacing:1}}>■ 免責事項</div>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>本製品アルカディアは多くのプレイヤーの皆様が同時に参加されるという性質上、仮想世界では他のプレイヤーの方々との接触があります。そのため、お客様間で発生する問題については弊社においてサポートデスク、又はGM[ゲームマスター]を通して対応をさせて頂きますが、多数のお問い合わせが集中した場合、運営上、全てのお問い合わせに対して円滑に対応出来ない状況が予想されます。</p>
+            <p style={{color:C.text,fontSize:12,lineHeight:1.95,marginBottom:10}}>基本的にサポートデスク、及びGMはゲーム上の不具合改善のために存在します。こうしたアクセスが混雑した状況を未然に防ぐためにも、ゲームに関する攻略のご質問、又はお客様間でのトラブルについては、なるべくお客様自身で解消される事をお願い致します。お客様の良識ある行動[プレイ]を心よりお願い申し上げます。</p>
+          </>)}
 
           <div style={{textAlign:"center",padding:"16px 0 8px",fontFamily:"'Share Tech Mono',monospace",fontSize:11}}>
             {tosScrolled
-              ? <span style={{color:C.accent2}}>✓ 内容の確認が完了しました</span>
-              : <span style={{color:C.muted}}>↓ 下までスクロールして内容をご確認ください</span>}
+              ? <span style={{color:C.accent2}}>{T.tosScrollDone}</span>
+              : <span style={{color:C.muted}}>{T.tosScrollNote}</span>}
           </div>
           <div style={{height:16}}/>
         </div>
@@ -1774,7 +2390,7 @@ export default function Arcadia() {
             onClick={() => setPhase("title")}
             onMouseEnter={e=>{e.currentTarget.style.color=C.red;e.currentTarget.style.borderColor=C.red;}}
             onMouseLeave={e=>{e.currentTarget.style.color=C.muted;e.currentTarget.style.borderColor=C.border;}}>
-            同意しない
+            {T.tosDisagree}
           </button>
           <button
             disabled={!tosScrolled}
@@ -1784,7 +2400,7 @@ export default function Arcadia() {
               cursor: tosScrolled ? "pointer" : "not-allowed",
             }}
             onClick={() => { unlockAudio("bgm/title"); setSceneIdx(0); setDlIdx(0); setPhase("movie"); }}>
-            {tosScrolled ? "同意する  ▶  ゲーム開始" : "同意する（要スクロール）"}
+            {tosScrolled ? T.tosAgree : T.tosAgreeWait}
           </button>
         </div>
       </div>
@@ -1840,7 +2456,7 @@ export default function Arcadia() {
           fontFamily:"'Share Tech Mono',monospace",
           pointerEvents:"none",
         }}>
-          CHAPTER 1 -- 旅立ち
+          {T.chapterLabel}
         </div>
       </div>
     );
@@ -1849,10 +2465,10 @@ export default function Arcadia() {
   // @@SECTION:RENDER_PATTERN_EDITOR
   if (phase === "patternEditor") {
     const ACTION_DEFS = {
-      atk:         { icon:"⚔",  label:"強攻",      color:"#00ffcc", desc:"通常攻撃。プレイヤーのカウンターに負ける" },
-      counter:     { icon:"🔄", label:"カウンター", color:"#f97316", desc:"強攻を無効化して反撃。回避には空振り" },
-      dodge:       { icon:"💨", label:"回避",       color:"#a78bfa", desc:"このターン行動しない。強攻には避けられない" },
-      unavoidable: { icon:"💥", label:"回避不能",   color:"#ff4466", desc:"ボス専用。カウンター/回避を粉砕" },
+      atk:         { icon:"⚔",  label:lang==="en"?"Strike":"強攻",        color:"#00ffcc", desc:lang==="en"?"Normal attack. Loses to Counter.":"通常攻撃。プレイヤーのカウンターに負ける" },
+      counter:     { icon:"🔄", label:lang==="en"?"Counter":"カウンター",  color:"#f97316", desc:lang==="en"?"Nullifies Strike, counters. Misses Dodge.":"強攻を無効化して反撃。回避には空振り" },
+      dodge:       { icon:"💨", label:lang==="en"?"Dodge":"回避",          color:"#a78bfa", desc:lang==="en"?"No action. Cannot dodge Strike.":"このターン行動しない。強攻には避けられない" },
+      unavoidable: { icon:"💥", label:lang==="en"?"Unavoidable":"回避不能",color:"#ff4466", desc:lang==="en"?"Boss only. Crushes Counter/Dodge.":"ボス専用。カウンター/回避を粉砕" },
     };
     const enemyKeys = Object.keys(battleDefs);
     const selKey = editorSelKey;
@@ -1928,7 +2544,7 @@ export default function Arcadia() {
                 <div key={key} style={paneStyle} onClick={() => setSelKey(key)}>
                   <div style={{fontSize:18,marginBottom:4}}>{def.em}</div>
                   <div style={{fontSize:10,color:isActive?C.white:C.muted,fontFamily:"'Share Tech Mono',monospace",lineHeight:1.4}}>
-                    {def.name.replace(" ─ 試練の主","")}
+                    {def.name.replace(lang==="en"?" ─ Trial Master":" ─ 試練の主","")}
                   </div>
                   {def.isBoss && <div style={{fontSize:8,color:C.red,letterSpacing:1,marginTop:2}}>BOSS</div>}
                   {isChanged && <div style={{fontSize:8,color:C.gold,letterSpacing:1,marginTop:2}}>● EDITED</div>}
@@ -1965,10 +2581,10 @@ export default function Arcadia() {
             {/* パターンタイムライン */}
             <div style={{padding:"14px 16px",borderBottom:`1px solid ${C.border}`,flexShrink:0}}>
               <div style={{fontSize:10,color:C.muted,letterSpacing:2,marginBottom:10,fontFamily:"'Share Tech Mono',monospace"}}>
-                TURN PATTERN -- {curPattern.length}ターンでループ
+                TURN PATTERN -- {curPattern.length}{lang==="en"?" turn loop":" ターンでループ"}
               </div>
               {curPattern.length === 0 && (
-                <div style={{fontSize:12,color:C.muted,padding:"16px 0"}}>パターンが空です。下のボタンで行動を追加してください。</div>
+                <div style={{fontSize:12,color:C.muted,padding:"16px 0"}}>{lang==="en"?"Pattern is empty. Add actions below.":"パターンが空です。下のボタンで行動を追加してください。"}</div>
               )}
               <div style={{display:"flex",flexWrap:"wrap",gap:6,alignItems:"center"}}>
                 {curPattern.map((actionId, idx) => {
@@ -2016,7 +2632,7 @@ export default function Arcadia() {
                     : {padding:"8px 12px",background:`${ad.color}11`,border:`1px solid ${ad.color}66`,color:ad.color,fontSize:12,cursor:"pointer",borderRadius:4,transition:"all 0.2s"};
                   return (
                     <button key={id} onClick={() => !disabled && addAction(id)} style={btnStyle}
-                      title={ad.desc + (disabled?" (ボス専用)":"")}>
+                      title={ad.desc + (disabled?(lang==="en"?" (Boss only)":" (ボス専用)"):"")}>
                       <span style={{fontSize:16,marginRight:4}}>{ad.icon}</span>
                       <span style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10}}>{ad.label}</span>
                       {isBossOnly && <span style={{fontSize:8,color:C.red,marginLeft:4}}>BOSS</span>}
@@ -2028,15 +2644,22 @@ export default function Arcadia() {
 
             {/* すくみ関係ガイド */}
             <div style={{padding:"10px 16px",flex:1,overflowY:"auto"}}>
-              <div style={{fontSize:10,color:C.muted,letterSpacing:2,marginBottom:8,fontFamily:"'Share Tech Mono',monospace"}}>すくみ関係</div>
-              {[
+              <div style={{fontSize:10,color:C.muted,letterSpacing:2,marginBottom:8,fontFamily:"'Share Tech Mono',monospace"}}>{lang==="en"?"RPS Guide":"すくみ関係"}</div>
+              {(lang==="en" ? [
+                {from:"⚔ Strike",    to:"🔄 Counter",  result:"Lose",  note:"Nullified + counter dmg", col:C.red},
+                {from:"🔄 Counter",  to:"💨 Dodge",    result:"Lose",  note:"Counter misses",           col:C.red},
+                {from:"💨 Dodge",    to:"⚔ Strike",   result:"Lose",  note:"Dodge fails, normal dmg",  col:C.red},
+                {from:"🔄 Counter",  to:"⚔ Strike",   result:"Win",   note:"×1.5 counter dmg",         col:C.accent2},
+                {from:"💨 Dodge",    to:"🔄 Counter",  result:"Win",   note:"Full evasion",             col:C.accent2},
+                {from:"💥 Unavoid.", to:"🔄/💨",        result:"Crush", note:"Boss only. Ignores both.", col:"#ff4466"},
+              ] : [
                 {from:"⚔ 強攻",     to:"🔄 カウンター", result:"負け", note:"攻撃無効 + カウンターダメージ", col:C.red},
                 {from:"🔄 カウンター",to:"💨 回避",       result:"負け", note:"カウンター空振り",              col:C.red},
                 {from:"💨 回避",     to:"⚔ 強攻",        result:"負け", note:"回避できず通常ダメージ",        col:C.red},
                 {from:"🔄 カウンター",to:"⚔ 強攻",        result:"勝ち", note:"×1.5ダメージで反撃",           col:C.accent2},
                 {from:"💨 回避",     to:"🔄 カウンター",  result:"勝ち", note:"完全回避",                      col:C.accent2},
                 {from:"💥 回避不能", to:"🔄/💨",          result:"粉砕", note:"ボス専用・カウンター/回避を無効化", col:"#ff4466"},
-              ].map((r,i) => (
+              ]).map((r,i) => (
                 <div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"4px 0",borderBottom:`1px solid ${C.border}22`}}>
                   <span style={{fontSize:11,color:C.text,minWidth:90,fontFamily:"'Share Tech Mono',monospace"}}>{r.from}</span>
                   <span style={{fontSize:10,color:C.muted}}>vs</span>
@@ -2056,15 +2679,15 @@ export default function Arcadia() {
               <div style={{flex:1,fontSize:13,color:C.gold,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2}}>⬇ EXPORT -- battle_defs.js</div>
               <button onClick={() => setShowExport(false)}
                 style={{padding:"4px 12px",background:"transparent",border:`1px solid ${C.border}`,color:C.muted,fontSize:11,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace"}}>
-                ✕ 閉じる
+                {lang==="en"?"✕ Close":"✕ 閉じる"}
               </button>
             </div>
-            <div style={{fontSize:10,color:C.muted,marginBottom:8}}>以下のコードをbattle_defs.jsのBATTLE_DEFSに貼り付けてください</div>
+            <div style={{fontSize:10,color:C.muted,marginBottom:8}}>{lang==="en"?"Paste into BATTLE_DEFS in battle_defs.js":"以下のコードをbattle_defs.jsのBATTLE_DEFSに貼り付けてください"}</div>
             <textarea readOnly value={genExportCode()}
               style={{flex:1,background:C.panel,border:`1px solid ${C.border}`,color:C.accent2,fontSize:11,padding:12,fontFamily:"'Share Tech Mono',monospace",lineHeight:1.6,resize:"none",outline:"none"}}
               onClick={e => e.target.select()}
             />
-            <div style={{fontSize:10,color:C.muted,marginTop:8}}>クリックで全選択 → Ctrl+C でコピー</div>
+            <div style={{fontSize:10,color:C.muted,marginTop:8}}>{lang==="en"?"Click to select all → Ctrl+C":"クリックで全選択 → Ctrl+C でコピー"}</div>
           </div>
         )}
       </div>
@@ -2106,7 +2729,7 @@ export default function Arcadia() {
       setPhase("title"); setSceneIdx(0); setDlIdx(0);
       setElk(50); setHp(100); setMhp(100); setMp(80); setMmp(80);
       setLv(1); setExp(0);
-      setWeapon("銅の短剣"); setWeaponPatk(3);
+      setWeapon(UI_TEXT["ja"].weaponName); setWeaponPatk(3);
       setStatPoints(0); setStatAlloc({patk:10,pdef:10,matk:10,spd:10});
       setHasPb(false); setHasMapScan(false); setInCom(false);
     };
@@ -2117,7 +2740,7 @@ export default function Arcadia() {
         <div style={{animation:"fadeIn 2s ease",maxWidth:480,width:"100%",margin:"0 auto",padding:40}}>
           <div style={{fontSize:11,letterSpacing:12,color:C.muted,marginBottom:20,fontFamily:"'Share Tech Mono',monospace"}}>─ EPISODE 1 END ─</div>
           <div style={{fontSize:48,fontWeight:700,color:C.white,textShadow:`0 0 30px ${C.accent2}`,marginBottom:16}}>ARCADIA</div>
-          <div style={{fontSize:18,color:C.accent2,letterSpacing:4,marginBottom:40}}>旅立ちの日は明日──</div>
+          <div style={{fontSize:18,color:C.accent2,letterSpacing:4,marginBottom:40}}>{T.endTagline}</div>
           <div style={{width:240,height:1,background:`linear-gradient(90deg,transparent,${C.accent2},transparent)`,margin:"0 auto 32px"}}/>
 
           {/* ── ステータスサマリー ───────────────────────────────────────── */}
@@ -2130,7 +2753,7 @@ export default function Arcadia() {
               <div><span style={{color:C.muted}}>MP</span>    {mp} / {mmp}</div>
               <div><span style={{color:C.muted}}>EXP</span>   {exp}</div>
               <div><span style={{color:C.muted}}>ELK</span>   {elk}</div>
-              <div><span style={{color:C.muted}}>武器</span>  {weapon}</div>
+              <div><span style={{color:C.muted}}>{T.weaponLabel}</span>  {weapon}</div>
               <div><span style={{color:C.muted}}>ATK+</span>  {weaponPatk}</div>
               <div><span style={{color:C.muted}}>PATK</span>  {statAlloc.patk}</div>
               <div><span style={{color:C.muted}}>PDEF</span>  {statAlloc.pdef}</div>
@@ -2141,17 +2764,16 @@ export default function Arcadia() {
 
           {/* ── セーブデータエクスポート ─────────────────────────────────── */}
           <div style={{marginBottom:16,fontSize:12,color:C.muted,letterSpacing:1,lineHeight:1.8}}>
-            第二章へ引き継ぐには、セーブデータをエクスポートして<br/>
-            ARCADIA Ch.2 で読み込んでください。
+            {T.saveExportNote.split("\n").map((l,i)=><span key={i}>{l}{i===0&&<br/>}</span>)}
           </div>
           <button
             onClick={handleExport}
             style={{width:"100%",padding:"14px 0",marginBottom:12,background:`linear-gradient(135deg,rgba(0,200,255,0.15),rgba(0,255,204,0.1))`,border:`1px solid ${C.accent}`,color:C.accent,fontSize:14,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",borderRadius:4}}
           >
-            💾 セーブデータをエクスポート
+            {T.saveExportBtn}
           </button>
           <div style={{fontSize:11,color:C.muted,marginBottom:32,fontFamily:"'Share Tech Mono',monospace",opacity:0.7}}>
-            arcadia_save_ch1_lv{lv}.json がダウンロードされます
+            {T.saveFileNote}{lv}.json
           </div>
 
           <div style={{width:240,height:1,background:`linear-gradient(90deg,transparent,${C.border},transparent)`,margin:"0 auto 24px"}}/>
@@ -2159,7 +2781,7 @@ export default function Arcadia() {
             onClick={resetToTitle}
             style={{padding:"10px 40px",background:"transparent",border:`1px solid ${C.muted}`,color:C.muted,fontSize:12,letterSpacing:4,fontFamily:"'Share Tech Mono',monospace",cursor:"pointer",borderRadius:4}}
           >
-            TITLE へ戻る
+            {T.backTitle}
           </button>
         </div>
       </div>
@@ -2244,7 +2866,7 @@ export default function Arcadia() {
 
               {/* エネミー名＋HPバー */}
               <div style={{width:"85%",flexShrink:0,zIndex:2,background:"rgba(5,13,20,0.65)",padding:"5px 10px",borderRadius:4}}>
-                <div style={{color:C.white,fontSize:12,fontWeight:700,letterSpacing:1,textAlign:"center",marginBottom:5,textShadow:"0 1px 4px #000"}}>{ed.name}</div>
+                <div style={{color:C.white,fontSize:12,fontWeight:700,letterSpacing:1,textAlign:"center",marginBottom:5,textShadow:"0 1px 4px #000"}}>{lang==="en" ? (ed.nameEn ?? ed.name) : ed.name}</div>
                 <div style={{width:"100%",height:7,background:C.panel2,borderRadius:4,overflow:"hidden"}}>
                   <div style={{height:"100%",width:`${enemyPct}%`,background:isBoss?`linear-gradient(90deg,${C.red},#ff8844)`:`linear-gradient(90deg,${C.accent2},${C.accent})`,transition:"width 0.4s",borderRadius:4}}/>
                 </div>
@@ -2260,7 +2882,7 @@ export default function Arcadia() {
                 <span style={{fontSize:8,color:"#00ffcc88",fontFamily:"'Share Tech Mono',monospace"}}>⚔→🔄負</span>
                 <span style={{fontSize:8,color:"#f9731688",fontFamily:"'Share Tech Mono',monospace"}}>🔄→💨負</span>
                 <span style={{fontSize:8,color:"#a78bfa88",fontFamily:"'Share Tech Mono',monospace"}}>💨→⚔負</span>
-                <span style={{fontSize:8,color:"#ff446688",fontFamily:"'Share Tech Mono',monospace"}}>💥回避不能</span>
+                <span style={{fontSize:8,color:"#ff446688",fontFamily:"'Share Tech Mono',monospace"}}>{lang==="en"?"💥Unavoidable":T.unavoidable}</span>
               </div>
 
               {/* バトルログ */}
@@ -2297,11 +2919,11 @@ export default function Arcadia() {
                   const previewColor = isUnavoidable ? C.red : enemyNextAction === "counter" ? "#f97316" : enemyNextAction === "dodge" ? C.muted : "#60a5fa";
                   return (
                     <div style={{display:"flex",alignItems:"center",gap:5,padding:"3px 8px",background:`${previewColor}11`,border:`1px solid ${previewColor}44`,borderRadius:4,marginBottom:6}}>
-                      <span style={{fontSize:9,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>次のターン</span>
+                      <span style={{fontSize:9,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>{T.nextTurn}</span>
                       <span style={{fontSize:10,color:previewColor,fontFamily:"'Share Tech Mono',monospace",fontWeight:700,animation:isUnavoidable?"dngr 0.8s infinite":"none"}}>
-                        {eLabel?.icon} {ed.name}：{eLabel?.text}
+                        {eLabel?.icon} {lang==="en" ? (ed.nameEn ?? ed.name) : ed.name}：{eLabel?.text}
                       </span>
-                      {isUnavoidable && <span style={{fontSize:8,color:C.red}}>⚠ 回避不能</span>}
+                      {isUnavoidable && <span style={{fontSize:8,color:C.red}}>{T.unavoidable}</span>}
                     </div>
                   );
                 })()}
@@ -2319,7 +2941,7 @@ export default function Arcadia() {
                           onMouseEnter={e => { if (canAfford) e.currentTarget.style.background = `${sk.color}22`; }}
                           onMouseLeave={e => { e.currentTarget.style.background = C.panel; }}>
                           <div style={{fontSize:20}}>{sk.icon}</div>
-                          <div style={{fontSize:10,marginTop:2}}>{sk.label}</div>
+                          <div style={{fontSize:10,marginTop:2}}>{(T.skills.find(s=>s.id===sk.id)||sk).label}</div>
                           {sk.cost > 0 && <div style={{fontSize:8,color:canAfford?C.muted:"#553333"}}>MP {sk.cost}</div>}
                         </button>
                       );
@@ -2327,9 +2949,9 @@ export default function Arcadia() {
                   </div>
                 ) : (
                   <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"10px 0"}}>
-                    <div style={{fontSize:16,color:victory?C.gold:C.red,fontWeight:700,marginBottom:10,animation:"fadeIn 0.5s"}}>{victory ? "🏆 Victory！" : "💀 Defeat..."}</div>
+                    <div style={{fontSize:16,color:victory?C.gold:C.red,fontWeight:700,marginBottom:10,animation:"fadeIn 0.5s"}}>{victory ? T.victory : T.defeat}</div>
                     <button onClick={exitBattle} style={{padding:"10px 40px",background:"transparent",border:`1px solid ${victory?C.gold:C.muted}`,color:victory?C.gold:C.muted,fontSize:14,cursor:"pointer",letterSpacing:2,fontFamily:"'Share Tech Mono',monospace"}}>
-                      {victory ? "続ける ▶" : "戻る ▶"}
+                      {victory ? T.continueBtn : T.returnBtn}
                     </button>
                   </div>
                 )}
@@ -2407,7 +3029,7 @@ export default function Arcadia() {
 
             {/* エネミー名＋HPバー（画像の直下） */}
             <div style={{width:"88%",flexShrink:0,zIndex:2,background:"rgba(5,13,20,0.6)",padding:"6px 10px",borderRadius:4}}>
-              <div style={{color:C.white,fontSize:13,fontWeight:700,letterSpacing:1,textAlign:"center",marginBottom:6,textShadow:"0 1px 4px #000"}}>{ed.name}</div>
+              <div style={{color:C.white,fontSize:13,fontWeight:700,letterSpacing:1,textAlign:"center",marginBottom:6,textShadow:"0 1px 4px #000"}}>{lang==="en" ? (ed.nameEn ?? ed.name) : ed.name}</div>
               <div style={{width:"100%",height:8,background:C.panel2,borderRadius:4,overflow:"hidden"}}>
                 <div style={{height:"100%",width:`${enemyPct}%`,background:isBoss?`linear-gradient(90deg,${C.red},#ff8844)`:`linear-gradient(90deg,${C.accent2},${C.accent})`,transition:"width 0.4s",borderRadius:4}}/>
               </div>
@@ -2423,7 +3045,7 @@ export default function Arcadia() {
               <span style={{fontSize:8,color:"#00ffcc88",fontFamily:"'Share Tech Mono',monospace"}}>⚔→🔄負 </span>
               <span style={{fontSize:8,color:"#f9731688",fontFamily:"'Share Tech Mono',monospace"}}>🔄→💨負 </span>
               <span style={{fontSize:8,color:"#a78bfa88",fontFamily:"'Share Tech Mono',monospace"}}>💨→⚔負 </span>
-              <span style={{fontSize:8,color:"#ff446688",fontFamily:"'Share Tech Mono',monospace"}}>💥回避不能</span>
+              <span style={{fontSize:8,color:"#ff446688",fontFamily:"'Share Tech Mono',monospace"}}>{lang==="en"?"💥Unavoidable":T.unavoidable}</span>
             </div>
 
             {/* バトルログ（flex:1で残り高さをすべて使う） */}
@@ -2460,11 +3082,11 @@ export default function Arcadia() {
                 const previewColor = isUnavoidable ? C.red : enemyNextAction === "counter" ? "#f97316" : enemyNextAction === "dodge" ? C.muted : "#60a5fa";
                 return (
                   <div style={{display:"flex",alignItems:"center",gap:6,padding:"4px 10px",background:`${previewColor}11`,border:`1px solid ${previewColor}44`,borderRadius:4,marginBottom:6}}>
-                    <span style={{fontSize:9,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>次のターン</span>
+                    <span style={{fontSize:9,color:C.muted,fontFamily:"'Share Tech Mono',monospace"}}>{T.nextTurn}</span>
                     <span style={{fontSize:10,color:previewColor,fontFamily:"'Share Tech Mono',monospace",fontWeight:700,animation:isUnavoidable?"dngr 0.8s infinite":"none"}}>
-                      {eLabel?.icon} {ed.name}：{eLabel?.text}
+                      {eLabel?.icon} {lang==="en" ? (ed.nameEn ?? ed.name) : ed.name}：{eLabel?.text}
                     </span>
-                    {isUnavoidable && <span style={{fontSize:8,color:C.red}}>⚠ 回避不能</span>}
+                    {isUnavoidable && <span style={{fontSize:8,color:C.red}}>{T.unavoidable}</span>}
                   </div>
                 );
               })()}
@@ -2484,7 +3106,7 @@ export default function Arcadia() {
                           onMouseEnter={e => { if (canAfford) e.currentTarget.style.background = `${sk.color}22`; }}
                           onMouseLeave={e => { e.currentTarget.style.background = C.panel; }}>
                           <div style={{fontSize:18}}>{sk.icon}</div>
-                          <div style={{fontSize:10,marginTop:2}}>{sk.label}</div>
+                          <div style={{fontSize:10,marginTop:2}}>{(T.skills.find(s=>s.id===sk.id)||sk).label}</div>
                           {sk.cost > 0 && <div style={{fontSize:8,color:canAfford?C.muted:"#553333"}}>MP {sk.cost}</div>}
                         </button>
                       );
@@ -2493,10 +3115,10 @@ export default function Arcadia() {
                 ) : (
                   <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"10px 0"}}>
                     <div style={{fontSize:15,color:victory?C.gold:C.red,fontWeight:700,marginBottom:10,animation:"fadeIn 0.5s"}}>
-                      {victory ? "🏆 Victory！" : "💀 Defeat..."}
+                      {victory ? T.victory : T.defeat}
                     </div>
                     <button onClick={exitBattle} style={{padding:"7px 32px",background:"transparent",border:`1px solid ${victory?C.gold:C.muted}`,color:victory?C.gold:C.muted,fontSize:13,cursor:"pointer",letterSpacing:2,fontFamily:"'Share Tech Mono',monospace"}}>
-                      {victory ? "続ける ▶" : "戻る ▶"}
+                      {victory ? T.continueBtn : T.returnBtn}
                     </button>
                   </div>
                 )}
@@ -2511,7 +3133,7 @@ export default function Arcadia() {
 
   // @@SECTION:RENDER_GAME
   const dl = sc.dl[dlIdx] || sc.dl[0];
-  const spColor = dl.sp === "SYSTEM" ? C.accent : dl.sp === "ナレーション" ? C.muted : C.accent2;
+  const spColor = dl.sp === "SYSTEM" ? C.accent : (dl.sp === "ナレーション" || dl.sp === "Narration") ? C.muted : C.accent2;
   const isHpLow = hp / mhp <= 0.25;
 
   return (
@@ -2545,7 +3167,7 @@ export default function Arcadia() {
       {/* Sprite area */}
       <div ref={spriteAreaRef} style={{flex:1,display:"flex",alignItems:"flex-end",justifyContent:"center",padding:isPortrait?"4px 8px 0":"clamp(4px,1vh,8px) 20px 0",position:"relative",zIndex:5,minHeight:isPortrait?160:"clamp(160px,48vh,320px)",overflow:"hidden"}}>
         {/* Scene-specific atmosphere */}
-        {sc.loc.includes("洞窟") && (
+        {(sc.loc.includes("洞窟") || sc.loc.includes("Cave") || sc.loc.includes("Cavern")) && (
           <>
             {[...Array(8)].map((_,i) => (
               <div key={i} style={{position:"absolute",width:4,height:4,borderRadius:"50%",background:`rgba(0,100,255,${0.3+Math.random()*0.3})`,left:`${10+Math.random()*80}%`,top:`${Math.random()*80}%`,animation:`idle ${2+Math.random()*3}s ${Math.random()*2}s infinite`}}/>
@@ -2657,7 +3279,7 @@ export default function Arcadia() {
                   if (autoAdvTimerRef.current) clearTimeout(autoAdvTimerRef.current);
                   autoAdvTimerRef.current = setTimeout(() => {
                     if (!autoAdvanceRef.current) return;
-                    const sc2 = SCENES[sceneIdx];
+                    const sc2 = ACTIVE_SCENES[sceneIdx];
                     const dl2 = sc2?.dl[dlIdx];
                     if (!dl2 || dl2.choices || dl2.battle || dl2.ending) return;
                     if (dl2.next !== undefined) {
@@ -2670,7 +3292,7 @@ export default function Arcadia() {
                       setDlIdx(nextDl);
                     } else {
                       const nextSc = sceneIdx + 1;
-                      if (nextSc < SCENES.length) {
+                      if (nextSc < ACTIVE_SCENES.length) {
                         setFade(true);
                         setTimeout(() => { setSceneIdx(nextSc); setDlIdx(0); setFade(false); }, 300);
                       }
@@ -2754,11 +3376,11 @@ export default function Arcadia() {
                   ["HP", `${hp} / ${mhp}`],
                   ["MP", `${mp} / ${mmp}`],
                   ["ELK", elk],
-                  ["武器", weapon],
-                  ["物理ATK", weaponPatk + statAlloc.patk],
-                  ["物理DEF", statAlloc.pdef],
-                  ...(statPoints>0?[["未振り", `${statPoints} pt`]]:[]),
-                  ...(inCom?[["コミュニティ","White Garden"]]:[]),
+                  [T.pbWeapon, weapon],
+                  [T.pbPatk, weaponPatk + statAlloc.patk],
+                  [T.pbPdef, statAlloc.pdef],
+                  ...(statPoints>0?[[T.pbPoints, `${statPoints} pt`]]:[]),
+                  ...(inCom?[[T.pbCom,"White Garden"]]:[]),
                 ].map(([k,v]) => (
                   <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"2px 0",borderBottom:`1px solid ${C.border}44`}}>
                     <span style={{color:C.muted}}>{k}</span>
@@ -2767,7 +3389,7 @@ export default function Arcadia() {
                 ))}
                 {statPoints > 0 && (
                   <button onClick={() => setOverlay("stat")} style={{marginTop:16,width:"100%",padding:"10px",background:C.panel,border:`1px solid ${C.gold}`,color:C.gold,fontSize:12,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:2}}>
-                    ⭐ ステータス振り分け ({statPoints} pt)
+                    {T.pbStatBtn} ({statPoints} pt)
                   </button>
                 )}
               </div>
@@ -2777,16 +3399,16 @@ export default function Arcadia() {
                 <div style={{color:C.accent,marginBottom:12,letterSpacing:2,fontSize:11}}>── MAIL ──</div>
                 {hasPb ? (
                   <div style={{color:C.text,lineHeight:2}}>
-                    <div style={{color:C.accent2,marginBottom:8}}>クリケットより</div>
-                    <div style={{color:C.muted,fontSize:11,lineHeight:1.8}}>P.BOOKの初期設定を\n完了してください。\n\n冒険者よ、健闘を祈る！</div>
+                    <div style={{color:C.accent2,marginBottom:8}}>{T.pbMailFrom1}</div>
+                    <div style={{color:C.muted,fontSize:11,lineHeight:1.8}}>{T.pbMailBody1.split("\n").map((l,i,a)=><span key={i}>{l}{i<a.length-1&&<br/>}</span>)}</div>
                     {inCom && (
                       <>
-                        <div style={{color:C.accent2,marginBottom:8,marginTop:16}}>ユミルより</div>
-                        <div style={{color:C.muted,fontSize:11,lineHeight:1.8}}>White Garden へようこそ！\n一緒に頑張ろうね。🌸</div>
+                        <div style={{color:C.accent2,marginBottom:8,marginTop:16}}>{T.pbMailFrom2}</div>
+                        <div style={{color:C.muted,fontSize:11,lineHeight:1.8}}>{T.pbMailBody2.split("\n").map((l,i,a)=><span key={i}>{l}{i<a.length-1&&<br/>}</span>)}</div>
                       </>
                     )}
                   </div>
-                ) : <div>メールなし</div>}
+                ) : <div>{T.pbMailNone}</div>}
               </div>
             )}
             {pbTab === 2 && (
@@ -2799,17 +3421,22 @@ export default function Arcadia() {
                       <span style={{color:C.white,fontSize:11}}>{sc.loc}</span>
                     </div>
                     {/* ─ 狩り場エンカウント ─ */}
-                    <div style={{color:C.gold,fontSize:10,letterSpacing:2,marginBottom:6}}>── エンカウント ──</div>
-                    {[
-                      { key:"seagull",       label:"海岸線",   note:"Lv.1 カモメ型" },
-                      { key:"shamerlot",     label:"岩場",     note:"Lv.1 シャメロット" },
-                      { key:"shamerlot_lv3", label:"岩場 深部",note:"Lv.3 シャメロット" },
-                      { key:"shamerlot_lv5", label:"岩場 最奥",note:"Lv.5 シャメロット" },
-                    ].map(({ key, label, note }) => {
+                    <div style={{color:C.gold,fontSize:10,letterSpacing:2,marginBottom:6}}>{T.pbMapEncounter}</div>
+                    {(lang==="en" ? [
+                      { key:"seagull",       label:"Coast",        note:"Lv.1 Seagull" },
+                      { key:"shamerlot",     label:"Rocky Shore",  note:"Lv.1 Shamerlot" },
+                      { key:"shamerlot_lv3", label:"Shore Deep",   note:"Lv.3 Shamerlot" },
+                      { key:"shamerlot_lv5", label:"Shore Depths", note:"Lv.5 Shamerlot" },
+                    ] : [
+                      { key:"seagull",       label:"海岸線",    note:"Lv.1 カモメ型" },
+                      { key:"shamerlot",     label:"岩場",      note:"Lv.1 シャメロット" },
+                      { key:"shamerlot_lv3", label:"岩場 深部", note:"Lv.3 シャメロット" },
+                      { key:"shamerlot_lv5", label:"岩場 最奥", note:"Lv.5 シャメロット" },
+                    ]).map(({ key, label, note }) => {
                       const def = battleDefs[key];
                       const lvDiff = def.lv - lv;
                       const canFight = true;
-                      const expNote = lvDiff >= 1 ? `EXP ×${lvDiff>=3?2.0:lvDiff===2?1.5:1.2}` : lvDiff === 0 ? "EXP 等倍" : "経験値なし";
+                      const expNote = lvDiff >= 1 ? `EXP ×${lvDiff>=3?2.0:lvDiff===2?1.5:1.2}` : lvDiff === 0 ? T.pbExpEqual : T.pbExpNone;
                       const expColor = lvDiff >= 1 ? C.accent2 : lvDiff === 0 ? C.muted : C.red;
                       const rowStyle = { display:"flex", alignItems:"center", gap:6, padding:"7px 8px", marginBottom:4, background:C.panel, border:`1px solid ${C.border}`, borderRadius:2 };
                       return (
@@ -2828,7 +3455,7 @@ export default function Arcadia() {
                             setBattleEnemy(ed);
                             setCurrentEnemyType(key);
                             setEnemyHp(ed.maxHp);
-                            setBtlLogs([`⚔ ${ed.name} との戦闘が始まった！`]);
+                            setBtlLogs([`⚔ ${lang==="en" ? (ed.nameEn ?? ed.name) : ed.name} ${T.battleStart}`]);
                             setGuarding(false); setVictory(false); setDefeat(false); setTurn(0); setNoDmgStreak(0);
                             setBattleResultBonus({ comboMult: 1.0, gradeMult: 1.0 });
                             setEnemyTurnIdx(0); setEnemyNextAction((ed.pattern||["atk"])[0]);
@@ -2836,16 +3463,16 @@ export default function Arcadia() {
                             setBattlePrev(sceneIdx);
                             setPhase("battle");
                           }} style={{padding:"4px 10px",background:`${C.accent}11`,border:`1px solid ${C.accent}44`,color:C.accent,fontSize:10,cursor:"pointer",letterSpacing:1,flexShrink:0}}>
-                            戦う
+                            {lang==="en"?"Fight":"戦う"}
                           </button>
                         </div>
                       );
                     })}
                     <div style={{color:C.muted,fontSize:9,marginTop:6,lineHeight:1.6}}>
-                      ※ コーザ・Simuluuはここから戦えません
+                      {lang==="en"?"* Koza / Simuluu unavailable here.":"※ コーザ・Simuluuはここから戦えません"}
                     </div>
                   </div>
-                ) : <div style={{color:C.muted,padding:8}}>MapScan 未解放<br/><span style={{fontSize:10}}>交易所のローズと話すと解放されます</span></div>}
+                ) : <div style={{color:C.muted,padding:8}}>{lang==="en"?"MapScan not unlocked":"MapScan 未解放"}<br/><span style={{fontSize:10}}>{lang==="en"?"Talk to Rose at the market.":"交易所のローズと話すと解放されます"}</span></div>}
               </div>
             )}
           </div>
@@ -2862,8 +3489,8 @@ export default function Arcadia() {
             <div style={{fontSize:12,color:C.muted,lineHeight:2,fontFamily:"'Share Tech Mono',monospace",marginBottom:20}}>
               <div style={{color:C.accent2}}>MAX HP +10</div>
               <div style={{color:"#60a5fa"}}>MAX MP +5</div>
-              <div style={{color:C.gold}}>ステータスポイント +3</div>
-              <div style={{color:C.muted,fontSize:10,marginTop:4}}>物理ATK / 物理DEF に振り分け可</div>
+              <div style={{color:C.gold}}>{lang==="en"?"Stat Points +3":"ステータスポイント +3"}</div>
+              <div style={{color:C.muted,fontSize:10,marginTop:4}}>{lang==="en"?"Allocate to PATK / PDEF":"物理ATK / 物理DEF に振り分け可"}</div>
             </div>
             <button onClick={() => { setOverlay(null); setLvUpInfo(null); }}
               style={{padding:"10px 32px",background:"transparent",border:`1px solid ${C.gold}`,color:C.gold,fontSize:12,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:2}}>OK</button>
@@ -2875,14 +3502,14 @@ export default function Arcadia() {
       {overlay === "stat" && (
         <div style={{position:"absolute",inset:0,background:"rgba(5,13,20,0.97)",zIndex:30,display:"flex",flexDirection:"column",animation:"fadeIn 0.2s"}}>
           <div style={{display:"flex",alignItems:"center",borderBottom:`1px solid ${C.border}`,padding:"10px 16px"}}>
-            <div style={{fontSize:11,letterSpacing:4,color:C.gold,fontFamily:"'Share Tech Mono',monospace",flex:1}}>ステータス振り分け</div>
-            <button onClick={() => setOverlay("pb")} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.muted,padding:"4px 12px",fontSize:11,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace"}}>戻る</button>
+            <div style={{fontSize:11,letterSpacing:4,color:C.gold,fontFamily:"'Share Tech Mono',monospace",flex:1}}>{T.statTitle}</div>
+            <button onClick={() => setOverlay("pb")} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.muted,padding:"4px 12px",fontSize:11,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace"}}>{T.statBack}</button>
           </div>
           <div style={{flex:1,padding:16}}>
-            <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:12,color:C.gold,marginBottom:16}}>残りポイント: {statPoints}</div>
+            <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:12,color:C.gold,marginBottom:16}}>{T.statRemain} {statPoints}</div>
             {[
-              {key:"patk",label:"物理攻撃力",color:C.accent2},
-              {key:"pdef",label:"物理防御力",color:"#a78bfa"},
+              {key:"patk",label:T.statPatk,color:C.accent2},
+              {key:"pdef",label:T.statPdef,color:"#a78bfa"},
             ].map(({key,label,color}) => (
               <div key={key} style={{display:"flex",alignItems:"center",marginBottom:12,gap:8}}>
                 <div style={{flex:1,fontSize:12,color:C.text,fontFamily:"'Share Tech Mono',monospace"}}>{label}</div>
@@ -2904,49 +3531,17 @@ export default function Arcadia() {
       {/* Novelize Overlay -- チャプター/シーン選択＋小説ログ */}
       {overlay === "novel" && (() => {
         // ── チャプター定義 ────────────────────────────────────────────────
-        const NOVEL_CHAPTERS = [
-          { id:1, label:"序章", sub:"Chapter 1", scenes:[
-            { idx:0,  label:"S00 VRS接続中" },
-            { idx:1,  label:"S01 旅立ちの浜辺" },
-            { idx:2,  label:"S02 イルカ島 海岸線" },
-            { idx:3,  label:"S03 エルム村" },
-            { idx:4,  label:"S04 エルム村 ギルド（出会い）" },
-            { idx:5,  label:"S05 P.BOOK取得" },
-            { idx:6,  label:"S06 チュートリアル説明" },
-          ]},
-          { id:2, label:"初心者講習", sub:"Chapter 2", scenes:[
-            { idx:7,  label:"S07 ギルド裏・草地（コーザ戦）" },
-            { idx:8,  label:"S08 講習終了・卒業証" },
-            { idx:9,  label:"S09 宿屋の夜" },
-            { idx:10, label:"S10 レミングスの酒場" },
-          ]},
-          { id:3, label:"仲間との狩り", sub:"Chapter 3", scenes:[
-            { idx:11, label:"S11 シャメロット初戦" },
-            { idx:12, label:"S12 経験値の謎" },
-            { idx:13, label:"S13 交易所・ローズとジュダ" },
-            { idx:14, label:"S14 チョッパー登場" },
-            { idx:15, label:"S15 チョッパー救出（赤信号）" },
-            { idx:16, label:"S16 四人パーティ結成" },
-          ]},
-          { id:4, label:"準備と旅立ち", sub:"Chapter 4", scenes:[
-            { idx:17, label:"S17 武器屋" },
-            { idx:18, label:"S18 防具屋" },
-            { idx:19, label:"S19 船着場・洗礼の門" },
-            { idx:20, label:"S20 ホワイトガーデン加入" },
-            { idx:21, label:"S21 Simuluu情報入手" },
-          ]},
-          { id:5, label:"試練の洞窟", sub:"Chapter 5", scenes:[
-            { idx:22, label:"S22 狩り継続・レベルアップ" },
-            { idx:23, label:"S23 岩場（継続）" },
-            { idx:24, label:"S24 コーザの餞別" },
-            { idx:25, label:"S25 西海岸・洞窟入口" },
-            { idx:26, label:"S26 青の洞窟" },
-            { idx:27, label:"S27 最深部・Simuluu遭遇" },
-            { idx:28, label:"S28 ボス戦前" },
-            { idx:29, label:"S29 撃破・勝利" },
-            { idx:30, label:"S30 祝杯・エンディング" },
-          ]},
+        const _chapScenes = [
+          [0,1,2,3,4,5,6],
+          [7,8,9,10],
+          [11,12,13,14,15,16],
+          [17,18,19,20,21],
+          [22,23,24,25,26,27,28,29,30],
         ];
+        const NOVEL_CHAPTERS = T.novelChapters.map((ch, ci) => ({
+          ...ch,
+          scenes: _chapScenes[ci].map(idx => ({ idx, label: T.novelSceneLabels[idx] })),
+        }));
 
         // 訪問済みシーンのセット
         const visitedSet = new Set(novelLog.map(e => e.sIdx));
@@ -2971,13 +3566,13 @@ export default function Arcadia() {
             <div style={{padding:"12px 18px 10px",borderBottom:`1px solid ${C.border}`,background:"rgba(5,13,20,0.97)",flexShrink:0,display:"flex",alignItems:"center",gap:10}}>
               <div style={{flex:1}}>
                 <div style={{fontSize:9,letterSpacing:5,color:C.muted,fontFamily:"'Share Tech Mono',monospace",marginBottom:2}}>ARCADIA -- SCENARIO LOG</div>
-                <div style={{fontSize:13,color:C.white,fontWeight:"bold",letterSpacing:2}}>小説ログ / NOVELIZE</div>
+                <div style={{fontSize:13,color:C.white,fontWeight:"bold",letterSpacing:2}}>{T.novelTitle}</div>
               </div>
               <button onClick={() => setOverlay(null)}
                 style={{background:"transparent",border:`1px solid ${C.border}`,color:C.muted,padding:"5px 12px",fontSize:11,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:1,borderRadius:2,flexShrink:0}}
                 onMouseEnter={e=>{e.currentTarget.style.color=C.white;e.currentTarget.style.borderColor=C.accent;}}
                 onMouseLeave={e=>{e.currentTarget.style.color=C.muted;e.currentTarget.style.borderColor=C.border;}}
-              >✕ 閉じる</button>
+              >{T.novelClose}</button>
             </div>
 
             {/* 本体 -- 左ペイン（目次） + 右ペイン（本文） */}
@@ -3010,20 +3605,22 @@ export default function Arcadia() {
                               setNovelSelScene(s.idx);
                               const hasNovel = NOVEL_STATUS[s.idx];
                               setNovelTab(hasNovel ? "novel" : "log");
+                              if (!hasNovel) return;
+                              const cacheKey = `${lang}_${s.idx}`;
                               // キャッシュ済みなら再fetchしない
-                              if (hasNovel && !(s.idx in novelCache)) {
-                                const url = novelUrl(s.idx);
-                                setNovelLoading(true);
-                                fetch(url)
-                                  .then(r => r.ok ? r.text() : Promise.reject(r.status))
-                                  .then(text => {
-                                    setNovelCache(prev => ({ ...prev, [s.idx]: text || null }));
-                                  })
-                                  .catch(() => {
-                                    setNovelCache(prev => ({ ...prev, [s.idx]: null }));
-                                  })
-                                  .finally(() => setNovelLoading(false));
-                              }
+                              if (cacheKey in novelCache) return;
+                              // EN: novels/en/s{xx}.txt、JA: novels/s{xx}.txt
+                              const url = lang === "en" ? novelUrlEn(s.idx) : novelUrl(s.idx);
+                              setNovelLoading(true);
+                              fetch(url)
+                                .then(r => r.ok ? r.text() : Promise.reject(r.status))
+                                .then(text => {
+                                  setNovelCache(prev => ({ ...prev, [cacheKey]: text || null }));
+                                })
+                                .catch(() => {
+                                  setNovelCache(prev => ({ ...prev, [cacheKey]: null }));
+                                })
+                                .finally(() => setNovelLoading(false));
                             }}
                             style={{display:"block",width:"100%",textAlign:"left",padding:isPortrait?"3px 10px 3px 12px":"5px 14px 5px 18px",background:btnBg,border:"none",borderLeft: selected ? `3px solid ${C.accent}` : `3px solid transparent`,color:btnColor,fontSize:isPortrait?9:10,cursor: visited ? "pointer" : "default",fontFamily:"'Noto Serif JP',serif",letterSpacing:0.3,lineHeight:1.5,transition:"all 0.15s"}}
                             onMouseEnter={e=>{ if(visited && !selected){ e.currentTarget.style.background=`${C.accent}11`; e.currentTarget.style.color=C.white; }}}
@@ -3069,22 +3666,23 @@ export default function Arcadia() {
                 {novelSelScene === null ? (
                   <div style={{color:C.muted,fontSize:12,textAlign:"center",marginTop:60,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,lineHeight:2}}>
                     <div style={{fontSize:20,marginBottom:12}}>📖</div>
-                    左のリストからシーンを選択してください<br/>
-                    <span style={{fontSize:10}}>訪問済みのシーンのみ閲覧できます</span>
+                    {T.novelSelect}<br/>
+                    <span style={{fontSize:10}}>{T.novelSelectSub}</span>
                   </div>
                 ) : novelTab === "novel" ? (
                   /* ── NOVEL タブ ── */
                   (() => {
-                    // ローディング中
-                    if (novelLoading && !(novelSelScene in novelCache)) {
+                    const novelCacheKey = `${lang}_${novelSelScene}`;
+                    // ローディング中 or 翻訳中
+                    if (novelLoading && !(novelCacheKey in novelCache)) {
                       return (
                         <div style={{color:C.muted,fontSize:12,textAlign:"center",marginTop:60,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,lineHeight:2}}>
                           <div style={{fontSize:20,marginBottom:12,animation:"arcadiaBlnk 1s step-end infinite"}}>📖</div>
-                          読み込み中...
+                          {T.novelLoading}
                         </div>
                       );
                     }
-                    const novelText = novelCache[novelSelScene] ?? null;
+                    const novelText = novelCache[novelCacheKey] ?? null;
                     return novelText ? (
                       <>
                         <div style={{marginBottom:24,paddingBottom:12,borderBottom:`1px solid ${C.border}`}}>
@@ -3095,7 +3693,7 @@ export default function Arcadia() {
                             {selScene?.label ?? ""}
                           </div>
                           <div style={{fontSize:10,color:C.muted,marginTop:4}}>
-                            {SCENES[novelSelScene]?.loc ?? ""}
+                            {ACTIVE_SCENES[novelSelScene]?.loc ?? ""}
                           </div>
                         </div>
                         <p style={{color:C.text,fontSize:13,lineHeight:2.2,margin:0,whiteSpace:"pre-wrap",letterSpacing:0.5,fontFamily:"'Noto Serif JP',serif"}}>
@@ -3105,9 +3703,9 @@ export default function Arcadia() {
                     ) : (
                       <div style={{color:C.muted,fontSize:12,textAlign:"center",marginTop:60,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,lineHeight:2}}>
                         <div style={{fontSize:20,marginBottom:12}}>✏️</div>
-                        {novelSelScene in novelCache
-                          ? <>読み込みに失敗しました<br/><span style={{fontSize:10}}>ネットワーク接続を確認してください</span></>
-                          : <>このシーンのノベルはまだ執筆中です<br/><span style={{fontSize:10}}>GAME LOG タブでゲームログを確認できます</span></>
+                        {novelCacheKey in novelCache
+                          ? <>{T.novelFailed}<br/><span style={{fontSize:10}}>{T.novelFailedSub}</span></>
+                          : <>{T.novelWIP}<br/><span style={{fontSize:10}}>{T.novelWIPSub}</span></>
                         }
                       </div>
                     );
@@ -3115,7 +3713,7 @@ export default function Arcadia() {
                 ) : selEntries.length === 0 ? (
                   /* ── LOG タブ（エントリなし） ── */
                   <div style={{color:C.muted,fontSize:12,textAlign:"center",marginTop:60,fontFamily:"'Share Tech Mono',monospace",letterSpacing:2}}>
-                    ── ログがありません ──
+                    {T.novelLogNone}
                   </div>
                 ) : (
                   /* ── LOG タブ（本文） ── */
@@ -3129,13 +3727,13 @@ export default function Arcadia() {
                         {selScene?.label ?? ""}
                       </div>
                       <div style={{fontSize:10,color:C.muted,marginTop:4}}>
-                        {SCENES[novelSelScene]?.loc ?? ""}
+                        {ACTIVE_SCENES[novelSelScene]?.loc ?? ""}
                       </div>
                     </div>
 
                     {/* 本文エントリ */}
                     {selEntries.map((entry, i) => {
-                      const isNarration = entry.sp === "ナレーション";
+                      const isNarration = entry.sp === "ナレーション" || entry.sp === "Narration";
                       const isSystem    = entry.sp === "SYSTEM";
                       return (
                         <div key={i} style={{marginBottom: isNarration ? 22 : isSystem ? 16 : 18}}>
@@ -3173,13 +3771,13 @@ export default function Arcadia() {
             {/* フッター */}
             <div style={{padding:"9px 18px 12px",borderTop:`1px solid ${C.border}`,background:"rgba(5,13,20,0.97)",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <div style={{fontSize:10,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>
-                {visitedSet.size} / {NOVEL_CHAPTERS.flatMap(c=>c.scenes).length} シーン解放済み
+                {visitedSet.size} / {NOVEL_CHAPTERS.flatMap(c=>c.scenes).length} {T.novelFooter}
               </div>
               <button onClick={() => setOverlay(null)}
                 style={{padding:"7px 22px",background:`${C.accent}1a`,border:`1px solid ${C.accent}`,color:C.accent,fontSize:11,cursor:"pointer",fontFamily:"'Share Tech Mono',monospace",letterSpacing:2,borderRadius:2}}
                 onMouseEnter={e=>{e.currentTarget.style.background=`${C.accent}33`;}}
                 onMouseLeave={e=>{e.currentTarget.style.background=`${C.accent}1a`;}}
-              >ゲームに戻る ▶</button>
+              >{T.novelReturn}</button>
             </div>
           </div>
         );
