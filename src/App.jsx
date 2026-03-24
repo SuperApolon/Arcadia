@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 
 // @@SECTION:PALETTE
 const C = {
@@ -1335,6 +1335,12 @@ export default function Arcadia() {
   const [noDmgStreak, setNoDmgStreak] = useState(0);
   // リザルト表示用ボーナス情報（コンボ・格上倍率）
   const [battleResultBonus, setBattleResultBonus] = useState({ comboMult: 1.0, gradeMult: 1.0 });
+  // シナリオ継続コンボ: MAPSCANバトルを除いたシナリオ上のバトル全勝利の累積コンボ数
+  const [scenarioCombo, setScenarioCombo] = useState(0);
+  // 現在のバトルがMapScanによるものかどうか
+  const [isMapScanBattle, setIsMapScanBattle] = useState(false);
+  // 現在のバトルで既にコンボミス（被弾）が発生したかどうか
+  const [scenarioComboMissed, setScenarioComboMissed] = useState(false);
 
   const typeTimerRef = useRef(null);
   const notifTimerRef = useRef(null);
@@ -1549,6 +1555,8 @@ export default function Arcadia() {
       setEnemyNextAction((ed.pattern || ["atk"])[0]);
       setBattleNext(dl.battleNext !== undefined ? dl.battleNext : sIdx + 1);
       setBattlePrev(sIdx);
+      setIsMapScanBattle(false);
+      setScenarioComboMissed(false);
       setPhase("battle");
       return;
     }
@@ -1753,6 +1761,8 @@ export default function Arcadia() {
       setEnemyNextAction((ed.pattern || ["atk"])[0]);
       setBattleNext(ch.battleNext !== undefined ? ch.battleNext : sceneIdx + 1);
       setBattlePrev(sceneIdx);
+      setIsMapScanBattle(false);
+      setScenarioComboMissed(false);
       setPhase("battle");
       return;
     }
@@ -1935,6 +1945,13 @@ export default function Arcadia() {
 
     const newStreak = comboBreak ? 0 : noDmgStreak + 1;
 
+    // ─── シナリオフルコンボ ミス判定（MapScan除外）────────────────────────
+    // comboBreakが発生した瞬間に即時リセットし、このバトルをミス済みとしてマーク
+    if (comboBreak && !isMapScanBattle && !scenarioComboMissed) {
+      setScenarioCombo(0);
+      setScenarioComboMissed(true);
+    }
+
     // 3ターン以上継続中はMP回復（combo数 = newStreakで計算）
     let mpComboGain = 0;
     if (newStreak >= 3) {
@@ -1975,11 +1992,19 @@ export default function Arcadia() {
         })();
         setBattleResultBonus({ comboMult, gradeMult });
       }
+      // シナリオ継続コンボ加算（MapScanバトル除外、かつこのバトルでミスなしの場合のみ）
+      if (!isMapScanBattle && !scenarioComboMissed) {
+        setScenarioCombo(prev => prev + 1);
+      }
     } else if (newHp <= 0) {
       setDefeat(true);
       setBtlLogs(prev => [...prev, lang==="en" ? "💀 Defeated..." : "💀 戦闘不能..."]);
+      // 敗北時もシナリオコンボをリセット（未ミスの場合のみ。被弾済みなら既にリセット済み）
+      if (!isMapScanBattle && !scenarioComboMissed) {
+        setScenarioCombo(0);
+      }
     }
-  }, [victory, defeat, mp, enemyHp, hp, mhp, mmp, lv, battleEnemy, statAlloc, weaponPatk, enemyTurnIdx, noDmgStreak, showNotif, handleExpGain, setBattleResultBonus, lang]);
+  }, [victory, defeat, mp, enemyHp, hp, mhp, mmp, lv, battleEnemy, statAlloc, weaponPatk, enemyTurnIdx, noDmgStreak, showNotif, handleExpGain, setBattleResultBonus, isMapScanBattle, scenarioComboMissed, lang]);
 
   const exitBattle = useCallback(() => {
     if (defeat) {
@@ -2709,6 +2734,7 @@ export default function Arcadia() {
         statAlloc: { ...statAlloc },
         hasPb, hasMapScan, inCom,
       },
+      scenarioCombo,
     });
 
     const handleExport = () => {
@@ -2759,6 +2785,20 @@ export default function Arcadia() {
               <div><span style={{color:C.muted}}>PDEF</span>  {statAlloc.pdef}</div>
               <div><span style={{color:C.muted}}>MATK</span>  {statAlloc.matk}</div>
               <div><span style={{color:C.muted}}>SPD</span>   {statAlloc.spd}</div>
+              {statPoints > 0 && (
+                <div style={{gridColumn:"1 / -1",marginTop:2,color:C.gold}}>
+                  <span style={{color:C.muted}}>{lang==="en"?"UNSPENT PT":"未振りPT"}</span>{"  "}{statPoints}
+                </div>
+              )}
+            </div>
+            {/* 継続シナリオフルコンボ */}
+            <div style={{marginTop:14,paddingTop:12,borderTop:`1px solid ${C.border}44`,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontSize:11,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>
+                {lang==="en"?"CH.1 SCENARIO FULL COMBO":"Ch.1 継続シナリオフルコンボ"}
+              </span>
+              <span style={{fontSize:16,color:scenarioCombo>=6?C.gold:scenarioCombo>=3?C.accent2:C.text,fontFamily:"'Share Tech Mono',monospace",fontWeight:700,textShadow:scenarioCombo>=6?`0 0 10px ${C.gold}88`:"none"}}>
+                {scenarioCombo}
+              </span>
             </div>
           </div>
 
@@ -2884,6 +2924,18 @@ export default function Arcadia() {
                 <span style={{fontSize:8,color:"#a78bfa88",fontFamily:"'Share Tech Mono',monospace"}}>💨→⚔負</span>
                 <span style={{fontSize:8,color:"#ff446688",fontFamily:"'Share Tech Mono',monospace"}}>{lang==="en"?"💥Unavoidable":T.unavoidable}</span>
               </div>
+
+              {/* 継続シナリオフルコンボ表示（縦長） */}
+              {!isMapScanBattle && scenarioCombo >= 0 && (
+                <div style={{padding:"2px 10px",borderBottom:`1px solid ${C.border}22`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0,background:"rgba(240,192,64,0.04)"}}>
+                  <span style={{fontSize:8,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>
+                    {lang==="en"?"SCENARIO FULL COMBO":"継続シナリオフルコンボ"}
+                  </span>
+                  <span style={{fontSize:10,color:scenarioCombo>=3?C.gold:C.muted,fontFamily:"'Share Tech Mono',monospace",fontWeight:700,letterSpacing:1,textShadow:scenarioCombo>=3?`0 0 8px ${C.gold}88`:"none"}}>
+                    {scenarioCombo}
+                  </span>
+                </div>
+              )}
 
               {/* バトルログ */}
               <div style={{flex:1,overflowY:"auto",padding:"4px 14px",minHeight:0}}>
@@ -3047,6 +3099,18 @@ export default function Arcadia() {
               <span style={{fontSize:8,color:"#a78bfa88",fontFamily:"'Share Tech Mono',monospace"}}>💨→⚔負 </span>
               <span style={{fontSize:8,color:"#ff446688",fontFamily:"'Share Tech Mono',monospace"}}>{lang==="en"?"💥Unavoidable":T.unavoidable}</span>
             </div>
+
+            {/* 継続シナリオフルコンボ表示 */}
+            {!isMapScanBattle && scenarioCombo >= 0 && (
+              <div style={{padding:"3px 10px",borderBottom:`1px solid ${C.border}22`,display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0,background:"rgba(240,192,64,0.04)"}}>
+                <span style={{fontSize:8,color:C.muted,fontFamily:"'Share Tech Mono',monospace",letterSpacing:1}}>
+                  {lang==="en"?"SCENARIO FULL COMBO":"継続シナリオフルコンボ"}
+                </span>
+                <span style={{fontSize:11,color:scenarioCombo>=3?C.gold:C.muted,fontFamily:"'Share Tech Mono',monospace",fontWeight:700,letterSpacing:1,textShadow:scenarioCombo>=3?`0 0 8px ${C.gold}88`:"none"}}>
+                  {scenarioCombo}
+                </span>
+              </div>
+            )}
 
             {/* バトルログ（flex:1で残り高さをすべて使う） */}
             <div style={{flex:1,overflowY:"auto",padding:"8px 12px",minHeight:0}}>
@@ -3461,6 +3525,8 @@ export default function Arcadia() {
                             setEnemyTurnIdx(0); setEnemyNextAction((ed.pattern||["atk"])[0]);
                             setBattleNext(sceneIdx);
                             setBattlePrev(sceneIdx);
+                            setIsMapScanBattle(true);
+                            setScenarioComboMissed(false);
                             setPhase("battle");
                           }} style={{padding:"4px 10px",background:`${C.accent}11`,border:`1px solid ${C.accent}44`,color:C.accent,fontSize:10,cursor:"pointer",letterSpacing:1,flexShrink:0}}>
                             {lang==="en"?"Fight":"戦う"}
