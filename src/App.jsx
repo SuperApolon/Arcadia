@@ -1337,6 +1337,7 @@ export default function Arcadia() {
   const [battleResultBonus, setBattleResultBonus] = useState({ comboMult: 1.0, gradeMult: 1.0 });
   // シナリオ継続コンボ: MAPSCANバトルを除いたシナリオ上のバトル全勝利の累積コンボ数
   const [scenarioCombo, setScenarioCombo] = useState(0);
+  const [endPhase, setEndPhase] = useState("rank"); // エンディング内フェーズ: "rank" → "save"
   // 現在のバトルがMapScanによるものかどうか
   const [isMapScanBattle, setIsMapScanBattle] = useState(false);
   // 現在のバトルで既にコンボミス（被弾）が発生したかどうか
@@ -1680,6 +1681,11 @@ export default function Arcadia() {
     };
   }, []);
 
+  // エンディング再突入時に endPhase をランク画面へリセット
+  useEffect(() => {
+    if (phase === "end") setEndPhase("rank");
+  }, [phase]);
+
   // @@SECTION:LOGIC_DIALOG_TAP
   const onTapDlg = useCallback(() => {
     if (choices) return;
@@ -1946,9 +1952,8 @@ export default function Arcadia() {
     const newStreak = comboBreak ? 0 : noDmgStreak + 1;
 
     // ─── シナリオフルコンボ ミス判定（MapScan除外）────────────────────────
-    // comboBreakが発生した瞬間に即時リセットし、このバトルをミス済みとしてマーク
+    // comboBreakが発生した瞬間にこのバトルをミス済みとしてマーク（リセットはしない）
     if (comboBreak && !isMapScanBattle && !scenarioComboMissed) {
-      setScenarioCombo(0);
       setScenarioComboMissed(true);
     }
 
@@ -1999,10 +2004,6 @@ export default function Arcadia() {
     } else if (newHp <= 0) {
       setDefeat(true);
       setBtlLogs(prev => [...prev, lang==="en" ? "💀 Defeated..." : "💀 戦闘不能..."]);
-      // 敗北時もシナリオコンボをリセット（未ミスの場合のみ。被弾済みなら既にリセット済み）
-      if (!isMapScanBattle && !scenarioComboMissed) {
-        setScenarioCombo(0);
-      }
     }
   }, [victory, defeat, mp, enemyHp, hp, mhp, mmp, lv, battleEnemy, statAlloc, weaponPatk, enemyTurnIdx, noDmgStreak, showNotif, handleExpGain, setBattleResultBonus, isMapScanBattle, scenarioComboMissed, lang]);
 
@@ -2071,6 +2072,11 @@ export default function Arcadia() {
     @keyframes pbPulse { 0%,100%{opacity:0.6;r:6} 50%{opacity:1;r:8} }
     @keyframes pbGlow { 0%,100%{filter:drop-shadow(0 0 4px #00c8ff88)} 50%{filter:drop-shadow(0 0 10px #00c8ffcc) drop-shadow(0 0 20px #00c8ff44)} }
     @keyframes lvPulse { 0%,100%{filter:drop-shadow(0 0 4px #f0c04088)} 50%{filter:drop-shadow(0 0 12px #f0c040cc) drop-shadow(0 0 24px #f0c04044)} }
+    @keyframes rankReveal { 0%{opacity:0;transform:scale(0.3) rotate(-12deg)} 50%{opacity:1;transform:scale(1.18) rotate(3deg)} 75%{transform:scale(0.96) rotate(-1deg)} 100%{opacity:1;transform:scale(1) rotate(0deg)} }
+    @keyframes rankGlow { 0%,100%{opacity:1} 50%{opacity:0.82} }
+    @keyframes rankPlatePulse { 0%,100%{box-shadow:0 0 20px rgba(0,200,255,0.25),inset 0 0 20px rgba(0,200,255,0.05)} 50%{box-shadow:0 0 50px rgba(0,200,255,0.5),inset 0 0 40px rgba(0,200,255,0.12)} }
+    @keyframes rankParticle { 0%{opacity:0;transform:translateY(0) scale(0)} 20%{opacity:1;transform:translateY(-20px) scale(1)} 100%{opacity:0;transform:translateY(-80px) scale(0.3)} }
+    @keyframes rankSlideIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
   `;
 
   // @@SECTION:RENDER_VICTORY
@@ -2721,6 +2727,30 @@ export default function Arcadia() {
 
   // @@SECTION:RENDER_ENDING
   if (phase === "end") {
+    // ── ランクテーブル（Ch.1用: 0〜6でF〜S）──────────────────────────────
+    const RANK_TABLE = [
+      { min:0, max:0, rank:"F", color:"#4a7a9a", glow:"#4a7a9a", shadow:"rgba(74,122,154,0.6)" },
+      { min:1, max:1, rank:"E", color:"#7a9a5a", glow:"#7a9a5a", shadow:"rgba(122,154,90,0.6)" },
+      { min:2, max:2, rank:"D", color:"#c8a030", glow:"#c8a030", shadow:"rgba(200,160,48,0.6)" },
+      { min:3, max:3, rank:"C", color:"#e0803a", glow:"#e0803a", shadow:"rgba(224,128,58,0.6)" },
+      { min:4, max:4, rank:"B", color:"#d040d0", glow:"#d040d0", shadow:"rgba(208,64,208,0.7)" },
+      { min:5, max:5, rank:"A", color:"#00c8ff", glow:"#00c8ff", shadow:"rgba(0,200,255,0.8)" },
+      { min:6, max:99, rank:"S", color:"#f0c040", glow:"#f0c040", shadow:"rgba(240,192,64,0.9)" },
+    ];
+    const rankInfo = RANK_TABLE.find(r => scenarioCombo >= r.min && scenarioCombo <= r.max) ?? RANK_TABLE[0];
+
+    // ランク別称号・メッセージ
+    const RANK_TITLES = {
+      "F": { title:"旅の始まり",         msg:"旅はまだ始まったばかり──\n次の冒険ではさらなる高みへ。" },
+      "E": { title:"見習い冒険者",       msg:"一歩一歩が、英雄への道となる。\n諦めるな、冒険者よ。" },
+      "D": { title:"歴戦の冒険者",       msg:"確かな成長の跡が見える。\n磨けば光る原石がここにある。" },
+      "C": { title:"誇り高き剣士",       msg:"その剣筋は真っ直ぐだ。\n仲間もきっと信頼している。" },
+      "B": { title:"勇猛果敢な戦士",     msg:"戦場での冷静さと勇気──\n共に持ち合わせた証である。" },
+      "A": { title:"伝説への挑戦者",     msg:"その力、本物だ。\nアルカディアが震えている。" },
+      "S": { title:"ARCADIA の英雄",     msg:"全てのバトルで力を出し切った。\nこれ以上の冒険者はそうはいない。" },
+    };
+    const rankMsg = RANK_TITLES[rankInfo.rank] ?? RANK_TITLES["F"];
+
     // ── セーブデータ生成 ────────────────────────────────────────────────────
     const buildSaveData = () => ({
       version:    "arcadia_ch1_v1",
@@ -2760,10 +2790,65 @@ export default function Arcadia() {
       setHasPb(false); setHasMapScan(false); setInCom(false);
     };
 
+    // ランク文字サイズ（1文字=180px、それ以外は140px）
+    const rankFontSize = rankInfo.rank.length === 1 ? 180 : 140;
+    const rankLetterStyle = {
+      fontFamily:"'Share Tech Mono',monospace",
+      fontSize:rankFontSize,
+      fontWeight:700,
+      color:rankInfo.color,
+      lineHeight:1,
+      display:"block",
+      filter:`drop-shadow(0 0 20px ${rankInfo.glow}) drop-shadow(0 0 40px ${rankInfo.glow}88)`,
+      animation:"rankReveal 0.9s cubic-bezier(0.22,1,0.36,1) forwards, rankGlow 2.4s ease-in-out 1s infinite",
+    };
+
+    // ── ランク画面 ──────────────────────────────────────────────────────────
+    if (endPhase === "rank") return (
+      <div
+        style={{position:"fixed",inset:0,width:"100%",height:"100%",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:`radial-gradient(ellipse at 50% 40%, ${rankInfo.shadow} 0%, #030508 55%, #010205 100%)`,fontFamily:"'Noto Serif JP',serif",textAlign:"center",padding:32,overflow:"hidden",cursor:"pointer"}}
+        onClick={() => setEndPhase("save")}
+      >
+        <style>{keyframes}</style>
+        {/* 背景スキャンライン */}
+        <div style={{position:"absolute",inset:0,backgroundImage:"repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.08) 3px,rgba(0,0,0,0.08) 4px)",pointerEvents:"none"}}/>
+        {/* パーティクル（Aランク以上） */}
+        {["A","S"].includes(rankInfo.rank) && [0,1,2,3,4,5,6,7].map(i => (
+          <div key={i} style={{position:"absolute",left:`${12 + i * 11}%`,bottom:`${15 + (i % 3) * 12}%`,width:6,height:6,borderRadius:"50%",background:rankInfo.glow,animation:`rankParticle ${1.4 + i * 0.3}s ease-out ${i * 0.4}s infinite`,opacity:0,pointerEvents:"none"}}/>
+        ))}
+        <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:"min(560px, 92vw)",animation:"fadeIn 0.8s ease"}}>
+          {/* ヘッダー */}
+          <div style={{fontSize:10,letterSpacing:10,color:"rgba(255,255,255,0.3)",marginBottom:8,fontFamily:"'Share Tech Mono',monospace",animation:"rankSlideIn 0.8s ease"}}>
+            ─ ADVENTURER RANK ─
+          </div>
+          <div style={{fontSize:11,letterSpacing:6,color:"rgba(255,255,255,0.2)",marginBottom:40,fontFamily:"'Share Tech Mono',monospace",animation:"rankSlideIn 0.9s ease"}}>
+            SCENARIO FULL COMBO : {scenarioCombo}
+          </div>
+          {/* ランク文字プレート */}
+          <div style={{position:"relative",margin:"0 auto 32px",width:"min(280px, 72vw)",height:rankFontSize * 1.3,display:"flex",alignItems:"center",justifyContent:"center",borderRadius:12,border:`1px solid ${rankInfo.glow}44`,background:`radial-gradient(ellipse at 50% 50%, ${rankInfo.shadow} 0%, rgba(0,0,0,0.4) 70%)`,animation:"rankPlatePulse 2.5s ease-in-out 0.8s infinite"}}>
+            <span style={rankLetterStyle}>{rankInfo.rank}</span>
+          </div>
+          {/* 称号 */}
+          <div style={{fontSize:15,fontWeight:700,color:rankInfo.color,letterSpacing:4,marginBottom:16,animation:"rankSlideIn 1.2s ease",textShadow:`0 0 12px ${rankInfo.glow}88`}}>
+            ─ {rankMsg.title} ─
+          </div>
+          {/* メッセージ */}
+          <div style={{fontSize:13,color:"rgba(200,232,248,0.85)",lineHeight:2.2,letterSpacing:1,marginBottom:48,whiteSpace:"pre-line",animation:"rankSlideIn 1.4s ease"}}>
+            {rankMsg.msg}
+          </div>
+          {/* 進行ヒント */}
+          <div style={{fontSize:11,color:"rgba(255,255,255,0.2)",letterSpacing:3,fontFamily:"'Share Tech Mono',monospace",animation:"blnk 1.6s ease-in-out infinite"}}>
+            TAP TO CONTINUE
+          </div>
+        </div>
+      </div>
+    );
+
+    // ── セーブ画面（従来のエンディング） ────────────────────────────────────
     return (
       <div style={{width:"100%",height:"100%",overflowY:"auto",background:`linear-gradient(180deg,#030a06 0%,#0a1a0a 50%,#0d2010 100%)`,fontFamily:"'Noto Serif JP',serif",textAlign:"center"}}>
         <style>{keyframes}</style>
-        <div style={{animation:"fadeIn 2s ease",maxWidth:480,width:"100%",margin:"0 auto",padding:40}}>
+        <div style={{animation:"fadeIn 1.2s ease",maxWidth:480,width:"100%",margin:"0 auto",padding:40}}>
           <div style={{fontSize:11,letterSpacing:12,color:C.muted,marginBottom:20,fontFamily:"'Share Tech Mono',monospace"}}>─ EPISODE 1 END ─</div>
           <div style={{fontSize:48,fontWeight:700,color:C.white,textShadow:`0 0 30px ${C.accent2}`,marginBottom:16}}>ARCADIA</div>
           <div style={{fontSize:18,color:C.accent2,letterSpacing:4,marginBottom:40}}>{T.endTagline}</div>
